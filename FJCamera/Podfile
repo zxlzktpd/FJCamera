@@ -1,0 +1,10 @@
+platform :ios, '8.0'
+use_frameworks!
+targetsArray = ['FJCamera']
+# 循环
+targetsArray.each do |t|
+    target t do
+        pod 'LBXPermission'
+        pod 'FJKit-OC',            :path => '../FJKit-OC'
+    end 
+end

@@ -1,0 +1,607 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1AC570155FB11E3D18E22480 /* Pods_FJCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */; };
+		E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */; };
+		E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F42182B3EA0059CE32 /* ViewController.m */; };
+		E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F62182B3EA0059CE32 /* Main.storyboard */; };
+		E7DFF9FA2182B3EB0059CE32 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F92182B3EB0059CE32 /* Assets.xcassets */; };
+		E7DFF9FD2182B3EB0059CE32 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9FB2182B3EB0059CE32 /* LaunchScreen.storyboard */; };
+		E7DFFA002182B3EB0059CE32 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9FF2182B3EB0059CE32 /* main.m */; };
+		E7DFFA732182B8CE0059CE32 /* FJPhotoLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */; };
+		E7DFFA782182BC640059CE32 /* ic_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA762182BC640059CE32 /* ic_back@2x.png */; };
+		E7DFFA792182BC640059CE32 /* ic_back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA772182BC640059CE32 /* ic_back@3x.png */; };
+		E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFFA7B2182C3080059CE32 /* FJPhotoLibrarySelectionView.m */; };
+		E7DFFA7E2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA7D2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib */; };
+		E7DFFA832182C5030059CE32 /* ic_arrow_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA7F2182C5030059CE32 /* ic_arrow_down@3x.png */; };
+		E7DFFA842182C5030059CE32 /* ic_arrow_up@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA802182C5030059CE32 /* ic_arrow_up@3x.png */; };
+		E7DFFA852182C5030059CE32 /* ic_arrow_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA812182C5030059CE32 /* ic_arrow_down@2x.png */; };
+		E7DFFA862182C5030059CE32 /* ic_arrow_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA822182C5030059CE32 /* ic_arrow_up@2x.png */; };
+		E7DFFA8B2182DE310059CE32 /* FJPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFFA882182DE310059CE32 /* FJPhotoCollectionViewCell.m */; };
+		E7DFFA8C2182DE310059CE32 /* FJPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA892182DE310059CE32 /* FJPhotoCollectionViewCell.xib */; };
+		E7DFFA912182EBAE0059CE32 /* ic_photo_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA8D2182EBAE0059CE32 /* ic_photo_selected@2x.png */; };
+		E7DFFA922182EBAE0059CE32 /* ic_photo_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA8E2182EBAE0059CE32 /* ic_photo_selected@3x.png */; };
+		E7DFFA932182EBAE0059CE32 /* ic_photo_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA8F2182EBAE0059CE32 /* ic_photo_unselected@3x.png */; };
+		E7DFFA942182EBAE0059CE32 /* ic_photo_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA902182EBAE0059CE32 /* ic_photo_unselected@2x.png */; };
+		E7DFFA972182EBC10059CE32 /* ic_camera_placeholder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA952182EBC00059CE32 /* ic_camera_placeholder@3x.png */; };
+		E7DFFA982182EBC10059CE32 /* ic_camera_placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA962182EBC10059CE32 /* ic_camera_placeholder@2x.png */; };
+		E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFFA9A218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m */; };
+		E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFFA9D21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m */; };
+		E7DFFAA021830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA9E21830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib */; };
+		E7DFFAA3218311C80059CE32 /* ic_album_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFAA1218311C80059CE32 /* ic_album_unselected@3x.png */; };
+		E7DFFAA4218311C80059CE32 /* ic_album_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFAA2218311C80059CE32 /* ic_album_unselected@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0E2778AEBE844386692B7E2C /* Pods-FJCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.release.xcconfig"; sourceTree = "<group>"; };
+		A6059165467C238BDF2622DD /* Pods-FJCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.debug.xcconfig"; sourceTree = "<group>"; };
+		E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E7DFF9F32182B3EA0059CE32 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		E7DFF9F42182B3EA0059CE32 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		E7DFF9F72182B3EA0059CE32 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E7DFF9F92182B3EB0059CE32 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E7DFF9FC2182B3EB0059CE32 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E7DFF9FE2182B3EB0059CE32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7DFF9FF2182B3EB0059CE32 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryViewController.h; sourceTree = "<group>"; };
+		E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryViewController.m; sourceTree = "<group>"; };
+		E7DFFA762182BC640059CE32 /* ic_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_back@2x.png"; sourceTree = "<group>"; };
+		E7DFFA772182BC640059CE32 /* ic_back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_back@3x.png"; sourceTree = "<group>"; };
+		E7DFFA7A2182C3080059CE32 /* FJPhotoLibrarySelectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibrarySelectionView.h; sourceTree = "<group>"; };
+		E7DFFA7B2182C3080059CE32 /* FJPhotoLibrarySelectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibrarySelectionView.m; sourceTree = "<group>"; };
+		E7DFFA7D2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoLibrarySelectionView.xib; sourceTree = "<group>"; };
+		E7DFFA7F2182C5030059CE32 /* ic_arrow_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_down@3x.png"; sourceTree = "<group>"; };
+		E7DFFA802182C5030059CE32 /* ic_arrow_up@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_up@3x.png"; sourceTree = "<group>"; };
+		E7DFFA812182C5030059CE32 /* ic_arrow_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_down@2x.png"; sourceTree = "<group>"; };
+		E7DFFA822182C5030059CE32 /* ic_arrow_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_up@2x.png"; sourceTree = "<group>"; };
+		E7DFFA872182C5410059CE32 /* FJCameraCommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCameraCommonHeader.h; sourceTree = "<group>"; };
+		E7DFFA882182DE310059CE32 /* FJPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJPhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		E7DFFA892182DE310059CE32 /* FJPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FJPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
+		E7DFFA8A2182DE310059CE32 /* FJPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJPhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		E7DFFA8D2182EBAE0059CE32 /* ic_photo_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_selected@2x.png"; sourceTree = "<group>"; };
+		E7DFFA8E2182EBAE0059CE32 /* ic_photo_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_selected@3x.png"; sourceTree = "<group>"; };
+		E7DFFA8F2182EBAE0059CE32 /* ic_photo_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_unselected@3x.png"; sourceTree = "<group>"; };
+		E7DFFA902182EBAE0059CE32 /* ic_photo_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_unselected@2x.png"; sourceTree = "<group>"; };
+		E7DFFA952182EBC00059CE32 /* ic_camera_placeholder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_camera_placeholder@3x.png"; sourceTree = "<group>"; };
+		E7DFFA962182EBC10059CE32 /* ic_camera_placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_camera_placeholder@2x.png"; sourceTree = "<group>"; };
+		E7DFFA99218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryAlbumSelectionView.h; sourceTree = "<group>"; };
+		E7DFFA9A218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryAlbumSelectionView.m; sourceTree = "<group>"; };
+		E7DFFA9C21830FC40059CE32 /* FJPhotoLibraryAlbumCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryAlbumCell.h; sourceTree = "<group>"; };
+		E7DFFA9D21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryAlbumCell.m; sourceTree = "<group>"; };
+		E7DFFA9E21830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoLibraryAlbumCell.xib; sourceTree = "<group>"; };
+		E7DFFAA1218311C80059CE32 /* ic_album_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_album_unselected@3x.png"; sourceTree = "<group>"; };
+		E7DFFAA2218311C80059CE32 /* ic_album_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_album_unselected@2x.png"; sourceTree = "<group>"; };
+		EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FJCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E7DFF9EA2182B3EA0059CE32 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AC570155FB11E3D18E22480 /* Pods_FJCamera.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6BBEE0D50147A5B02C0B608F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A6059165467C238BDF2622DD /* Pods-FJCamera.debug.xcconfig */,
+				0E2778AEBE844386692B7E2C /* Pods-FJCamera.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		7BC4EA57A50D785D26746453 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E7DFF9E42182B3EA0059CE32 = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA062182B4160059CE32 /* Classes */,
+				E7DFF9EF2182B3EA0059CE32 /* FJCamera */,
+				E7DFF9EE2182B3EA0059CE32 /* Products */,
+				6BBEE0D50147A5B02C0B608F /* Pods */,
+				7BC4EA57A50D785D26746453 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E7DFF9EE2182B3EA0059CE32 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E7DFF9EF2182B3EA0059CE32 /* FJCamera */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */,
+				E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */,
+				E7DFF9F32182B3EA0059CE32 /* ViewController.h */,
+				E7DFF9F42182B3EA0059CE32 /* ViewController.m */,
+				E7DFF9F62182B3EA0059CE32 /* Main.storyboard */,
+				E7DFF9F92182B3EB0059CE32 /* Assets.xcassets */,
+				E7DFF9FB2182B3EB0059CE32 /* LaunchScreen.storyboard */,
+				E7DFF9FE2182B3EB0059CE32 /* Info.plist */,
+				E7DFF9FF2182B3EB0059CE32 /* main.m */,
+			);
+			path = FJCamera;
+			sourceTree = "<group>";
+		};
+		E7DFFA062182B4160059CE32 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA072182B4210059CE32 /* Camera */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		E7DFFA072182B4210059CE32 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA872182C5410059CE32 /* FJCameraCommonHeader.h */,
+				E7DFFA752182BC560059CE32 /* Images */,
+				E7DFFA742182BBBA0059CE32 /* Utility */,
+				E7DFFA702182B67F0059CE32 /* Controller */,
+				E7DFFA6F2182B6750059CE32 /* Model */,
+				E7DFFA0B2182B4210059CE32 /* View */,
+				E7DFFA2E2182B4210059CE32 /* Cell */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		E7DFFA0B2182B4210059CE32 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA7A2182C3080059CE32 /* FJPhotoLibrarySelectionView.h */,
+				E7DFFA7B2182C3080059CE32 /* FJPhotoLibrarySelectionView.m */,
+				E7DFFA7D2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib */,
+				E7DFFA99218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.h */,
+				E7DFFA9A218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E7DFFA2E2182B4210059CE32 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA8A2182DE310059CE32 /* FJPhotoCollectionViewCell.h */,
+				E7DFFA882182DE310059CE32 /* FJPhotoCollectionViewCell.m */,
+				E7DFFA892182DE310059CE32 /* FJPhotoCollectionViewCell.xib */,
+				E7DFFA9C21830FC40059CE32 /* FJPhotoLibraryAlbumCell.h */,
+				E7DFFA9D21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m */,
+				E7DFFA9E21830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		E7DFFA6F2182B6750059CE32 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E7DFFA702182B67F0059CE32 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */,
+				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E7DFFA742182BBBA0059CE32 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		E7DFFA752182BC560059CE32 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				E7DFFA762182BC640059CE32 /* ic_back@2x.png */,
+				E7DFFA772182BC640059CE32 /* ic_back@3x.png */,
+				E7DFFA812182C5030059CE32 /* ic_arrow_down@2x.png */,
+				E7DFFA7F2182C5030059CE32 /* ic_arrow_down@3x.png */,
+				E7DFFA822182C5030059CE32 /* ic_arrow_up@2x.png */,
+				E7DFFA802182C5030059CE32 /* ic_arrow_up@3x.png */,
+				E7DFFA8D2182EBAE0059CE32 /* ic_photo_selected@2x.png */,
+				E7DFFA8E2182EBAE0059CE32 /* ic_photo_selected@3x.png */,
+				E7DFFA902182EBAE0059CE32 /* ic_photo_unselected@2x.png */,
+				E7DFFA8F2182EBAE0059CE32 /* ic_photo_unselected@3x.png */,
+				E7DFFA962182EBC10059CE32 /* ic_camera_placeholder@2x.png */,
+				E7DFFA952182EBC00059CE32 /* ic_camera_placeholder@3x.png */,
+				E7DFFAA2218311C80059CE32 /* ic_album_unselected@2x.png */,
+				E7DFFAA1218311C80059CE32 /* ic_album_unselected@3x.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E7DFF9EC2182B3EA0059CE32 /* FJCamera */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7DFFA032182B3EB0059CE32 /* Build configuration list for PBXNativeTarget "FJCamera" */;
+			buildPhases = (
+				227751EE7575B18A423F2607 /* [CP] Check Pods Manifest.lock */,
+				E7DFF9E92182B3EA0059CE32 /* Sources */,
+				E7DFF9EA2182B3EA0059CE32 /* Frameworks */,
+				E7DFF9EB2182B3EA0059CE32 /* Resources */,
+				BD50B2F367A83F1C92F5E6A2 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FJCamera;
+			productName = FJCamera;
+			productReference = E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E7DFF9E52182B3EA0059CE32 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = "Fu Jie";
+				TargetAttributes = {
+					E7DFF9EC2182B3EA0059CE32 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+				};
+			};
+			buildConfigurationList = E7DFF9E82182B3EA0059CE32 /* Build configuration list for PBXProject "FJCamera" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E7DFF9E42182B3EA0059CE32;
+			productRefGroup = E7DFF9EE2182B3EA0059CE32 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E7DFF9EC2182B3EA0059CE32 /* FJCamera */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E7DFF9EB2182B3EA0059CE32 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7DFFAA3218311C80059CE32 /* ic_album_unselected@3x.png in Resources */,
+				E7DFFA972182EBC10059CE32 /* ic_camera_placeholder@3x.png in Resources */,
+				E7DFFA932182EBAE0059CE32 /* ic_photo_unselected@3x.png in Resources */,
+				E7DFFA942182EBAE0059CE32 /* ic_photo_unselected@2x.png in Resources */,
+				E7DFF9FD2182B3EB0059CE32 /* LaunchScreen.storyboard in Resources */,
+				E7DFFA862182C5030059CE32 /* ic_arrow_up@2x.png in Resources */,
+				E7DFFA8C2182DE310059CE32 /* FJPhotoCollectionViewCell.xib in Resources */,
+				E7DFF9FA2182B3EB0059CE32 /* Assets.xcassets in Resources */,
+				E7DFFA852182C5030059CE32 /* ic_arrow_down@2x.png in Resources */,
+				E7DFFA842182C5030059CE32 /* ic_arrow_up@3x.png in Resources */,
+				E7DFFA922182EBAE0059CE32 /* ic_photo_selected@3x.png in Resources */,
+				E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */,
+				E7DFFA792182BC640059CE32 /* ic_back@3x.png in Resources */,
+				E7DFFA832182C5030059CE32 /* ic_arrow_down@3x.png in Resources */,
+				E7DFFAA4218311C80059CE32 /* ic_album_unselected@2x.png in Resources */,
+				E7DFFA7E2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib in Resources */,
+				E7DFFAA021830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib in Resources */,
+				E7DFFA982182EBC10059CE32 /* ic_camera_placeholder@2x.png in Resources */,
+				E7DFFA912182EBAE0059CE32 /* ic_photo_selected@2x.png in Resources */,
+				E7DFFA782182BC640059CE32 /* ic_back@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		227751EE7575B18A423F2607 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FJCamera-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD50B2F367A83F1C92F5E6A2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/BlocksKit/BlocksKit.framework",
+				"${BUILT_PRODUCTS_DIR}/CHTCollectionViewWaterfallLayout/CHTCollectionViewWaterfallLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaSecurity/CocoaSecurity.framework",
+				"${BUILT_PRODUCTS_DIR}/DDCollectionViewFlowLayout/DDCollectionViewFlowLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/EllipsePageControl/EllipsePageControl.framework",
+				"${BUILT_PRODUCTS_DIR}/FJKit-OC/FJKit_OC.framework",
+				"${BUILT_PRODUCTS_DIR}/JSONModel/JSONModel.framework",
+				"${BUILT_PRODUCTS_DIR}/LBXPermission/LBXPermission.framework",
+				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeView/SwipeView.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/Typeset/Typeset.framework",
+				"${BUILT_PRODUCTS_DIR}/WMPlayer/WMPlayer.framework",
+				"${BUILT_PRODUCTS_DIR}/YYModel/YYModel.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BlocksKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHTCollectionViewWaterfallLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaSecurity.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DDCollectionViewFlowLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EllipsePageControl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FJKit_OC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSONModel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LBXPermission.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Typeset.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WMPlayer.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YYModel.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E7DFF9E92182B3EA0059CE32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
+				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
+				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
+				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
+				E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */,
+				E7DFFA8B2182DE310059CE32 /* FJPhotoCollectionViewCell.m in Sources */,
+				E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */,
+				E7DFFA732182B8CE0059CE32 /* FJPhotoLibraryViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E7DFF9F62182B3EA0059CE32 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E7DFF9F72182B3EA0059CE32 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E7DFF9FB2182B3EB0059CE32 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E7DFF9FC2182B3EB0059CE32 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E7DFFA012182B3EB0059CE32 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E7DFFA022182B3EB0059CE32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E7DFFA042182B3EB0059CE32 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A6059165467C238BDF2622DD /* Pods-FJCamera.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9YHHLB2CQ7;
+				INFOPLIST_FILE = FJCamera/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Jeff.FJCamera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E7DFFA052182B3EB0059CE32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0E2778AEBE844386692B7E2C /* Pods-FJCamera.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9YHHLB2CQ7;
+				INFOPLIST_FILE = FJCamera/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Jeff.FJCamera;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E7DFF9E82182B3EA0059CE32 /* Build configuration list for PBXProject "FJCamera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7DFFA012182B3EB0059CE32 /* Debug */,
+				E7DFFA022182B3EB0059CE32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7DFFA032182B3EB0059CE32 /* Build configuration list for PBXNativeTarget "FJCamera" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7DFFA042182B3EB0059CE32 /* Debug */,
+				E7DFFA052182B3EB0059CE32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E7DFF9E52182B3EA0059CE32 /* Project object */;
+}
