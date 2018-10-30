@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Photos/Photos.h>
+#import "FJCameraCommonHeader.h"
 
 @interface FJPhotoLibraryViewController : UIViewController
 

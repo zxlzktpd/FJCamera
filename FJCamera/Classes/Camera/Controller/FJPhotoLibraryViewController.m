@@ -7,11 +7,10 @@
 //
 
 #import "FJPhotoLibraryViewController.h"
-#import <LBXPermission/LBXPermission.h>
-#import "FJCameraCommonHeader.h"
 #import "FJPhotoLibrarySelectionView.h"
 #import "FJPhotoLibraryAlbumSelectionView.h"
 #import "FJPhotoCollectionViewCell.h"
+#import "FJPhotoEditViewController.h"
 
 @interface FJPhotoLibraryViewController ()
 
@@ -309,7 +308,9 @@
     if (self.userNextBlock != nil) {
         self.userNextBlock(self.selectedPhotoAssets);
     }else {
-        
+        FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] init];
+        editVC.selectedPhotoAssets = self.selectedPhotoAssets;
+        [self.navigationController pushViewController:editVC animated:YES];
     }
 }
 
