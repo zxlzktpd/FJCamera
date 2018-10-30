@@ -18,4 +18,6 @@
 
 - (void)setCollapseBlock:(void(^)(void))block;
 
+- (void)collapse;
+
 @end

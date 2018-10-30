@@ -10,13 +10,19 @@
 #import <LBXPermission/LBXPermission.h>
 #import "FJCameraCommonHeader.h"
 #import "FJPhotoLibrarySelectionView.h"
+#import "FJPhotoLibraryAlbumSelectionView.h"
 #import "FJPhotoCollectionViewCell.h"
 
 @interface FJPhotoLibraryViewController ()
 
-@property (nonatomic, strong) UIButton *nextBtn;
+// CollectionView
 @property (nonatomic, strong) FJCollectionView *collectionView;
+// Navigation TitleView
 @property (nonatomic, strong) FJPhotoLibrarySelectionView *customTitleView;
+// Next Button
+@property (nonatomic, strong) UIButton *nextBtn;
+// 选择相册组件
+@property (nonatomic, strong) FJPhotoLibraryAlbumSelectionView *albumSelectionView;
 // 所有相册
 @property (nonatomic, strong) NSMutableArray<PHAssetCollection *> *photoAssetCollections;
 // 当前相册
@@ -57,11 +63,19 @@
     return _selectedPhotoAssets;
 }
 
-- (instancetype)init
-{
+// 设置已选的照片Asset数组
+- (void)updateSelectedPhotoAssets:(NSArray<PHAsset *> *)selectedPhotoAssets {
+    
+    [self.selectedPhotoAssets removeAllObjects];
+    [self.selectedPhotoAssets addObjectsFromArray:selectedPhotoAssets];
+}
+
+- (instancetype)init {
+    
     self = [super init];
     if (self) {
-        self.maxSelectionCount = 3;
+        self.maxSelectionCount = 9;
+        self.photoListColumn = 4;
     }
     return self;
 }
@@ -103,6 +117,10 @@
             }
         });
     }];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        weakSelf.userInitBlock == nil ? : weakSelf.userInitBlock();
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -125,10 +143,16 @@
     if (_customTitleView == nil) {
         self.customTitleView = [FJPhotoLibrarySelectionView create:@"手机相册"];
         self.navigationItem.titleView = self.customTitleView;
+        [self.customTitleView setExtendBlock:^{
+            [weakSelf _setAblumSelectionViewHidden:NO animation:YES];
+        }];
+        [self.customTitleView setCollapseBlock:^{
+            [weakSelf _setAblumSelectionViewHidden:YES animation:YES];
+        }];
     }
     
     if (_collectionView == nil) {
-        self.collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:4 stickyHeader:NO];
+        self.collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
         [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(weakSelf.view);
@@ -169,20 +193,22 @@
                             // 移除
                             ds.isSelected = NO;
                             [weakSelf.selectedPhotoAssets removeObject:ds.photoAsset];
-                            [weakSelf _checkNextState];
                         }else {
                             // 判断是否超出最大选择数量
-                            [weakSelf _checkNextState];
                             if (weakSelf.selectedPhotoAssets.count == weakSelf.maxSelectionCount) {
-                                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                                if (weakSelf.userOverLimitationBlock != nil) {
+                                    weakSelf.userOverLimitationBlock();
+                                }else {
+                                    [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                                }
                                 return;
                             }
                             // 选择
                             ds.isSelected = YES;
                             [weakSelf.selectedPhotoAssets fj_safeAddObject:ds.photoAsset];
-                            
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
+                        [weakSelf _checkNextState];
                     }
                 }
             }
@@ -190,8 +216,101 @@
     };
 }
 
+- (void)_setAblumSelectionViewHidden:(BOOL)hidden animation:(BOOL)animation {
+    
+    UIView *view = nil;
+    MF_WEAK_SELF
+    if (_albumSelectionView == nil) {
+        
+        view = [[UIView alloc] init];
+        view.tag = 1000;
+        view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+        [self.collectionView addSubview:view];
+        [view mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(weakSelf.collectionView);
+        }];
+        
+        UIButton *btn = [[UIButton alloc] init];
+        [view addSubview:btn];
+        MF_WEAK_OBJECT(view)
+        [btn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(weakview);
+        }];
+        [btn addTarget:self action:@selector(_tapBlurView) forControlEvents:UIControlEventTouchUpInside];
+        
+        CGPoint point = CGPointZero;
+        _albumSelectionView = [FJPhotoLibraryAlbumSelectionView create:point photoAssetCollections:self.photoAssetCollections selectedPhotoAssetCollection:self.currentPhotoAssetColletion assetCollectionChangedBlock:^(PHAssetCollection *currentCollection) {
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf _setAblumSelectionViewHidden:YES animation:YES];
+                [weakSelf.customTitleView collapse];
+                if ([weakSelf.currentPhotoAssetColletion isEqual:currentCollection]) {
+                    return;
+                }
+                weakSelf.currentPhotoAssetColletion = currentCollection;
+                [weakSelf.customTitleView updateAlbumTitle:currentCollection.localizedTitle];
+                [weakSelf _render];
+            });
+            
+        }];
+        
+        _albumSelectionView.frame = CGRectMake(0, - _albumSelectionView.bounds.size.height, UI_SCREEN_WIDTH, _albumSelectionView.bounds.size.height);
+        [view addSubview:_albumSelectionView];
+        
+    }else {
+        for (UIView *v in self.collectionView.subviews) {
+            if ([v isMemberOfClass:[UIView class]] && v.tag == 1000) {
+                view = v;
+                break;
+            }
+        }
+    }
+    
+    if (animation) {
+        MF_WEAK_OBJECT(view)
+        if (hidden == YES) {
+            view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+            [UIView animateWithDuration:0.25 animations:^{
+                weakSelf.albumSelectionView.frame = CGRectMake(0, - weakSelf.albumSelectionView.bounds.size.height, weakSelf.albumSelectionView.bounds.size.width, weakSelf.albumSelectionView.bounds.size.height);
+                weakview.backgroundColor = [UIColor clearColor];
+            } completion:^(BOOL finished) {
+                weakview.hidden = YES;
+            }];
+            
+        }else {
+            view.hidden = NO;
+            view.backgroundColor = [UIColor clearColor];
+            [UIView animateWithDuration:0.2 animations:^{
+                weakSelf.albumSelectionView.frame = CGRectMake(0, 0, weakSelf.albumSelectionView.bounds.size.width, weakSelf.albumSelectionView.bounds.size.height);
+                weakview.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+            } completion:^(BOOL finished) {
+            }];
+        }
+    }else {
+        if (hidden == YES) {
+            view.hidden = YES;
+            _albumSelectionView.frame = CGRectMake(0, - _albumSelectionView.bounds.size.height, _albumSelectionView.bounds.size.width, _albumSelectionView.bounds.size.height);
+        }else {
+            view.hidden = NO;
+            view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
+            _albumSelectionView.frame = CGRectMake(0, 0, _albumSelectionView.bounds.size.width, _albumSelectionView.bounds.size.height);
+        }
+    }
+}
+
+- (void)_tapBlurView {
+    
+    [self _setAblumSelectionViewHidden:YES animation:YES];
+    [self.customTitleView collapse];
+}
+
 - (void)_tapNext {
     
+    if (self.userNextBlock != nil) {
+        self.userNextBlock(self.selectedPhotoAssets);
+    }else {
+        
+    }
 }
 
 - (void)_openCamera {

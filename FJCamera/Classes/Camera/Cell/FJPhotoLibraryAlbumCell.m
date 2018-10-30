@@ -46,6 +46,7 @@
     });
     self.albumLabel.text = ds.assetCollection.localizedTitle;
     self.countLabel.text = MF_STR(assets.count);
+    [self.selectImage setHighlighted:ds.isSelected];
 }
 
 @end

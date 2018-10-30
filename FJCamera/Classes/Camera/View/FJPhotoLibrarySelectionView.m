@@ -42,12 +42,12 @@
 
 - (void)setExtendBlock:(void(^)(void))block {
     
-    self.extendBlock = block;
+    _extendBlock = block;
 }
 
 - (void)setCollapseBlock:(void(^)(void))block {
     
-    self.collapseBlock = block;
+    _collapseBlock = block;
 }
 
 - (IBAction)_tap:(UIButton *)sender {
@@ -66,6 +66,12 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakSelf.tapBtn setUserInteractionEnabled:YES];
     });
+}
+
+- (void)collapse {
+    
+    self.arrowImage.image = [FJStorage podImage:@"ic_arrow_down" class:[self class]];
+    self.extended = NO;
 }
 
 - (CGSize)intrinsicContentSize {

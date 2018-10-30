@@ -5,6 +5,6 @@ targetsArray = ['FJCamera']
 targetsArray.each do |t|
     target t do
         pod 'LBXPermission'
-        pod 'FJKit-OC',            :path => '../FJKit-OC'
+        pod 'FJKit-OC',            :path => '../../FJKit-OC'
     end 
 end

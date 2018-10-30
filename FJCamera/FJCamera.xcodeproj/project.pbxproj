@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1AC570155FB11E3D18E22480 /* Pods_FJCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */; };
+		E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */; };
 		E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */; };
 		E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F42182B3EA0059CE32 /* ViewController.m */; };
 		E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F62182B3EA0059CE32 /* Main.storyboard */; };
@@ -41,6 +42,8 @@
 /* Begin PBXFileReference section */
 		0E2778AEBE844386692B7E2C /* Pods-FJCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.release.xcconfig"; sourceTree = "<group>"; };
 		A6059165467C238BDF2622DD /* Pods-FJCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.debug.xcconfig"; sourceTree = "<group>"; };
+		E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditViewController.h; sourceTree = "<group>"; };
+		E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoEditViewController.m; sourceTree = "<group>"; };
 		E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -205,6 +208,8 @@
 			children = (
 				E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */,
 				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
+				E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */,
+				E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -401,6 +406,7 @@
 			files = (
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
+				E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */,
 				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
 				E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */,

@@ -22,7 +22,7 @@
 
 - (void)setAssetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block {
     
-    self.assetCollectionChangedBlock = block;
+    _assetCollectionChangedBlock = block;
 }
 
 + (FJPhotoLibraryAlbumSelectionView *)create:(CGPoint)point photoAssetCollections:(NSArray<PHAssetCollection *> *)photoAssetCollections selectedPhotoAssetCollection:(PHAssetCollection *)selectedPhotoAssetCollection assetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block {
@@ -40,6 +40,8 @@
     
     if (_tableView == nil) {
         _tableView = [FJTableView fj_createDefaultTableView];
+        _tableView.backgroundColor = [UIColor whiteColor];
+        _tableView.fj_tableView.backgroundColor = [UIColor whiteColor];
         [self addSubview:_tableView];
         MF_WEAK_SELF
         [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -76,8 +78,14 @@
         }else {
             ds.isSelected = NO;
         }
+        [self.tableView fj_addDataSource:ds];
     }
     [self.tableView fj_refresh];
+}
+
+- (void)layoutSubviews {
+    
+    [super layoutSubviews];
 }
 
 /*
