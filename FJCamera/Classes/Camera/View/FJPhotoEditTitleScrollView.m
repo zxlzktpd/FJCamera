@@ -23,6 +23,7 @@
     
     [super awakeFromNib];
     SMPageControl *pageControl = [[SMPageControl alloc] init];
+    [pageControl setUserInteractionEnabled:NO];
     pageControl.numberOfPages = 9;
     pageControl.pageIndicatorImage = [UIImage imageNamed:@"ic_pagecontrol_unselected"];
     pageControl.currentPageIndicatorImage = [UIImage imageNamed:@"ic_pagecontrol_selected"];
@@ -57,6 +58,11 @@
     [view updateTitle:@"编辑图片"];
     view.pageControl.numberOfPages = count;
     return view;
+}
+
+- (NSUInteger)currentIndex {
+    
+    return self.pageControl.currentPage;
 }
 
 - (CGSize)intrinsicContentSize {

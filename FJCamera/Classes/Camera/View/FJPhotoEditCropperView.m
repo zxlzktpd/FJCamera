@@ -31,6 +31,7 @@
     FJPhotoEditCropperView *view = MF_LOAD_NIB(@"FJPhotoEditCropperView");
     view.frame = frame;
     view.editingBlock = editingBlock;
+    view.okBlock = okBlock;
     view.crop1to1 = crop1to1;
     view.crop3to4 = crop3to4;
     view.crop4to3 = crop4to3;
@@ -96,7 +97,7 @@
         }else if (self.crop5to4ImageView.isHighlighted) {
             ratio = @"5:4";
         }
-        self.editingBlock(ratio);
+        self.okBlock(ratio);
     }
     [self removeFromSuperview];
 }

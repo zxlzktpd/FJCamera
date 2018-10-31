@@ -18,4 +18,6 @@
 
 + (FJPhotoEditTitleScrollView *)create:(NSUInteger)count;
 
+- (NSUInteger)currentIndex;
+
 @end

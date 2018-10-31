@@ -21,10 +21,13 @@
 
 @implementation FJPhotoEditToolbarView
 
-+ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode {
++ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode editingBlock:(void (^)(BOOL inEditing))editingBlock cropBlock:(void (^)(NSString *ratio, BOOL confirm))cropBlock tuneBlock:(void(^)(FJTuningType type, float value, BOOL confirm))tuneBlock {
     
     FJPhotoEditToolbarView *view = MF_LOAD_NIB(@"FJPhotoEditToolbarView");
     view.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, 167.0);
+    view.editingBlock = editingBlock;
+    view.cropBlock = cropBlock;
+    view.tuneBlock = tuneBlock;
     [view _buildUI:mode];
     return view;
 }
@@ -48,29 +51,26 @@
 
 - (IBAction)_tapCropper:(id)sender {
     
-    FJPhotoEditCropperView *view = [FJPhotoEditCropperView create:self.bounds editingBlock:^(BOOL inEditing) {
-        NSLog(@"In Editing : %@", inEditing ? @"YES" : @"NO");
-    } crop1to1:^{
-        NSLog(@"1:1");
+    MF_WEAK_SELF
+    FJPhotoEditCropperView *view = [FJPhotoEditCropperView create:self.bounds editingBlock:self.editingBlock crop1to1:^{
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"1:1", NO);
     } crop3to4:^{
-        NSLog(@"3:4");
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"3:4", NO);
     } crop4to3:^{
-        NSLog(@"4:3");
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"4:3", NO);
     } crop4to5:^{
-        NSLog(@"4:5");
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"4:5", NO);
     } crop5to4:^{
-        NSLog(@"5:4");
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"5:4", NO);
     } okBlock:^(NSString *ratio) {
-        NSLog(@"Ratio : %@", ratio);
+        weakSelf.cropBlock == nil ? : weakSelf.cropBlock(ratio, YES);
     }];
     [self addSubview:view];
 }
 
 - (IBAction)_tapTuning:(id)sender {
     
-    FJPhotoEditTuningView *view = [FJPhotoEditTuningView create:self.bounds editingBlock:^(BOOL inEditing) {
-        NSLog(@"In Editing Tuning : %@", inEditing ? @"YES" : @"NO");
-    }];
+    FJPhotoEditTuningView *view = [FJPhotoEditTuningView create:self.bounds editingBlock:self.editingBlock tuneBlock:self.tuneBlock];
     [self addSubview:view];
 }
 

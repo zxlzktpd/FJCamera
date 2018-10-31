@@ -18,6 +18,7 @@
 #import <FJKit_OC/Macro.h>
 #import <FJKit_OC/UIButton+Utility_FJ.h>
 #import <FJKit_OC/NSString+Color_FJ.h>
+#import <FJKit_OC/NSArray+Utility_FJ.h>
 #import <FJKit_OC/NSMutableArray+Utility_FJ.h>
 #import <FJKit_OC/UIViewController+Utility_FJ.h>
 #import <FJKit_OC/UIView+Toast_FJ.h>

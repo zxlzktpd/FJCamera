@@ -68,6 +68,8 @@
 		E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D74A21897D4E00961662 /* FJPhotoManager.m */; };
 		E7B5D74E21897EAF00961662 /* FJTuningObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D74D21897EAF00961662 /* FJTuningObject.m */; };
 		E7B5D751218980A700961662 /* FJImageTagModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D750218980A700961662 /* FJImageTagModel.m */; };
+		E7B5D7552189A52200961662 /* TKImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D7542189A52200961662 /* TKImageView.m */; };
+		E7B5D7582189B80B00961662 /* StaticScaleCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D7572189B80B00961662 /* StaticScaleCropView.m */; };
 		E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */; };
 		E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F42182B3EA0059CE32 /* ViewController.m */; };
 		E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F62182B3EA0059CE32 /* Main.storyboard */; };
@@ -170,6 +172,10 @@
 		E7B5D74D21897EAF00961662 /* FJTuningObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJTuningObject.m; sourceTree = "<group>"; };
 		E7B5D74F218980A700961662 /* FJImageTagModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJImageTagModel.h; sourceTree = "<group>"; };
 		E7B5D750218980A700961662 /* FJImageTagModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJImageTagModel.m; sourceTree = "<group>"; };
+		E7B5D7532189A52200961662 /* TKImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKImageView.h; sourceTree = "<group>"; };
+		E7B5D7542189A52200961662 /* TKImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKImageView.m; sourceTree = "<group>"; };
+		E7B5D7562189B80A00961662 /* StaticScaleCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticScaleCropView.h; sourceTree = "<group>"; };
+		E7B5D7572189B80B00961662 /* StaticScaleCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticScaleCropView.m; sourceTree = "<group>"; };
 		E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -240,6 +246,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E7B5D7522189A51200961662 /* 3rd */ = {
+			isa = PBXGroup;
+			children = (
+				E7B5D7562189B80A00961662 /* StaticScaleCropView.h */,
+				E7B5D7572189B80B00961662 /* StaticScaleCropView.m */,
+				E7B5D7532189A52200961662 /* TKImageView.h */,
+				E7B5D7542189A52200961662 /* TKImageView.m */,
+			);
+			path = 3rd;
+			sourceTree = "<group>";
+		};
 		E7DFF9E42182B3EA0059CE32 = {
 			isa = PBXGroup;
 			children = (
@@ -293,6 +310,7 @@
 				E7DFFA6F2182B6750059CE32 /* Model */,
 				E7DFFA0B2182B4210059CE32 /* View */,
 				E7DFFA2E2182B4210059CE32 /* Cell */,
+				E7B5D7522189A51200961662 /* 3rd */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -653,6 +671,7 @@
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
+				E7B5D7552189A52200961662 /* TKImageView.m in Sources */,
 				E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */,
 				E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */,
 				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
@@ -667,6 +686,7 @@
 				E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */,
 				E75C063621886B4A00836ABD /* FJPhotoEditTuningView.m in Sources */,
 				E7DFFA732182B8CE0059CE32 /* FJPhotoLibraryViewController.m in Sources */,
+				E7B5D7582189B80B00961662 /* StaticScaleCropView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

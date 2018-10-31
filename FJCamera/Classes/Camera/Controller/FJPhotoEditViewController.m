@@ -10,8 +10,9 @@
 #import "FJPhotoEditTitleScrollView.h"
 #import "FJPhotoEditToolbarView.h"
 #import "FJPhotoManager.h"
+#import "StaticScaleCropView.h"
 
-@interface FJPhotoEditViewController ()
+@interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
 // Custome TitleView
 @property (nonatomic, strong) FJPhotoEditTitleScrollView *customTitleView;
@@ -19,6 +20,10 @@
 @property (nonatomic, strong) UIButton *nextBtn;
 // Tool Bar
 @property (nonatomic, strong) FJPhotoEditToolbarView *toolbar;
+// ScrollView
+@property (nonatomic, strong) UIScrollView *scrollView;
+// Cropper View
+@property (nonatomic, strong) StaticScaleCropView *cropperView;
 
 @end
 
@@ -35,6 +40,16 @@
         [_nextBtn addTarget:self action:@selector(_tapNext) forControlEvents:UIControlEventTouchUpInside];
     }
     return _nextBtn;
+}
+
+- (StaticScaleCropView *)cropperView {
+    
+    if (_cropperView == nil) {
+        _cropperView = [[StaticScaleCropView alloc] initWithFrame:_scrollView.frame];
+        [self.view addSubview:_cropperView];
+        [self.view bringSubviewToFront:_cropperView];
+    }
+    return _cropperView;
 }
 
 - (instancetype)init
@@ -58,6 +73,9 @@
     
     // 初始化UI
     [self _buildUI];
+    
+    // 刷新
+    [self _refreshScrollView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -93,7 +111,52 @@
     
     // Tool Bar
     if (_toolbar == nil) {
-        _toolbar = [FJPhotoEditToolbarView create:FJPhotoEditModeAll];
+        static NSString *_ratio = nil;
+        static BOOL _confirm = NO;
+        _toolbar = [FJPhotoEditToolbarView create:FJPhotoEditModeAll editingBlock:^(BOOL inEditing) {
+            NSLog(@"In Editing : %@", inEditing ? @"YES" : @"NO");
+            if (inEditing) {
+                weakSelf.scrollView.hidden = YES;
+            }else {
+                weakSelf.scrollView.hidden = NO;
+                weakSelf.cropperView.hidden = YES;
+                _ratio = nil;
+            }
+        } cropBlock:^(NSString *ratio, BOOL confirm) {
+            
+            if ([ratio isEqualToString:_ratio] && confirm == _confirm) {
+                return;
+            }else {
+                _ratio = ratio;
+                _confirm = confirm;
+            }
+            NSLog(@"Ration : %@ Confirm : %@", ratio, confirm ? @"YES" : @"NO");
+            if (confirm) {
+                weakSelf.cropperView.hidden = YES;
+                UIImage *croppedImage = [weakSelf.cropperView croppedImage];
+                [[FJPhotoManager shared] setCurrentCroppedImage:croppedImage];
+                [weakSelf _refreshScrollView];
+            }else {
+                float r = 1.0;
+                if ([ratio isEqualToString:@"1:1"]) {
+                    r = 1.0;
+                }else if ([ratio isEqualToString:@"3:4"]) {
+                    r = 3.0 / 4.0;
+                }else if ([ratio isEqualToString:@"4:3"]) {
+                    r = 4.0 / 3.0;
+                }else if ([ratio isEqualToString:@"4:5"]) {
+                    r = 4.0 / 5.0;
+                }else if ([ratio isEqualToString:@"5:4"]) {
+                    r = 5.0 / 4.0;
+                }
+                weakSelf.scrollView.hidden = YES;
+                weakSelf.cropperView.hidden = NO;
+                [weakSelf.cropperView updateImage:[FJPhotoManager shared].currentPhotoImage ratio:r];
+            }
+        } tuneBlock:^(FJTuningType type, float value, BOOL confirm) {
+            NSLog(@"Tune Type : %d Value : %f Confirm : %@", (int)type, value, confirm ? @"YES" : @"NO");
+            [[FJPhotoManager shared] setCurrentTuningObject:type value:value];
+        }];
         [self.view addSubview:_toolbar];
         [_toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.bottom.right.equalTo(weakSelf.view);
@@ -108,20 +171,68 @@
             NSLog(@"tap tag");
         };
     }
+    
+    // ScrollView
+    if (_scrollView == nil) {
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - _toolbar.bounds.size.height)];
+        _scrollView.delegate = self;
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        [self.view addSubview:_scrollView];
+        
+        __weak typeof(_scrollView) weakScrollView = _scrollView;
+        
+        for (PHAsset *asset in self.selectedPhotoAssets) {
+            [FJPhotoManager getStaticTargetImage:asset result:^(UIImage *image) {
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                imageView.contentMode = UIViewContentModeScaleAspectFit;
+                NSUInteger index = [weakSelf.selectedPhotoAssets indexOfObject:asset];
+                imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index, 0, weakScrollView.bounds.size.width, weakScrollView.bounds.size.height);
+                [weakScrollView addSubview:imageView];
+                imageView.tag = [asset hash];
+            }];
+        }
+        _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width * self.selectedPhotoAssets.count, _scrollView.bounds.size.height);
+    }
+}
+
+- (void)_refreshScrollView {
+    
+    for (int i = 0; i < [self.scrollView.subviews count]; i++) {
+        PHAsset *asset = [[FJPhotoManager shared].selectedPhotoAssets fj_safeObjectAtIndex:i];
+        UIImage *croppedImage = [[FJPhotoManager shared] croppedImage:asset];
+        if (croppedImage != nil) {
+            for (UIImageView *imageView in self.scrollView.subviews) {
+                if (imageView.tag == [asset hash]) {
+                    imageView.image = croppedImage;
+                    break;
+                }
+            }
+        }
+    }
 }
 
 - (void)_tapNext {
     
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - UIScrollView Delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    NSUInteger page = (NSUInteger)(scrollView.contentOffset.x / UI_SCREEN_WIDTH);
+    [FJPhotoManager shared].currentIndex = page;
+    [self.customTitleView updateIndex:page];
 }
-*/
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
