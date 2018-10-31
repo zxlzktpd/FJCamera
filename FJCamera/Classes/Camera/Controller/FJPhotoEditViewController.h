@@ -13,7 +13,8 @@ typedef NS_ENUM(NSInteger, FJPhotoEditMode) {
     FJPhotoEditModeFilter     = 0x0001,
     FJPhotoEditModeCropprer   = 0x0002,
     FJPhotoEditModeTuning     = 0x0004,
-    FJPhotoEditModeTag        = 0x0008
+    FJPhotoEditModeTag        = 0x0008,
+    FJPhotoEditModeAll        = FJPhotoEditModeFilter | FJPhotoEditModeCropprer | FJPhotoEditModeTuning | FJPhotoEditModeTag
 };
 
 @interface FJPhotoEditViewController : UIViewController

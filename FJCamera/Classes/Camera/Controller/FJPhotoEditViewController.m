@@ -8,6 +8,8 @@
 
 #import "FJPhotoEditViewController.h"
 #import "FJPhotoEditTitleScrollView.h"
+#import "FJPhotoEditToolbarView.h"
+#import "FJPhotoManager.h"
 
 @interface FJPhotoEditViewController ()
 
@@ -15,6 +17,8 @@
 @property (nonatomic, strong) FJPhotoEditTitleScrollView *customTitleView;
 // Next Button
 @property (nonatomic, strong) UIButton *nextBtn;
+// Tool Bar
+@property (nonatomic, strong) FJPhotoEditToolbarView *toolbar;
 
 @end
 
@@ -42,14 +46,30 @@
     return self;
 }
 
+- (void)dealloc {
+    
+    [self _cleanPhotoManager];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // 初始化Manager
+    [[FJPhotoManager shared] initial:self.selectedPhotoAssets];
+    
+    // 初始化UI
     [self _buildUI];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)_cleanPhotoManager {
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [[FJPhotoManager shared] clean];
+    });
 }
 
 - (void)_buildUI {
@@ -60,6 +80,7 @@
     [self fj_navigationBarHidden:NO];
     [self fj_navigationBarStyle:[UIColor whiteColor] translucent:NO bottomLineColor:@"#E6E6E6".fj_color];
     [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
+        [weakSelf _cleanPhotoManager];
         [weakSelf fj_dismiss];
     }];
     [self fj_addRightBarCustomView:self.nextBtn action:nil];
@@ -68,6 +89,24 @@
     if (_customTitleView == nil) {
         _customTitleView = [FJPhotoEditTitleScrollView create:self.selectedPhotoAssets.count];
         self.navigationItem.titleView = _customTitleView;
+    }
+    
+    // Tool Bar
+    if (_toolbar == nil) {
+        _toolbar = [FJPhotoEditToolbarView create:FJPhotoEditModeAll];
+        [self.view addSubview:_toolbar];
+        [_toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.bottom.right.equalTo(weakSelf.view);
+            make.height.equalTo(@167.0);
+        }];
+        
+        _toolbar.filterBlock = ^{
+            NSLog(@"tap filter");
+        };
+        
+        _toolbar.tagBlock = ^{
+            NSLog(@"tap tag");
+        };
     }
 }
 

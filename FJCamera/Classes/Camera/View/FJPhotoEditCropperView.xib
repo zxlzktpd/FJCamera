@@ -26,7 +26,7 @@
                                 <constraint firstAttribute="height" constant="0.5" id="gqF-G7-Ku5"/>
                             </constraints>
                         </view>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_back.png" translatesAutoresizingMaskIntoConstraints="NO" id="XN9-3r-lq9">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_close.png" translatesAutoresizingMaskIntoConstraints="NO" id="XN9-3r-lq9">
                             <rect key="frame" x="16" y="12" width="24" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="3q9-Fq-cHU"/>
@@ -39,15 +39,48 @@
                             <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zTg-we-dd4">
+                            <rect key="frame" x="0.0" y="1" width="80" height="47"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="80" id="4Ob-9I-pXt"/>
+                            </constraints>
+                            <connections>
+                                <action selector="_tapBack:" destination="iN0-l3-epB" eventType="touchUpInside" id="hmQ-s2-ZQu"/>
+                            </connections>
+                        </button>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_ok.png" translatesAutoresizingMaskIntoConstraints="NO" id="RrS-0n-yqn">
+                            <rect key="frame" x="335" y="12" width="24" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="24" id="1za-0r-Vuj"/>
+                                <constraint firstAttribute="height" constant="24" id="eA8-Bx-F1v"/>
+                            </constraints>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7yY-Oj-lyF">
+                            <rect key="frame" x="295" y="0.0" width="80" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="80" id="CEn-gn-kdP"/>
+                            </constraints>
+                            <connections>
+                                <action selector="_tapOK:" destination="iN0-l3-epB" eventType="touchUpInside" id="kZP-Ek-hAT"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="zTg-we-dd4" firstAttribute="top" secondItem="nxS-Lp-e71" secondAttribute="bottom" id="484-RP-vtB"/>
                         <constraint firstAttribute="trailing" secondItem="nxS-Lp-e71" secondAttribute="trailing" id="BHE-nq-YGc"/>
+                        <constraint firstAttribute="bottom" secondItem="7yY-Oj-lyF" secondAttribute="bottom" id="DLC-0n-NkW"/>
+                        <constraint firstItem="7yY-Oj-lyF" firstAttribute="top" secondItem="Mwx-Zv-oog" secondAttribute="top" id="FjZ-90-CVG"/>
                         <constraint firstItem="XN9-3r-lq9" firstAttribute="centerY" secondItem="Mwx-Zv-oog" secondAttribute="centerY" id="Mmm-4q-2TQ"/>
                         <constraint firstItem="nxS-Lp-e71" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" id="OFy-t8-Glc"/>
+                        <constraint firstItem="zTg-we-dd4" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" id="Rdo-f5-bNo"/>
                         <constraint firstItem="XN9-3r-lq9" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" constant="16" id="VMz-ui-rpT"/>
+                        <constraint firstAttribute="trailing" secondItem="RrS-0n-yqn" secondAttribute="trailing" constant="16" id="fRV-zi-J5g"/>
                         <constraint firstItem="9ED-i2-OIa" firstAttribute="centerY" secondItem="Mwx-Zv-oog" secondAttribute="centerY" id="hUX-ry-KGg"/>
+                        <constraint firstItem="RrS-0n-yqn" firstAttribute="centerY" secondItem="Mwx-Zv-oog" secondAttribute="centerY" id="hvg-86-qdh"/>
                         <constraint firstItem="9ED-i2-OIa" firstAttribute="centerX" secondItem="Mwx-Zv-oog" secondAttribute="centerX" id="j3E-8K-SD2"/>
+                        <constraint firstAttribute="trailing" secondItem="7yY-Oj-lyF" secondAttribute="trailing" id="lzD-xb-0Gq"/>
+                        <constraint firstAttribute="bottom" secondItem="zTg-we-dd4" secondAttribute="bottom" id="mtd-pf-jiv"/>
                         <constraint firstItem="nxS-Lp-e71" firstAttribute="top" secondItem="Mwx-Zv-oog" secondAttribute="top" id="qpu-vX-B3l"/>
                         <constraint firstAttribute="height" constant="48" id="v1F-zs-EgQ"/>
                     </constraints>
@@ -270,6 +303,13 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="crop1to1ImageView" destination="eec-mu-5mA" id="UWJ-en-D0b"/>
+                <outlet property="crop3to4ImageView" destination="wc4-Ip-AmH" id="RAs-Qd-TKD"/>
+                <outlet property="crop4to3ImageView" destination="FaA-ac-bFg" id="2T1-wA-91H"/>
+                <outlet property="crop4to5ImageView" destination="ebY-KJ-WdT" id="iuK-b1-tO2"/>
+                <outlet property="crop5to4ImageView" destination="ztP-yP-y97" id="Jxp-4R-ZoG"/>
+            </connections>
             <point key="canvasLocation" x="25.5" y="51.5"/>
         </view>
     </objects>
@@ -284,6 +324,7 @@
         <image name="ic_4_5_highlighted.png" width="32" height="40"/>
         <image name="ic_5_4.png" width="40" height="32"/>
         <image name="ic_5_4_highlighted.png" width="40" height="32"/>
-        <image name="ic_back.png" width="24" height="24"/>
+        <image name="ic_edit_close.png" width="24" height="24"/>
+        <image name="ic_edit_ok.png" width="24" height="24"/>
     </resources>
 </document>

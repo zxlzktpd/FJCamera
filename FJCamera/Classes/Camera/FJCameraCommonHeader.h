@@ -27,4 +27,6 @@
 #import <Masonry/Masonry.h>
 #import <BlocksKit/UIView+BlocksKit.h>
 
+#import "FJPhotoManager.h"
+
 #endif /* FJCameraCommonHeader_h */

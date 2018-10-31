@@ -10,4 +10,8 @@
 
 @interface FJPhotoEditTuningView : UIView
 
+@property (nonatomic, copy) void(^editingBlock)(BOOL inEditing);
+
++ (FJPhotoEditTuningView *)create:(CGRect)frame editingBlock:(void(^)(BOOL inEditing))editingBlock;
+
 @end
