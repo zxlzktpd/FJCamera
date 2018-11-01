@@ -37,6 +37,14 @@
     self.pageControl = pageControl;
 }
 
++ (FJPhotoEditTitleScrollView *)create:(NSUInteger)count {
+    
+    FJPhotoEditTitleScrollView *view = MF_LOAD_NIB(@"FJPhotoEditTitleScrollView");
+    [view updateTitle:@"编辑图片"];
+    view.pageControl.numberOfPages = count;
+    return view;
+}
+
 - (void)updateTitle:(NSString *)title {
     
     self.titleLabel.text = title;
@@ -52,17 +60,14 @@
     self.pageControl.currentPage = index;
 }
 
-+ (FJPhotoEditTitleScrollView *)create:(NSUInteger)count {
-    
-    FJPhotoEditTitleScrollView *view = MF_LOAD_NIB(@"FJPhotoEditTitleScrollView");
-    [view updateTitle:@"编辑图片"];
-    view.pageControl.numberOfPages = count;
-    return view;
-}
-
 - (NSUInteger)currentIndex {
     
     return self.pageControl.currentPage;
+}
+
+- (void)setPageControllHidden:(BOOL)hidden {
+    
+    self.pageControl.hidden = hidden;
 }
 
 - (CGSize)intrinsicContentSize {

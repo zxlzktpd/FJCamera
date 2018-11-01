@@ -28,7 +28,10 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"亮度" value:object.lightValue editingBlock:self.editingBlock okBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"亮度" value:object.lightValue defaultValue:0 range:@[@(-0.5), @(0.5)] valueChangedBlock:^(float value) {
+        weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeLight, value, NO);
+    } editingBlock:self.editingBlock okBlock:^(float value) {
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeLight, value, YES);
     }];
     [self addSubview:view];
@@ -39,7 +42,10 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"对比度" value:object.contrastValue editingBlock:self.editingBlock okBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"对比度" value:object.contrastValue defaultValue:1.0 range:@[@(0.25), @(4.0)] valueChangedBlock:^(float value) {
+        weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeContrast, value, NO);
+    } editingBlock:self.editingBlock okBlock:^(float value) {
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeContrast, value, YES);
     }];
     [self addSubview:view];
@@ -50,7 +56,10 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"饱和度" value:object.saturationValue editingBlock:self.editingBlock okBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"饱和度" value:object.saturationValue defaultValue:1.0 range:@[@(0), @(2.0)] valueChangedBlock:^(float value) {
+        weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeSaturation, value, NO);
+    } editingBlock:self.editingBlock okBlock:^(float value) {
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeSaturation, value, YES);
     }];
     [self addSubview:view];
@@ -61,7 +70,10 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"暖色调" value:object.warmValue editingBlock:self.editingBlock okBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"暖色调" value:object.warmValue defaultValue:6500.0 range:@[@(3000.0), @(15000.0)] valueChangedBlock:^(float value) {
+        weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeWarm, value, NO);
+    } editingBlock:self.editingBlock okBlock:^(float value) {
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeWarm, value, YES);
     }];
     [self addSubview:view];
@@ -72,7 +84,10 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"晕影" value:object.halationValue editingBlock:self.editingBlock okBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"晕影" value:object.halationValue defaultValue:0 range:@[@(-1.0), @(1.0)] valueChangedBlock:^(float value) {
+        weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeHalation, value, NO);
+    } editingBlock:self.editingBlock okBlock:^(float value) {
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeHalation, value, YES);
     }];
     [self addSubview:view];

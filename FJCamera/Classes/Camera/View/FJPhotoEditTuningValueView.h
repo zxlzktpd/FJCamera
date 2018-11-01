@@ -12,12 +12,11 @@
 @interface FJPhotoEditTuningValueView : UIView
 
 @property (nonatomic, copy) void(^okBlock)(float value);
+@property (nonatomic, copy) void(^valueChangedBlock)(float value);
 @property (nonatomic, copy) void(^editingBlock)(BOOL inEditing);
 
 - (void)updateTitle:(NSString *)title;
 
-- (void)updateValue:(float)value;
-
-+ (FJPhotoEditTuningValueView *)create:(CGRect)frame title:(NSString *)title value:(float)value editingBlock:(void(^)(BOOL inEditing))editingBlock okBlock:(void(^)(float value))okBlock;
++ (FJPhotoEditTuningValueView *)create:(CGRect)frame title:(NSString *)title value:(float)value defaultValue:(float)defaultValue range:(NSArray *)range valueChangedBlock:(void(^)(float value))valueChangedBlock editingBlock:(void(^)(BOOL inEditing))editingBlock okBlock:(void(^)(float value))okBlock;
 
 @end

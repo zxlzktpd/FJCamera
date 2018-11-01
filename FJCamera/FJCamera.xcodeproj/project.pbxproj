@@ -59,6 +59,8 @@
 		E75C067221887E0900836ABD /* ic_edit_halation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066821887E0800836ABD /* ic_edit_halation@2x.png */; };
 		E75C067321887E0900836ABD /* ic_edit_warm@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066921887E0800836ABD /* ic_edit_warm@3x.png */; };
 		E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066A21887E0800836ABD /* ic_edit_saturation@2x.png */; };
+		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
+		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E7B5D74021895D7300961662 /* ic_edit_ok@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */; };
 		E7B5D74121895D7300961662 /* ic_edit_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */; };
 		E7B5D74221895D7300961662 /* ic_edit_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */; };
@@ -159,6 +161,9 @@
 		E75C066821887E0800836ABD /* ic_edit_halation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_halation@2x.png"; sourceTree = "<group>"; };
 		E75C066921887E0800836ABD /* ic_edit_warm@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_warm@3x.png"; sourceTree = "<group>"; };
 		E75C066A21887E0800836ABD /* ic_edit_saturation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_saturation@2x.png"; sourceTree = "<group>"; };
+		E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterImageView.h; sourceTree = "<group>"; };
+		E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterImageView.m; sourceTree = "<group>"; };
+		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
 		E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_ok@2x.png"; sourceTree = "<group>"; };
 		E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@2x.png"; sourceTree = "<group>"; };
 		E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@3x.png"; sourceTree = "<group>"; };
@@ -338,6 +343,9 @@
 				E7B5D7442189742000961662 /* FJPhotoEditTuningValueView.h */,
 				E7B5D7452189742000961662 /* FJPhotoEditTuningValueView.m */,
 				E7B5D7472189743400961662 /* FJPhotoEditTuningValueView.xib */,
+				E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */,
+				E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */,
+				E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -562,6 +570,7 @@
 				E75C061921883BC900836ABD /* ic_pagecontrol_selected@3x.png in Resources */,
 				E7DFFA792182BC640059CE32 /* ic_back@3x.png in Resources */,
 				E75C064D2188783200836ABD /* ic_1_1@2x.png in Resources */,
+				E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */,
 				E75C067121887E0900836ABD /* ic_edit_light@2x.png in Resources */,
 				E75C065C2188783200836ABD /* ic_3_4_highlighted@3x.png in Resources */,
 				E75C066F21887E0900836ABD /* ic_edit_halation@3x.png in Resources */,
@@ -670,6 +679,7 @@
 			files = (
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
+				E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
 				E7B5D7552189A52200961662 /* TKImageView.m in Sources */,
 				E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */,

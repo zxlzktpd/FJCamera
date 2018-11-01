@@ -15,9 +15,9 @@
     self = [super init];
     if (self) {
         self.lightValue = 0;
-        self.contrastValue = 0;
-        self.saturationValue = 0;
-        self.warmValue = 0;
+        self.contrastValue = 1.0;
+        self.saturationValue = 1.0;
+        self.warmValue = 6500.0;
         self.halationValue = 0;
     }
     return self;

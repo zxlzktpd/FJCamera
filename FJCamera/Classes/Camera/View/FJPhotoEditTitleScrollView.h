@@ -10,14 +10,16 @@
 
 @interface FJPhotoEditTitleScrollView : UIView
 
++ (FJPhotoEditTitleScrollView *)create:(NSUInteger)count;
+
 - (void)updateTitle:(NSString *)title;
 
 - (void)updateCount:(NSUInteger)count;
 
 - (void)updateIndex:(NSUInteger)index;
 
-+ (FJPhotoEditTitleScrollView *)create:(NSUInteger)count;
-
 - (NSUInteger)currentIndex;
+
+- (void)setPageControllHidden:(BOOL)hidden;
 
 @end
