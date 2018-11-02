@@ -137,11 +137,11 @@
                 [weakSelf.nextBtn setUserInteractionEnabled:NO];
             }else {
                 weakSelf.scrollView.hidden = NO;
-                weakSelf.cropperView.hidden = YES;
-                weakSelf.filterView.hidden = YES;
                 [weakSelf.customTitleView setPageControllHidden:NO];
                 [weakSelf.nextBtn fj_setTitleColor:@"#FF7725".fj_color];
                 [weakSelf.nextBtn setUserInteractionEnabled:YES];
+                weakSelf.cropperView.hidden = YES;
+                weakSelf.filterView.hidden = YES;
                 _ratio = nil;
             }
         } cropBlock:^(NSString *ratio, BOOL confirm) {
@@ -154,7 +154,6 @@
             }
             NSLog(@"Ration : %@ Confirm : %@", ratio, confirm ? @"YES" : @"NO");
             if (confirm) {
-                weakSelf.cropperView.hidden = YES;
                 UIImage *croppedImage = [weakSelf.cropperView croppedImage];
                 [[FJPhotoManager shared] setCurrentCroppedImage:croppedImage];
                 [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
@@ -171,17 +170,20 @@
                 }else if ([ratio isEqualToString:@"5:4"]) {
                     r = 5.0 / 4.0;
                 }
-                weakSelf.scrollView.hidden = YES;
                 weakSelf.cropperView.hidden = NO;
                 [weakSelf.view bringSubviewToFront:weakSelf.cropperView];
-                [weakSelf _refreshCurrentImageViewToScrollView:NO result:^(UIImage *image) {
-                    [weakSelf.cropperView updateImage:image ratio:r];
-                }];
+                // 效果图
+                UIImage *image = [[FJPhotoManager shared] currentCroppedImage];
+                if (image == nil) {
+                    // 原图
+                    image = [FJPhotoManager shared].currentPhotoImage;
+                }
+                [weakSelf.cropperView updateImage:image ratio:r];
+                [weakSelf.cropperView updateCurrentTuning:[FJPhotoManager shared].currentTuningObject];
             }
         } tuneBlock:^(FJTuningType type, float value, BOOL confirm) {
             NSLog(@"Tune Type : %d Value : %f Confirm : %@", (int)type, value, confirm ? @"YES" : @"NO");
             if (confirm) {
-                weakSelf.filterView.hidden = YES;
                 [[FJPhotoManager shared] setCurrentTuningObject:type value:value];
                 [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
             }else {

@@ -312,7 +312,8 @@ static bool isFirstAccess = YES;
 - (void)getImage:(CIFilter *)filter result:(void(^)(UIImage *image))result {
     
     __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_async(queue, ^{
        
         CGImageRef ref = [weakSelf.context createCGImage:filter.outputImage fromRect:filter.outputImage.extent];
         __block UIImage *filterImage = [UIImage imageWithCGImage:ref];
@@ -327,7 +328,8 @@ static bool isFirstAccess = YES;
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result {
     
     __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_async(queue, ^{
         
         // 去重
         NSArray *uniqueArray = [filters fj_uniqueObjects];

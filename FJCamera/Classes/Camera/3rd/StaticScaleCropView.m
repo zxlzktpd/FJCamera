@@ -9,6 +9,7 @@
 #import "StaticScaleCropView.h"
 #import <Masonry/Masonry.h>
 #import <FJKit_OC/Macro.h>
+#import "FJFilterManager.h"
 
 @interface StaticScaleCropView ()<UIScrollViewDelegate>
 
@@ -43,6 +44,53 @@
         [self _setupSubViews];
     }
     return self;
+}
+
+- (void)updateImage:(UIImage*)image ratio:(CGFloat)ratio {
+    
+    if (image == nil || ratio <= 0) {
+        return;
+    }
+    self.image = image;
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.imageView.image = image;
+    self.imageView.highlightedImage = image;
+    self.ratio = ratio;
+    [self _updateSubViewsFrame];
+}
+
+- (UIImage *)croppedImage {
+    
+    float zoomScale = 1.0 / [_scrollView zoomScale];
+    CGRect rect;
+    rect.origin.x = [_scrollView contentOffset].x * zoomScale;
+    rect.origin.y = [_scrollView contentOffset].y * zoomScale;
+    rect.size.width = [_scrollView bounds].size.width * zoomScale;
+    rect.size.height = [_scrollView bounds].size.height * zoomScale;
+    
+    CGImageRef cr = CGImageCreateWithImageInRect([_imageView.highlightedImage CGImage], rect);
+    UIImage *cropped = [UIImage imageWithCGImage:cr];
+    
+    // fix orientation
+    // UIImage *fixedImage = [UIImage imageWithCGImage:cr scale:1.0 orientation:(UIImageOrientation)cropped.imageOrientation];
+    
+    // cropped = nil;
+    CGImageRelease(cr);
+    
+    return cropped;
+}
+
+- (void)updateCurrentTuning:(FJTuningObject *)tuningObject; {
+    
+    __weak typeof(self) weakSelf = self;
+    [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:FJFilterTypeNull result:^(UIImage *image) {
+        [weakSelf performSelectorOnMainThread:@selector(_setImage:) withObject:image waitUntilDone:NO];
+    }];
+}
+
+- (void)_setImage:(UIImage *)image {
+    
+    self.imageView.image = image;
 }
 
 - (void)_setupSubViews {
@@ -181,40 +229,6 @@
     }
     _scrollView.contentOffset = CGPointMake(offsetX, offsetY);
 }
-
-- (void)updateImage:(UIImage*)image ratio:(CGFloat)ratio {
- 
-    if (image == nil || ratio <= 0) {
-        return;
-    }
-    self.image = image;
-    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    self.imageView.image = image;
-    self.ratio = ratio;
-    [self _updateSubViewsFrame];
-}
-
-- (UIImage *)croppedImage {
-    
-    float zoomScale = 1.0 / [_scrollView zoomScale];
-    CGRect rect;
-    rect.origin.x = [_scrollView contentOffset].x * zoomScale;
-    rect.origin.y = [_scrollView contentOffset].y * zoomScale;
-    rect.size.width = [_scrollView bounds].size.width * zoomScale;
-    rect.size.height = [_scrollView bounds].size.height * zoomScale;
-    
-    CGImageRef cr = CGImageCreateWithImageInRect([[_imageView image] CGImage], rect);
-    UIImage *cropped = [UIImage imageWithCGImage:cr];
-    
-    // fix orientation
-    // UIImage *fixedImage = [UIImage imageWithCGImage:cr scale:1.0 orientation:(UIImageOrientation)cropped.imageOrientation];
-    
-    // cropped = nil;
-    CGImageRelease(cr);
-    
-    return cropped;
-}
-
 
 #pragma mark -- UIScrollViewDelegate
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {

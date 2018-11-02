@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FJPhotoManager.h"
 
 @interface StaticScaleCropView : UIView
 
 - (void)updateImage:(UIImage*)image ratio:(CGFloat)ratio;
+
+- (void)updateCurrentTuning:(FJTuningObject *)tuningObject;
 
 - (UIImage *)croppedImage;
 
