@@ -34,126 +34,6 @@
 
 @implementation FJPhotoEditViewController
 
-- (void)_test {
-    
-    /* 滤镜分类Categories */
-    /*
-    CORE_IMAGE_EXPORT NSString * const kCICategoryDistortionEffect;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryGeometryAdjustment;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryCompositeOperation;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryHalftoneEffect;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryColorAdjustment;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryColorEffect;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryTransition;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryTileEffect;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryGenerator;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryReduction NS_AVAILABLE(10_5, 5_0);
-    CORE_IMAGE_EXPORT NSString * const kCICategoryGradient;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryStylize;
-    CORE_IMAGE_EXPORT NSString * const kCICategorySharpen;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryBlur;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryVideo;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryStillImage;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryInterlaced;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryNonSquarePixels;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryHighDynamicRange;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryBuiltIn;
-    CORE_IMAGE_EXPORT NSString * const kCICategoryFilterGenerator NS_AVAILABLE(10_5, 9_0);
-    */
-    
-    NSArray *filterNames = [CIFilter filterNamesInCategory:kCICategoryBuiltIn];
-    NSLog(@"总共有%ld种滤镜效果:%@",filterNames.count,filterNames);
-    
-    
-    NSArray* filters = [CIFilter filterNamesInCategory:kCICategoryDistortionEffect];
-    for (NSString* filterName in filters) {
-        NSLog(@"filter name:%@",filterName);
-        // 我们可以通过filterName创建对应的滤镜对象
-        CIFilter* filter = [CIFilter filterWithName:filterName];
-        NSDictionary* attributes = [filter attributes];
-        // 获取属性键/值对(在这个字典中我们可以看到滤镜的属性以及对应的key)
-        NSLog(@"filter attributes:%@",attributes);
-    }
-    
-    // CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
-    // CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
-    // CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
-    
-    CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-    NSDictionary* attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CIVignette"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CIVignetteEffect"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-}
-
-- (void)_testFilter {
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    // 滤镜效果
-    NSArray *operations = @[@"CILinearToSRGBToneCurve",
-                            @"CIPhotoEffectChrome",
-                            @"CIPhotoEffectFade",
-                            @"CIPhotoEffectInstant",
-                            @"CIPhotoEffectMono",
-                            @"CIPhotoEffectNoir",
-                            @"CIPhotoEffectProcess",
-                            @"CIPhotoEffectTonal",
-                            @"CIPhotoEffectTransfer",
-                            @"CISRGBToneCurveToLinear",
-                            @"CIVignetteEffect"];
-    CGFloat width = self.view.frame.size.width / 3;
-    CGFloat height = self.view.frame.size.height / 4;
-    NSMutableArray *imageViews = [NSMutableArray arrayWithCapacity:0];
-    for (int i = 0; i < [operations count]; i++) {
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame: CGRectMake(i%3*width, i/3*height, width, height)];
-        imageView.image = [UIImage imageNamed:@"timg.jpeg"];
-        [imageViews addObject:imageView];
-        [self.view addSubview:imageView];
-        
-    }
-    
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-        NSMutableArray *images = [NSMutableArray arrayWithCapacity:0];
-        for (int i = 0; i < [operations count]; i++) {
-            UIImage *image = [UIImage imageNamed:@"timg.jpeg"];
-            CIImage *cImage = [[CIImage alloc]initWithImage:image];
-            //使用资源
-            CIFilter *filter = [CIFilter filterWithName:operations[i] keysAndValues:kCIInputImageKey,cImage, nil];
-            //使用默认参数
-            [filter setDefaults];
-            //生成上下文
-            CIContext*context = [CIContext contextWithOptions:nil];
-            //滤镜生成器输出图片
-            CIImage *outputimage = [filter outputImage];
-            //转换为UIImage
-            CGImageRef ref = [context createCGImage:outputimage fromRect:[outputimage extent]];
-            UIImage *temp = [UIImage imageWithCGImage:ref];
-            [images addObject:temp];
-            //释放
-            CGImageRelease(ref);
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for (int x = 0; x < [images count]; x++) {
-                UIImageView *imageView = imageViews[x];
-                imageView.image = images[x];
-            }
-        });
-        
-    });
-}
-
 - (UIButton *)nextBtn {
     
     if (_nextBtn == nil) {
@@ -180,12 +60,7 @@
 - (FJFilterImageView *)filterView {
     
     if (_filterView == nil) {
-        
-        UIImage *image = [FJPhotoManager shared].currentCroppedImage;
-        if (!image) {
-            image = [FJPhotoManager shared].currentPhotoImage;
-        }
-        _filterView = [FJFilterImageView create:_scrollView.frame image:image];
+        _filterView = [FJFilterImageView create:_scrollView.frame];
         [self.view addSubview:_filterView];
         [self.view bringSubviewToFront:_filterView];
     }
@@ -215,9 +90,7 @@
     [self _buildUI];
     
     // 刷新
-    [self _refreshScrollView];
-    
-    // [self _test];
+    // [self _refreshScrollView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -284,9 +157,9 @@
                 weakSelf.cropperView.hidden = YES;
                 UIImage *croppedImage = [weakSelf.cropperView croppedImage];
                 [[FJPhotoManager shared] setCurrentCroppedImage:croppedImage];
-                [weakSelf _refreshScrollView];
+                [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
             }else {
-                float r = 1.0;
+                __block float r = 1.0;
                 if ([ratio isEqualToString:@"1:1"]) {
                     r = 1.0;
                 }else if ([ratio isEqualToString:@"3:4"]) {
@@ -301,38 +174,51 @@
                 weakSelf.scrollView.hidden = YES;
                 weakSelf.cropperView.hidden = NO;
                 [weakSelf.view bringSubviewToFront:weakSelf.cropperView];
-                [weakSelf.cropperView updateImage:[FJPhotoManager shared].currentPhotoImage ratio:r];
+                [weakSelf _refreshCurrentImageViewToScrollView:NO result:^(UIImage *image) {
+                    [weakSelf.cropperView updateImage:image ratio:r];
+                }];
             }
         } tuneBlock:^(FJTuningType type, float value, BOOL confirm) {
             NSLog(@"Tune Type : %d Value : %f Confirm : %@", (int)type, value, confirm ? @"YES" : @"NO");
             if (confirm) {
                 weakSelf.filterView.hidden = YES;
                 [[FJPhotoManager shared] setCurrentTuningObject:type value:value];
+                [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
             }else {
                 [weakSelf.view bringSubviewToFront:weakSelf.filterView];
                 weakSelf.filterView.hidden = NO;
+                // 效果图
+                UIImage *image = [[FJPhotoManager shared] currentCroppedImage];
+                if (image == nil) {
+                    // 原图
+                    image = [FJPhotoManager shared].currentPhotoImage;
+                }
+                [weakSelf.filterView updateImage:image];
                 switch (type) {
-                    case FJTuningTypeLight:
+                    case FJTuningTypeBrightness:
                     {
-                        [weakSelf.filterView updateBrightness:value];
+                        FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+                        [weakSelf.filterView updateBrightness:value contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
                         break;
                     }
                     case FJTuningTypeContrast:
                     {
-                        [weakSelf.filterView updateContrast:value];
+                        FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+                        [weakSelf.filterView updateBrightness:tuneObject.brightnessValue contrast:value saturation:tuneObject.saturationValue];
                         break;
                     }
                     case FJTuningTypeSaturation:
                     {
-                        [weakSelf.filterView updateSaturation:value];
+                        FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+                        [weakSelf.filterView updateBrightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:value];
                         break;
                     }
-                    case FJTuningTypeWarm:
+                    case FJTuningTypeTemperature:
                     {
                         [weakSelf.filterView updateTemperature:value];
                         break;
                     }
-                    case FJTuningTypeHalation:
+                    case FJTuningTypeVignette:
                     {
                         [weakSelf.filterView updateVignette:value];
                         break;
@@ -382,20 +268,32 @@
     }
 }
 
-- (void)_refreshScrollView {
+- (void)_refreshCurrentImageViewToScrollView:(BOOL)refresh result:(void(^)(UIImage *image))result {
     
-    for (int i = 0; i < [self.scrollView.subviews count]; i++) {
-        PHAsset *asset = [[FJPhotoManager shared].selectedPhotoAssets fj_safeObjectAtIndex:i];
-        UIImage *croppedImage = [[FJPhotoManager shared] croppedImage:asset];
-        if (croppedImage != nil) {
-            for (UIImageView *imageView in self.scrollView.subviews) {
+    // 裁切
+    MF_WEAK_SELF
+    FJTuningObject *tuningObject = [FJPhotoManager shared].currentTuningObject;
+    __block PHAsset *asset = [FJPhotoManager shared].currentPhotoAsset;
+    UIImage *image = [FJPhotoManager shared].currentCroppedImage;
+    if (image == nil) {
+        // 原图
+        image = [FJPhotoManager shared].currentPhotoImage;
+    }else {
+        // 裁切
+    }
+    // 加调整和滤镜效果
+    [[FJFilterManager shared] getImage:image tuningObject:tuningObject appendFilterType:FJFilterTypeNull result:^(UIImage *image) {
+        
+        if (refresh) {
+            for (UIImageView *imageView in weakSelf.scrollView.subviews) {
                 if (imageView.tag == [asset hash]) {
-                    imageView.image = croppedImage;
+                    imageView.image = image;
                     break;
                 }
             }
         }
-    }
+        result == nil ? : result(image);
+    }];
 }
 
 - (void)_tapNext {

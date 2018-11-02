@@ -10,204 +10,86 @@
 
 @interface FJFilterImageView ()
 
-
 @property (nonatomic, weak) IBOutlet UIImageView *imageView;
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) CIImage *ciImage;
-@property (nonatomic, strong) CIContext *context;
-@property (nonatomic, strong) CIFilter *colorControlFilter;
-@property (nonatomic, strong) CIFilter *temperatureFilter;
-@property (nonatomic, strong) CIFilter *vignetteFilter;
+@property (nonatomic, assign) BOOL updated;
 
 @end
 
 @implementation FJFilterImageView
 
-// CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
-// CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
-// CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
-
-//CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-//NSDictionary* attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CIVignette"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CIVignetteEffect"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-
-- (CIContext *)context {
+- (void)setHidden:(BOOL)hidden {
     
-    if (_context == nil) {
-        _context = [CIContext contextWithOptions:nil];
+    if (hidden == YES) {
+        self.updated = NO;
     }
-    return _context;
+    [super setHidden:hidden];
 }
 
-- (CIImage *)ciImage {
-    
-    if (_ciImage == nil) {
-        _ciImage = [[CIImage alloc] initWithImage:self.image];
-    }
-    return _ciImage;
-}
-
-- (CIFilter *)colorControlFilter {
-
-    if (_colorControlFilter == nil) {
-        _colorControlFilter = [CIFilter filterWithName:@"CIColorControls"];
-    }
-    return _colorControlFilter;
-}
-
-- (CIFilter *)temperatureFilter {
-    
-    if (_temperatureFilter == nil) {
-        _temperatureFilter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-    }
-    return _temperatureFilter;
-}
-
-- (CIFilter *)vignetteFilter {
-    
-    if (_vignetteFilter == nil) {
-        _vignetteFilter = [CIFilter filterWithName:@"CIVignette"];
-    }
-    return _vignetteFilter;
-}
-
-+ (FJFilterImageView *)create:(CGRect)frame image:(UIImage *)image {
++ (FJFilterImageView *)create:(CGRect)frame {
     
     FJFilterImageView *view = MF_LOAD_NIB(@"FJFilterImageView");
     view.frame = frame;
-    view.image = image;
-    view.imageView.image = image;
-    view.imageView.contentMode = UIViewContentModeScaleAspectFit;
     return view;
 }
 
 - (void)updateImage:(UIImage *)image {
     
-    self.image = image;
+    if (self.updated) {
+        return;
+    }
+    [[FJFilterManager shared] updateImage:image];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.imageView.image = image;
+    self.updated = YES;
 }
 
-- (void)updateBrightness:(float)brightness {
+- (UIImage *)getFilterImage {
     
-    MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-   
-        //使用资源
-        if ([weakSelf.colorControlFilter valueForKey:kCIInputImageKey] == nil) {
-             [weakSelf.colorControlFilter setValue:weakSelf.ciImage forKey:kCIInputImageKey];
-        }
-        [weakSelf.colorControlFilter setValue:@(brightness) forKey:kCIInputBrightnessKey];
-        //滤镜生成器输出图片
-        //转换为UIImage
-        CGImageRef ref = [weakSelf.context createCGImage:weakSelf.colorControlFilter.outputImage fromRect:weakSelf.colorControlFilter.outputImage.extent];
-        __block UIImage *temp = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = temp;
-        });
-    });
+    return self.imageView.image;
 }
 
-- (void)updateContrast:(float)contrast {
-    
-    MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
+- (void)updateBrightness:(float)brightness contrast:(float)contrast saturation:(float)saturation {
 
-        //使用资源
-        if ([weakSelf.colorControlFilter valueForKey:kCIInputImageKey] == nil) {
-            [weakSelf.colorControlFilter setValue:weakSelf.ciImage forKey:kCIInputImageKey];
-        }
-        [weakSelf.colorControlFilter setValue:@(contrast) forKey:kCIInputContrastKey];
-        //滤镜生成器输出图片
-        //转换为UIImage
-        CGImageRef ref = [weakSelf.context createCGImage:weakSelf.colorControlFilter.outputImage fromRect:weakSelf.colorControlFilter.outputImage.extent];
-        __block UIImage *temp = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = temp;
-        });
-    });
-}
-
-- (void)updateSaturation:(float)saturation {
-    
+    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+    CIFilter *filter1 =  [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:brightness contrast:contrast saturation:saturation];
+    CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
+    CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
     MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-        
-        //使用资源
-        if ([weakSelf.colorControlFilter valueForKey:kCIInputImageKey] == nil) {
-            [weakSelf.colorControlFilter setValue:weakSelf.ciImage forKey:kCIInputImageKey];
-        }
-        [weakSelf.colorControlFilter setValue:@(saturation) forKey:kCIInputSaturationKey];
-        //滤镜生成器输出图片
-        //转换为UIImage
-        CGImageRef ref = [weakSelf.context createCGImage:weakSelf.colorControlFilter.outputImage fromRect:weakSelf.colorControlFilter.outputImage.extent];
-        __block UIImage *temp = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
+    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = temp;
+            weakSelf.imageView.image = image;
         });
-    });
+    }];
 }
 
 - (void)updateTemperature:(float)temperature {
+
+    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+    CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
+    CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:temperature];
+    CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
     
     MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-        
-        //使用资源
-        if ([weakSelf.temperatureFilter valueForKey:kCIInputImageKey] == nil) {
-            [weakSelf.temperatureFilter setValue:weakSelf.ciImage forKey:kCIInputImageKey];
-        }
-        [weakSelf.temperatureFilter setValue:[CIVector vectorWithX:temperature Y:0] forKey:@"inputTargetNeutral"];
-        //滤镜生成器输出图片
-        //转换为UIImage
-        CGImageRef ref = [weakSelf.context createCGImage:weakSelf.temperatureFilter.outputImage fromRect:weakSelf.temperatureFilter.outputImage.extent];
-        __block UIImage *temp = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
+    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = temp;
+            weakSelf.imageView.image = image;
         });
-    });
+    }];
 }
 
 - (void)updateVignette:(float)vignette {
+
+    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+    CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
+    CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
+    CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:vignette];
     
     MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-        
-        //使用资源
-        if ([weakSelf.vignetteFilter valueForKey:kCIInputImageKey] == nil) {
-            [weakSelf.vignetteFilter setValue:weakSelf.ciImage forKey:kCIInputImageKey];
-        }
-        [weakSelf.vignetteFilter setValue:@(vignette) forKey:kCIInputIntensityKey];
-        [weakSelf.vignetteFilter setValue:@(vignette + 1.0) forKey:kCIInputRadiusKey];
-        //滤镜生成器输出图片
-        //转换为UIImage
-        CGImageRef ref = [weakSelf.context createCGImage:weakSelf.vignetteFilter.outputImage fromRect:weakSelf.vignetteFilter.outputImage.extent];
-        __block UIImage *temp = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
+    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = temp;
+            weakSelf.imageView.image = image;
         });
-    });
+    }];
 }
 
 /*

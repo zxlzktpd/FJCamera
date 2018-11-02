@@ -129,9 +129,9 @@ static bool isFirstAccess = YES;
     
     FJTuningObject *tuningObject = [self currentTuningObject];
     switch (type) {
-        case FJTuningTypeLight:
+        case FJTuningTypeBrightness:
         {
-            tuningObject.lightValue = value;
+            tuningObject.brightnessValue = value;
             break;
         }
         case FJTuningTypeContrast:
@@ -144,14 +144,14 @@ static bool isFirstAccess = YES;
             tuningObject.saturationValue = value;
             break;
         }
-        case FJTuningTypeWarm:
+        case FJTuningTypeTemperature:
         {
-            tuningObject.warmValue = value;
+            tuningObject.temperatureValue = value;
             break;
         }
-        case FJTuningTypeHalation:
+        case FJTuningTypeVignette:
         {
-            tuningObject.halationValue = value;
+            tuningObject.vignetteValue = value;
             break;
         }
         default:

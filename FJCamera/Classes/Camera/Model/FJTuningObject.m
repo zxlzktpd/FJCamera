@@ -14,11 +14,11 @@
 {
     self = [super init];
     if (self) {
-        self.lightValue = 0;
+        self.brightnessValue = 0;
         self.contrastValue = 1.0;
         self.saturationValue = 1.0;
-        self.warmValue = 6500.0;
-        self.halationValue = 0;
+        self.temperatureValue = 6500.0;
+        self.vignetteValue = 0;
     }
     return self;
 }

@@ -9,18 +9,18 @@
 #import <UIKit/UIKit.h>
 #import <FJKit_OC/Macro.h>
 #import <CoreImage/CoreImage.h>
+#import "FJPhotoManager.h"
+#import "FJFilterManager.h"
 
 @interface FJFilterImageView : UIView
 
-+ (FJFilterImageView *)create:(CGRect)frame image:(UIImage *)image;
++ (FJFilterImageView *)create:(CGRect)frame;
 
 - (void)updateImage:(UIImage *)image;
 
-- (void)updateBrightness:(float)brightness;
+- (UIImage *)getFilterImage;
 
-- (void)updateContrast:(float)contrast;
-
-- (void)updateSaturation:(float)saturation;
+- (void)updateBrightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;
 
 - (void)updateTemperature:(float)temperature;
 

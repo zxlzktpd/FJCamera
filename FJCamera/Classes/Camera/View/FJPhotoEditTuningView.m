@@ -28,11 +28,11 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"亮度" value:object.lightValue defaultValue:0 range:@[@(-0.5), @(0.5)] valueChangedBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"亮度" value:object.brightnessValue defaultValue:0 range:@[@(-0.5), @(0.5)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeLight, value, NO);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeBrightness, value, NO);
     } editingBlock:self.editingBlock okBlock:^(float value) {
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeLight, value, YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeBrightness, value, YES);
     }];
     [self addSubview:view];
 }
@@ -70,11 +70,11 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"暖色调" value:object.warmValue defaultValue:6500.0 range:@[@(3000.0), @(15000.0)] valueChangedBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"暖色调" value:object.temperatureValue defaultValue:6500.0 range:@[@(3000.0), @(15000.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeWarm, value, NO);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeTemperature, value, NO);
     } editingBlock:self.editingBlock okBlock:^(float value) {
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeWarm, value, YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeTemperature, value, YES);
     }];
     [self addSubview:view];
 }
@@ -84,11 +84,11 @@
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
     FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
-    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"晕影" value:object.halationValue defaultValue:0 range:@[@(-1.0), @(1.0)] valueChangedBlock:^(float value) {
+    FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"晕影" value:object.vignetteValue defaultValue:0 range:@[@(-1.0), @(1.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeHalation, value, NO);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeVignette, value, NO);
     } editingBlock:self.editingBlock okBlock:^(float value) {
-        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeHalation, value, YES);
+        weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeVignette, value, YES);
     }];
     [self addSubview:view];
 }

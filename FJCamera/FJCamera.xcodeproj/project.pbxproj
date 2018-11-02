@@ -59,6 +59,7 @@
 		E75C067221887E0900836ABD /* ic_edit_halation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066821887E0800836ABD /* ic_edit_halation@2x.png */; };
 		E75C067321887E0900836ABD /* ic_edit_warm@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066921887E0800836ABD /* ic_edit_warm@3x.png */; };
 		E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066A21887E0800836ABD /* ic_edit_saturation@2x.png */; };
+		E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */; };
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E7B5D74021895D7300961662 /* ic_edit_ok@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */; };
@@ -161,6 +162,8 @@
 		E75C066821887E0800836ABD /* ic_edit_halation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_halation@2x.png"; sourceTree = "<group>"; };
 		E75C066921887E0800836ABD /* ic_edit_warm@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_warm@3x.png"; sourceTree = "<group>"; };
 		E75C066A21887E0800836ABD /* ic_edit_saturation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_saturation@2x.png"; sourceTree = "<group>"; };
+		E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterManager.h; sourceTree = "<group>"; };
+		E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterManager.m; sourceTree = "<group>"; };
 		E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterImageView.h; sourceTree = "<group>"; };
 		E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterImageView.m; sourceTree = "<group>"; };
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
@@ -390,6 +393,8 @@
 			children = (
 				E7B5D74921897D4E00961662 /* FJPhotoManager.h */,
 				E7B5D74A21897D4E00961662 /* FJPhotoManager.m */,
+				E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */,
+				E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -694,6 +699,7 @@
 				E7DFFA8B2182DE310059CE32 /* FJPhotoCollectionViewCell.m in Sources */,
 				E75C063121886A5A00836ABD /* FJPhotoEditCropperView.m in Sources */,
 				E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */,
+				E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */,
 				E75C063621886B4A00836ABD /* FJPhotoEditTuningView.m in Sources */,
 				E7DFFA732182B8CE0059CE32 /* FJPhotoLibraryViewController.m in Sources */,
 				E7B5D7582189B80B00961662 /* StaticScaleCropView.m in Sources */,
