@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -269,19 +268,18 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="J9h-6E-YRv" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="1ig-aM-dw3"/>
-                <constraint firstItem="J9h-6E-YRv" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="6Ks-xp-zAX"/>
+                <constraint firstItem="J9h-6E-YRv" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="1ig-aM-dw3"/>
+                <constraint firstItem="J9h-6E-YRv" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="6Ks-xp-zAX"/>
                 <constraint firstAttribute="bottom" secondItem="Dee-ie-QbD" secondAttribute="bottom" id="6gB-IW-S3d"/>
-                <constraint firstItem="J9h-6E-YRv" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="815-iB-LTu"/>
+                <constraint firstItem="J9h-6E-YRv" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="815-iB-LTu"/>
                 <constraint firstItem="Dee-ie-QbD" firstAttribute="top" secondItem="Dms-t2-SLG" secondAttribute="bottom" id="85Y-HS-2HH"/>
-                <constraint firstItem="Dee-ie-QbD" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="USn-le-elz"/>
+                <constraint firstItem="Dee-ie-QbD" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="USn-le-elz"/>
                 <constraint firstItem="J9h-6E-YRv" firstAttribute="top" secondItem="Dms-t2-SLG" secondAttribute="bottom" id="W7w-NO-1ko"/>
-                <constraint firstItem="Dms-t2-SLG" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="bxo-oe-74I"/>
-                <constraint firstItem="Dms-t2-SLG" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="iQ0-FM-RXI"/>
-                <constraint firstItem="Dms-t2-SLG" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="lsU-OV-PB6"/>
+                <constraint firstItem="Dms-t2-SLG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="bxo-oe-74I"/>
+                <constraint firstItem="Dms-t2-SLG" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="iQ0-FM-RXI"/>
+                <constraint firstItem="Dms-t2-SLG" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="lsU-OV-PB6"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
         </view>
     </objects>
     <resources>

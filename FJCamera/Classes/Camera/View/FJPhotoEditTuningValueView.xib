@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -117,21 +116,20 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="1E9-qO-2qo" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="6Mm-ta-3ZL"/>
-                <constraint firstItem="1E9-qO-2qo" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="6hH-Ib-nbt"/>
-                <constraint firstItem="qFh-xz-JBh" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="AW3-C1-E6B"/>
+                <constraint firstItem="1E9-qO-2qo" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="6Mm-ta-3ZL"/>
+                <constraint firstItem="1E9-qO-2qo" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="6hH-Ib-nbt"/>
+                <constraint firstItem="qFh-xz-JBh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="AW3-C1-E6B"/>
                 <constraint firstItem="qFh-xz-JBh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="DRA-nV-hAM"/>
-                <constraint firstItem="1E9-qO-2qo" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="HHY-X5-fOD"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="qFh-xz-JBh" secondAttribute="trailing" constant="16" id="WUB-Qk-P4O"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="1Z8-ZP-AVU" secondAttribute="trailing" id="hmR-P7-PHA"/>
-                <constraint firstItem="1Z8-ZP-AVU" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="lTW-qi-i4A"/>
+                <constraint firstItem="1E9-qO-2qo" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="HHY-X5-fOD"/>
+                <constraint firstAttribute="trailing" secondItem="qFh-xz-JBh" secondAttribute="trailing" constant="16" id="WUB-Qk-P4O"/>
+                <constraint firstAttribute="trailing" secondItem="1Z8-ZP-AVU" secondAttribute="trailing" id="hmR-P7-PHA"/>
+                <constraint firstItem="1Z8-ZP-AVU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="lTW-qi-i4A"/>
                 <constraint firstAttribute="bottom" secondItem="1Z8-ZP-AVU" secondAttribute="bottom" id="m9b-Zc-Oww"/>
                 <constraint firstItem="qFh-xz-JBh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="nVa-lX-ZTM"/>
                 <constraint firstItem="eyo-TA-YC7" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="na7-ZS-YQp"/>
                 <constraint firstItem="eyo-TA-YC7" firstAttribute="top" secondItem="1E9-qO-2qo" secondAttribute="bottom" constant="6" id="xag-9O-Arf"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="titleLabel" destination="aVd-pj-PbN" id="38m-Yz-ygt"/>
                 <outlet property="valueLabel" destination="eyo-TA-YC7" id="dDE-aX-A8f"/>

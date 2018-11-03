@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -41,14 +40,13 @@
                 <constraint firstItem="qE1-4W-xzP" firstAttribute="leading" secondItem="Xk6-Gx-MAU" secondAttribute="trailing" constant="4" id="1KV-jb-kl9"/>
                 <constraint firstItem="Xk6-Gx-MAU" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="2x7-Tt-Pvz"/>
                 <constraint firstItem="Xk6-Gx-MAU" firstAttribute="centerY" secondItem="qE1-4W-xzP" secondAttribute="centerY" id="Del-mb-c3q"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="YYC-gN-K2m" secondAttribute="trailing" id="L7U-dj-5gO"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="YYC-gN-K2m" secondAttribute="bottom" id="Veq-mL-Tny"/>
+                <constraint firstAttribute="trailing" secondItem="YYC-gN-K2m" secondAttribute="trailing" id="L7U-dj-5gO"/>
+                <constraint firstAttribute="bottom" secondItem="YYC-gN-K2m" secondAttribute="bottom" id="Veq-mL-Tny"/>
                 <constraint firstItem="Xk6-Gx-MAU" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="WyW-CG-Phn"/>
-                <constraint firstItem="YYC-gN-K2m" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="laT-7W-fy6"/>
-                <constraint firstItem="YYC-gN-K2m" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="lsE-9s-bol"/>
+                <constraint firstItem="YYC-gN-K2m" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="laT-7W-fy6"/>
+                <constraint firstItem="YYC-gN-K2m" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="lsE-9s-bol"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="arrowImage" destination="qE1-4W-xzP" id="zMo-Rp-mH7"/>
                 <outlet property="tapBtn" destination="YYC-gN-K2m" id="dV1-wW-hVJ"/>

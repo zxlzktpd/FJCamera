@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -200,15 +199,14 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="FtG-lX-pAQ" secondAttribute="trailing" id="05u-Bn-tnq"/>
-                <constraint firstItem="FtG-lX-pAQ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="55" id="DrY-MI-V0H"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="AKO-5P-Z4x" secondAttribute="trailing" id="GQu-jW-gCu"/>
-                <constraint firstItem="FtG-lX-pAQ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="QBM-Yv-1fg"/>
-                <constraint firstItem="AKO-5P-Z4x" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="Vuf-CO-yBB"/>
-                <constraint firstItem="AKO-5P-Z4x" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="cCk-X2-AvK"/>
+                <constraint firstAttribute="trailing" secondItem="FtG-lX-pAQ" secondAttribute="trailing" id="05u-Bn-tnq"/>
+                <constraint firstItem="FtG-lX-pAQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="55" id="DrY-MI-V0H"/>
+                <constraint firstAttribute="trailing" secondItem="AKO-5P-Z4x" secondAttribute="trailing" id="GQu-jW-gCu"/>
+                <constraint firstItem="FtG-lX-pAQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="QBM-Yv-1fg"/>
+                <constraint firstItem="AKO-5P-Z4x" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="Vuf-CO-yBB"/>
+                <constraint firstItem="AKO-5P-Z4x" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cCk-X2-AvK"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="cropperView" destination="N0W-4W-y2r" id="VDd-HB-4Ep"/>
                 <outlet property="filterView" destination="ueh-gh-Os3" id="wjc-cR-VGa"/>

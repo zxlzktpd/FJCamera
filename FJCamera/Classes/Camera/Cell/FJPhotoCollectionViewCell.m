@@ -56,9 +56,9 @@
     });
     
     if (ds.isSelected) {
-        [self.iv_select setImage:[UIImage imageNamed:@"ic_photo_selected"]];
+        [self.iv_select setImage:[FJStorage podImage:@"ic_photo_selected" class:[self class]]];
     }else {
-        [self.iv_select setImage:[UIImage imageNamed:@"ic_photo_unselected"]];
+        [self.iv_select setImage:[FJStorage podImage:@"ic_photo_unselected" class:[self class]]];
     }
 }
 

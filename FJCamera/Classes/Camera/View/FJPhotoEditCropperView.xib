@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -293,16 +292,15 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Mwx-Zv-oog" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="27X-ZM-9hN"/>
-                <constraint firstItem="Mwx-Zv-oog" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="6vz-4z-eOS"/>
-                <constraint firstItem="h08-H9-bm1" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="AzQ-jj-Pmt"/>
+                <constraint firstItem="Mwx-Zv-oog" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="27X-ZM-9hN"/>
+                <constraint firstItem="Mwx-Zv-oog" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="6vz-4z-eOS"/>
+                <constraint firstItem="h08-H9-bm1" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="AzQ-jj-Pmt"/>
                 <constraint firstItem="Mwx-Zv-oog" firstAttribute="top" secondItem="h08-H9-bm1" secondAttribute="bottom" id="HNW-3d-Gqm"/>
-                <constraint firstItem="h08-H9-bm1" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="KVv-Ir-DGk"/>
-                <constraint firstItem="h08-H9-bm1" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="RwF-uk-Qy5"/>
-                <constraint firstItem="Mwx-Zv-oog" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="m02-f3-dRf"/>
+                <constraint firstItem="h08-H9-bm1" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="KVv-Ir-DGk"/>
+                <constraint firstItem="h08-H9-bm1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="RwF-uk-Qy5"/>
+                <constraint firstItem="Mwx-Zv-oog" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="m02-f3-dRf"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="crop1to1ImageView" destination="eec-mu-5mA" id="UWJ-en-D0b"/>
                 <outlet property="crop3to4ImageView" destination="wc4-Ip-AmH" id="RAs-Qd-TKD"/>

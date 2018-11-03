@@ -25,8 +25,8 @@
     SMPageControl *pageControl = [[SMPageControl alloc] init];
     [pageControl setUserInteractionEnabled:NO];
     pageControl.numberOfPages = 9;
-    pageControl.pageIndicatorImage = [UIImage imageNamed:@"ic_pagecontrol_unselected"];
-    pageControl.currentPageIndicatorImage = [UIImage imageNamed:@"ic_pagecontrol_selected"];
+    pageControl.pageIndicatorImage = [FJStorage podImage:@"ic_pagecontrol_unselected" class:[self class]];
+    pageControl.currentPageIndicatorImage = [FJStorage podImage:@"ic_pagecontrol_selected" class:[self class]];
     [self addSubview:pageControl];
     MF_WEAK_SELF
     [pageControl mas_makeConstraints:^(MASConstraintMaker *make) {
