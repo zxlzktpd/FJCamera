@@ -62,6 +62,7 @@
 		E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */; };
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
+		E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */; };
 		E7B5D74021895D7300961662 /* ic_edit_ok@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */; };
 		E7B5D74121895D7300961662 /* ic_edit_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */; };
 		E7B5D74221895D7300961662 /* ic_edit_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */; };
@@ -73,6 +74,8 @@
 		E7B5D751218980A700961662 /* FJImageTagModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D750218980A700961662 /* FJImageTagModel.m */; };
 		E7B5D7552189A52200961662 /* TKImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D7542189A52200961662 /* TKImageView.m */; };
 		E7B5D7582189B80B00961662 /* StaticScaleCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B5D7572189B80B00961662 /* StaticScaleCropView.m */; };
+		E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */; };
+		E7BA9DF4219044FA009DAD96 /* FJPhotoImageTagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */; };
 		E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */; };
 		E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F42182B3EA0059CE32 /* ViewController.m */; };
 		E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F62182B3EA0059CE32 /* Main.storyboard */; };
@@ -167,6 +170,8 @@
 		E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterImageView.h; sourceTree = "<group>"; };
 		E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterImageView.m; sourceTree = "<group>"; };
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
+		E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoUserTagBaseViewController.h; sourceTree = "<group>"; };
+		E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoUserTagBaseViewController.m; sourceTree = "<group>"; };
 		E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_ok@2x.png"; sourceTree = "<group>"; };
 		E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@2x.png"; sourceTree = "<group>"; };
 		E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@3x.png"; sourceTree = "<group>"; };
@@ -184,6 +189,9 @@
 		E7B5D7542189A52200961662 /* TKImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKImageView.m; sourceTree = "<group>"; };
 		E7B5D7562189B80A00961662 /* StaticScaleCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticScaleCropView.h; sourceTree = "<group>"; };
 		E7B5D7572189B80B00961662 /* StaticScaleCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticScaleCropView.m; sourceTree = "<group>"; };
+		E7BA9DF0219043B5009DAD96 /* FJPhotoImageTagView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoImageTagView.h; sourceTree = "<group>"; };
+		E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoImageTagView.m; sourceTree = "<group>"; };
+		E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoImageTagView.xib; sourceTree = "<group>"; };
 		E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -349,6 +357,9 @@
 				E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */,
 				E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */,
 				E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */,
+				E7BA9DF0219043B5009DAD96 /* FJPhotoImageTagView.h */,
+				E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */,
+				E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -384,6 +395,8 @@
 				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
 				E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */,
 				E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */,
+				E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */,
+				E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -557,6 +570,7 @@
 				E75C06572188783200836ABD /* ic_4_3@2x.png in Resources */,
 				E75C061621883BC900836ABD /* ic_pagecontrol_unselected@2x.png in Resources */,
 				E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */,
+				E7BA9DF4219044FA009DAD96 /* FJPhotoImageTagView.xib in Resources */,
 				E75C066E21887E0900836ABD /* ic_edit_light@3x.png in Resources */,
 				E75C066C21887E0900836ABD /* ic_edit_saturation@3x.png in Resources */,
 				E7B5D74121895D7300961662 /* ic_edit_close@2x.png in Resources */,
@@ -682,6 +696,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */,
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
 				E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */,
@@ -693,6 +708,7 @@
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
 				E7B5D74E21897EAF00961662 /* FJTuningObject.m in Sources */,
 				E7B5D7462189742000961662 /* FJPhotoEditTuningValueView.m in Sources */,
+				E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */,
 				E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */,
 				E7B5D751218980A700961662 /* FJImageTagModel.m in Sources */,
 				E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */,

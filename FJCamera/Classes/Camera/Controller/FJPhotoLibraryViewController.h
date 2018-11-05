@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "FJCameraCommonHeader.h"
+#import "FJPhotoEditViewController.h"
+#import "FJImageTagModel.h"
+#import "FJPhotoUserTagBaseViewController.h"
 
 @interface FJPhotoLibraryViewController : UIViewController
 
@@ -28,6 +31,12 @@
 
 // Next Block
 @property (nonatomic, copy) void(^userNextBlock)(NSMutableArray<PHAsset *> *selectedPhotoAssets);
+
+// Mode (Edit Controller)
+@property (nonatomic, assign) FJPhotoEditMode mode;
+
+// 初始化
+- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
 
 // 设置已选的照片Asset数组
 - (void)updateSelectedPhotoAssets:(NSArray<PHAsset *> *)selectedPhotoAssets;

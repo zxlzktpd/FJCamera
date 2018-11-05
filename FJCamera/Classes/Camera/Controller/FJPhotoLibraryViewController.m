@@ -10,7 +10,6 @@
 #import "FJPhotoLibrarySelectionView.h"
 #import "FJPhotoLibraryAlbumSelectionView.h"
 #import "FJPhotoCollectionViewCell.h"
-#import "FJPhotoEditViewController.h"
 
 @interface FJPhotoLibraryViewController ()
 
@@ -28,6 +27,9 @@
 @property (nonatomic, strong) PHAssetCollection *currentPhotoAssetColletion;
 // 已选中的照片
 @property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedPhotoAssets;
+
+// Edit Controller Block
+@property (nonatomic, copy) __kindof FJPhotoUserTagBaseViewController * (^editController)(FJPhotoEditViewController *controller);
 
 @end
 
@@ -75,6 +77,16 @@
     if (self) {
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
+    }
+    return self;
+}
+
+- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController {
+    
+    self = [self init];
+    if (self) {
+        self.mode = mode;
+        self.editController = editController;
     }
     return self;
 }
@@ -151,7 +163,7 @@
     }
     
     if (_collectionView == nil) {
-        self.collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
+        _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
         [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(weakSelf.view);
@@ -310,6 +322,14 @@
     }else {
         FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] init];
         editVC.selectedPhotoAssets = self.selectedPhotoAssets;
+        if (self.mode != FJPhotoEditModeNotSet) {
+            editVC.mode = self.mode;
+        }
+        if (self.editController != nil) {
+            __kindof FJPhotoUserTagBaseViewController *userTagAddVC = self.editController(editVC);
+            userTagAddVC.delegate = editVC;
+            editVC.userTagController = userTagAddVC;
+        }
         [self.navigationController pushViewController:editVC animated:YES];
     }
 }

@@ -14,6 +14,7 @@
 #import "FJFilterImageView.h"
 #import <CoreImage/CoreImage.h>
 #import <CoreImage/CIFilter.h>
+#import "FJPhotoUserTagBaseViewController.h"
 
 @interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
@@ -29,6 +30,8 @@
 @property (nonatomic, strong) StaticScaleCropView *cropperView;
 // Filter View
 @property (nonatomic, strong) FJFilterImageView *filterView;
+// Current ImageView on ScrollView
+@property (nonatomic, strong) UIImageView *currentImageView;
 
 @end
 
@@ -230,6 +233,7 @@
                 }
             }
         }];
+        
         [self.view addSubview:_toolbar];
         [_toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.bottom.right.equalTo(weakSelf.view);
@@ -241,7 +245,18 @@
         };
         
         _toolbar.tagBlock = ^{
-            NSLog(@"tap tag");
+            
+            // TODO TEST
+            FJImageTagModel *model = [[FJImageTagModel alloc] init];
+            model.name = @"#消费升级";
+            [weakSelf _addImageTagOnImageView:weakSelf.currentImageView tag:model point:CGPointMake(weakSelf.currentImageView.bounds.size.width / 2.0 - 50.0, weakSelf.currentImageView.bounds.size.height / 2.0 - 24.0)];
+            
+            /* TODO RECOVERY
+            if ([weakSelf.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
+                ((FJPhotoUserTagBaseViewController *)weakSelf.userTagController).point = CGPointMake(imageView.bounds.size.width / 2.0 - 50.0, imageView.bounds.size.height / 2.0 - 24.0);
+                [weakSelf.navigationController pushViewController:weakSelf.userTagController animated:YES];
+            }
+            */
         };
     }
     
@@ -261,13 +276,37 @@
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 imageView.contentMode = UIViewContentModeScaleAspectFit;
                 NSUInteger index = [weakSelf.selectedPhotoAssets indexOfObject:asset];
-                imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index, 0, weakScrollView.bounds.size.width, weakScrollView.bounds.size.height);
+                if (image.size.width / image.size.height >= weakScrollView.bounds.size.width / weakScrollView.bounds.size.height) {
+                    CGFloat h = image.size.height / image.size.width * weakScrollView.bounds.size.width;
+                    CGFloat y = (weakScrollView.bounds.size.height - h) / 2.0;
+                    imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index, y, weakScrollView.bounds.size.width, h);
+                }else {
+                    CGFloat w = image.size.width / image.size.height * weakScrollView.bounds.size.height;
+                    CGFloat x = (weakScrollView.bounds.size.width - w) / 2.0;
+                    imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index + x, 0, w, weakScrollView.bounds.size.height);
+                }
                 [weakScrollView addSubview:imageView];
                 imageView.tag = [asset hash];
+                
+                // 打Tag手势
+                [imageView setUserInteractionEnabled:YES];
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAddTag:)];
+                [imageView addGestureRecognizer:tap];
             }];
         }
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width * self.selectedPhotoAssets.count, _scrollView.bounds.size.height);
     }
+}
+
+- (UIImageView *)currentImageView {
+    
+    PHAsset *asset = [FJPhotoManager shared].currentPhotoAsset;
+    for (UIImageView *imageView in self.scrollView.subviews) {
+        if (imageView.tag == [asset hash]) {
+            return imageView;
+        }
+    }
+    return nil;
 }
 
 - (void)_refreshCurrentImageViewToScrollView:(BOOL)refresh result:(void(^)(UIImage *image))result {
@@ -275,27 +314,61 @@
     // 裁切
     MF_WEAK_SELF
     FJTuningObject *tuningObject = [FJPhotoManager shared].currentTuningObject;
-    __block PHAsset *asset = [FJPhotoManager shared].currentPhotoAsset;
+    __block NSUInteger index = [FJPhotoManager shared].currentIndex;
     UIImage *image = [FJPhotoManager shared].currentCroppedImage;
+    __block BOOL cropped = NO;
     if (image == nil) {
         // 原图
         image = [FJPhotoManager shared].currentPhotoImage;
     }else {
         // 裁切
+        cropped = YES;
     }
     // 加调整和滤镜效果
     [[FJFilterManager shared] getImage:image tuningObject:tuningObject appendFilterType:FJFilterTypeNull result:^(UIImage *image) {
         
         if (refresh) {
-            for (UIImageView *imageView in weakSelf.scrollView.subviews) {
-                if (imageView.tag == [asset hash]) {
-                    imageView.image = image;
-                    break;
+            
+            self.currentImageView.image = image;
+            if (cropped) {
+                if (image.size.width /
+                    image.size.height >= weakSelf.scrollView.bounds.size.width / weakSelf.scrollView.bounds.size.height) {
+                    CGFloat h = image.size.height / image.size.width * weakSelf.scrollView.bounds.size.width;
+                    CGFloat y = (weakSelf.scrollView.bounds.size.height - h) / 2.0;
+                    self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * index, y, weakSelf.scrollView.bounds.size.width, h);
+                }else {
+                    CGFloat w = image.size.width / image.size.height * weakSelf.scrollView.bounds.size.height;
+                    CGFloat x = (weakSelf.scrollView.bounds.size.width - w) / 2.0;
+                    self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * index + x, 0, w, weakSelf.scrollView.bounds.size.height);
                 }
             }
         }
         result == nil ? : result(image);
     }];
+}
+
+- (void)_tapAddTag:(UITapGestureRecognizer *)tapGesuture {
+    
+    UIImageView *imageView = (UIImageView *)tapGesuture.view;
+    if ([imageView isKindOfClass:[UIImageView class]]) {
+        CGPoint p = [tapGesuture locationInView:imageView];
+        NSLog(@"%f , %f", p.x, p.y);
+        /* TODO RECOVERY
+         if ([self.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
+         ((FJPhotoUserTagBaseViewController *)self.userTagController).point = p;
+         [self.navigationController pushViewController:self.userTagController animated:YES];
+         }*/
+        // TODO
+        // TODO TEST
+        FJImageTagModel *model = [[FJImageTagModel alloc] init];
+        model.name = @"#消费升级";
+        [self _addImageTagOnImageView:imageView tag:model point:CGPointMake(imageView.bounds.size.width / 2.0 - 50.0, imageView.bounds.size.height / 2.0 - 24.0)];
+    }
+}
+
+- (void)_addImageTagOnImageView:(UIImageView *)imageView tag:(FJImageTagModel *)tag point:(CGPoint)point {
+    
+    
 }
 
 - (void)_tapNext {
@@ -308,6 +381,12 @@
     NSUInteger page = (NSUInteger)(scrollView.contentOffset.x / UI_SCREEN_WIDTH);
     [FJPhotoManager shared].currentIndex = page;
     [self.customTitleView updateIndex:page];
+}
+
+#pragma mark - FJPhotoEditTagDelegate
+- (void)fj_photoEditAddTag:(FJImageTagModel *)model point:(CGPoint)point {
+    
+    [self _addImageTagOnImageView:self.currentImageView tag:model point:point];
 }
 
 /*
