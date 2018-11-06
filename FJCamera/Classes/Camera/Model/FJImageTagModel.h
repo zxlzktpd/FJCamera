@@ -20,7 +20,7 @@
 // 图片上的y偏移比例
 @property (nonatomic, assign) float yPercent;
 // 图片Index
-@property (nonatomic, assign) NSUInteger photoIndex;
+@property (nonatomic, assign) NSUInteger photoHash;
 // Tag方向
 @property (nonatomic, assign) int direction;
 // Tag创建时间

@@ -17,6 +17,7 @@
 #import "FJPhotoUserTagBaseViewController.h"
 #import "FJPhotoImageTagView.h"
 #import "FJPhotoTagAlertView.h"
+#import "FJImageTagModel.h"
 
 @interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
@@ -83,33 +84,17 @@
     return self;
 }
 
-- (void)dealloc {
-    
-    [self _cleanPhotoManager];
-}
-
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // 初始化Manager
-    [[FJPhotoManager shared] initial:self.selectedPhotoAssets];
     
     // 初始化UI
     [self _buildUI];
-    
-    // 刷新
-    // [self _refreshScrollView];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)_cleanPhotoManager {
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[FJPhotoManager shared] clean];
-    });
 }
 
 - (void)_buildUI {
@@ -120,7 +105,7 @@
     [self fj_navigationBarHidden:NO];
     [self fj_navigationBarStyle:[UIColor whiteColor] translucent:NO bottomLineColor:@"#E6E6E6".fj_color];
     [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
-        [weakSelf _cleanPhotoManager];
+        [[FJPhotoManager shared] clean];
         [weakSelf fj_dismiss];
     }];
     [self fj_addRightBarCustomView:self.nextBtn action:nil];
@@ -268,8 +253,32 @@
         
         __weak typeof(_scrollView) weakScrollView = _scrollView;
         
-        for (PHAsset *asset in self.selectedPhotoAssets) {
-            [FJPhotoManager getStaticTargetImage:asset result:^(UIImage *image) {
+        for (NSUInteger index = 0; index < self.selectedPhotoAssets.count; index++) {
+            
+            PHAsset *asset = [self.selectedPhotoAssets objectAtIndex:index];
+            FJTuningObject *tuningObject = [[FJPhotoManager shared] tuningObject:asset];
+            __block UIImage *image = [[FJPhotoManager shared] croppedImage:asset];
+            __block BOOL cropped = NO;
+            if (image == nil) {
+                // 原图
+                dispatch_semaphore_t s = dispatch_semaphore_create(0);
+                PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+                // 同步获得图片, 只会返回1张图片
+                options.synchronous = YES;
+                options.resizeMode = PHImageRequestOptionsResizeModeFast;
+                options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+                [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable img, NSDictionary * _Nullable info) {
+                    image = img;
+                    dispatch_semaphore_signal(s);
+                }];
+                dispatch_semaphore_wait(s, DISPATCH_TIME_FOREVER);
+            }else {
+                // 裁切
+                cropped = YES;
+            }
+            // 加调整和滤镜效果
+            [[FJFilterManager shared] getImage:image tuningObject:tuningObject appendFilterType:FJFilterTypeNull result:^(UIImage *image) {
+                
                 UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
                 imageView.contentMode = UIViewContentModeScaleAspectFit;
                 NSUInteger index = [weakSelf.selectedPhotoAssets indexOfObject:asset];
@@ -290,6 +299,30 @@
                 UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAddTag:)];
                 [imageView addGestureRecognizer:tap];
             }];
+            
+            /* 原始图
+            [FJPhotoManager getStaticTargetImage:asset async:NO result:^(UIImage *image) {
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+                imageView.contentMode = UIViewContentModeScaleAspectFit;
+                NSUInteger index = [weakSelf.selectedPhotoAssets indexOfObject:asset];
+                if (image.size.width / image.size.height >= weakScrollView.bounds.size.width / weakScrollView.bounds.size.height) {
+                    CGFloat h = image.size.height / image.size.width * weakScrollView.bounds.size.width;
+                    CGFloat y = (weakScrollView.bounds.size.height - h) / 2.0;
+                    imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index, y, weakScrollView.bounds.size.width, h);
+                }else {
+                    CGFloat w = image.size.width / image.size.height * weakScrollView.bounds.size.height;
+                    CGFloat x = (weakScrollView.bounds.size.width - w) / 2.0;
+                    imageView.frame = CGRectMake(weakScrollView.bounds.size.width * index + x, 0, w, weakScrollView.bounds.size.height);
+                }
+                [weakScrollView addSubview:imageView];
+                imageView.tag = [asset hash];
+                
+                // 打Tag手势
+                [imageView setUserInteractionEnabled:YES];
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAddTag:)];
+                [imageView addGestureRecognizer:tap];
+            }];
+            */
         }
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width * self.selectedPhotoAssets.count, _scrollView.bounds.size.height);
     }
@@ -361,7 +394,6 @@
     MF_WEAK_SELF
     [_alertView removeFromSuperview];
     _alertView = nil;
-    tag.photoIndex = [FJPhotoManager shared].currentIndex;
     tag.createdTime = [[NSDate date] timeIntervalSince1970];
     tag.xPercent = point.x / imageView.bounds.size.width;
     tag.yPercent = point.y / imageView.bounds.size.height;
@@ -427,11 +459,13 @@
     NSMutableArray *images = [[NSMutableArray alloc] init];
     NSMutableArray *tags = [[NSMutableArray alloc] init];
     for (int i = 0 ; i < self.scrollView.subviews.count; i++) {
-        UIImageView *imageView = [self.scrollView.subviews objectAtIndex:i];
+        __block UIImageView *imageView = [self.scrollView.subviews objectAtIndex:i];
         [images addObject:imageView.image];
         for (int j = 0; j < [imageView.subviews count]; j++) {
             FJPhotoImageTagView *tagView = [imageView.subviews objectAtIndex:j];
-            [tags addObject:[tagView getTagModel]];
+            FJImageTagModel *tagModel = [tagView getTagModel];
+            tagModel.photoHash = [imageView.image hash];
+            [tags addObject:tagModel];
         }
     }
     self.outputBlock == nil ? : self.outputBlock(images, tags);

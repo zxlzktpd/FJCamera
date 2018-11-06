@@ -354,6 +354,11 @@ static bool isFirstAccess = YES;
 
 - (void)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType result:(void(^)(UIImage *image))result {
     
+    if (image == nil || ![image isKindOfClass:[UIImage class]]) {
+        result == nil ? : result(nil);
+        return;
+    }
+    
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:ciImage brightness:tuningObject.brightnessValue contrast:tuningObject.contrastValue saturation:tuningObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuningObject.temperatureValue];

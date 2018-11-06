@@ -26,7 +26,7 @@
 + (FJPhotoManager *)shared;
 
 // 初始化
-- (void)initial:(NSMutableArray<PHAsset *> *)selectedPhotoAssets;
+- (void)initialOrAdd:(NSMutableArray<PHAsset *> *)selectedPhotoAssets;
 
 // 清空参数
 - (void)clean;
@@ -56,6 +56,6 @@
 - (void)setCroppedImage:(UIImage *)image forAsset:(PHAsset *)asset;
 
 // 同步获取固定尺寸的图片
-+ (void)getStaticTargetImage:(PHAsset *)asset result:(void(^)(UIImage * image))result;
++ (void)getStaticTargetImage:(PHAsset *)asset async:(BOOL)async result:(void(^)(UIImage * image))result;
 
 @end

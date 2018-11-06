@@ -320,9 +320,14 @@
     if (self.userNextBlock != nil) {
         self.userNextBlock(self.selectedPhotoAssets);
     }else {
+        
+        // 初始化Manager
+        [[FJPhotoManager shared] initialOrAdd:self.selectedPhotoAssets];
+        
+        // 推出 FJPhotoEditViewController
         FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] init];
-        editVC.outputBlock = self.outputBlock;
         editVC.selectedPhotoAssets = self.selectedPhotoAssets;
+        editVC.outputBlock = self.outputBlock;
         if (self.mode != FJPhotoEditModeNotSet) {
             editVC.mode = self.mode;
         }

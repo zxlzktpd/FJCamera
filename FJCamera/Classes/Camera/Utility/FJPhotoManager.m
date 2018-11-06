@@ -76,19 +76,18 @@ static bool isFirstAccess = YES;
         _currentPhotoChanged = YES;
         _currentPhotoImage = nil;
         MF_WEAK_SELF
-        [FJPhotoManager getStaticTargetImage:self.currentPhotoAsset result:^(UIImage *image) {
+        [FJPhotoManager getStaticTargetImage:self.currentPhotoAsset async:YES result:^(UIImage *image) {
             weakSelf.currentPhotoImage = image;
         }];
     }
 }
 
 // 初始化
-- (void)initial:(NSMutableArray<PHAsset *> *)selectedPhotoAssets {
+- (void)initialOrAdd:(NSMutableArray<PHAsset *> *)selectedPhotoAssets {
     
     if (selectedPhotoAssets == nil || selectedPhotoAssets.count == 0) {
         return;
     }
-    
     self.currentPhotoAsset = [selectedPhotoAssets firstObject];
     [self.selectedPhotoAssets addObjectsFromArray:selectedPhotoAssets];
     for (PHAsset *asset in self.selectedPhotoAssets) {
@@ -98,6 +97,11 @@ static bool isFirstAccess = YES;
 
 // 清空参数
 - (void)clean {
+    
+    self.currentPhotoChanged = NO;
+    self.currentPhotoAsset = nil;
+    self.currentPhotoImage = nil;
+    self.currentIndex = 0;
     
     [self.selectedPhotoAssets removeAllObjects];
     [self.selectedPhotoAssetsCroppedImages removeAllObjects];
@@ -191,20 +195,29 @@ static bool isFirstAccess = YES;
 }
 
 // 同步获取固定尺寸的图片
-+ (void)getStaticTargetImage:(PHAsset *)asset result:(void(^)(UIImage * image))result {
++ (void)getStaticTargetImage:(PHAsset *)asset async:(BOOL)async result:(void(^)(UIImage * image))result {
     
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-        // 同步获得图片, 只会返回1张图片
-        options.synchronous = YES;
-        options.resizeMode = PHImageRequestOptionsResizeModeFast;
-        options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                result == nil ? : result(image);
-            });
-        }];
-    });
+    if (async) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [FJPhotoManager _getStaticTargetImage:asset result:result];
+        });
+    }else {
+        [FJPhotoManager _getStaticTargetImage:asset result:result];
+    }
+}
+
++ (void)_getStaticTargetImage:(PHAsset *)asset result:(void(^)(UIImage * image))result {
+
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    // 同步获得图片, 只会返回1张图片
+    options.synchronous = YES;
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+    [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            result == nil ? : result(image);
+        });
+    }];
 }
 
 @end
