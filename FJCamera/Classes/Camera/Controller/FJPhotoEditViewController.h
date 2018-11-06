@@ -32,8 +32,11 @@ typedef NS_ENUM(NSInteger, FJPhotoEditMode) {
 // Mode
 @property (nonatomic, assign) FJPhotoEditMode mode;
 
-
+// 用户自定义的Tag Controller
 @property (nonatomic, strong) UIViewController *userTagController;
+
+// 相片和Tag输出Block
+@property (nonatomic, copy) void(^outputBlock)(NSArray<UIImage *> *images, NSArray<FJImageTagModel *> *tags);
 
 // 已选相片
 @property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedPhotoAssets;

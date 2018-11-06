@@ -15,6 +15,8 @@
 #import <CoreImage/CoreImage.h>
 #import <CoreImage/CIFilter.h>
 #import "FJPhotoUserTagBaseViewController.h"
+#import "FJPhotoImageTagView.h"
+#import "FJPhotoTagAlertView.h"
 
 @interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
@@ -30,6 +32,8 @@
 @property (nonatomic, strong) StaticScaleCropView *cropperView;
 // Filter View
 @property (nonatomic, strong) FJFilterImageView *filterView;
+// Tag Alert View
+@property (nonatomic, strong) FJPhotoTagAlertView *alertView;
 // Current ImageView on ScrollView
 @property (nonatomic, strong) UIImageView *currentImageView;
 
@@ -246,17 +250,10 @@
         
         _toolbar.tagBlock = ^{
             
-            // TODO TEST
-            FJImageTagModel *model = [[FJImageTagModel alloc] init];
-            model.name = @"#消费升级";
-            [weakSelf _addImageTagOnImageView:weakSelf.currentImageView tag:model point:CGPointMake(weakSelf.currentImageView.bounds.size.width / 2.0 - 50.0, weakSelf.currentImageView.bounds.size.height / 2.0 - 24.0)];
-            
-            /* TODO RECOVERY
             if ([weakSelf.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
-                ((FJPhotoUserTagBaseViewController *)weakSelf.userTagController).point = CGPointMake(imageView.bounds.size.width / 2.0 - 50.0, imageView.bounds.size.height / 2.0 - 24.0);
+                ((FJPhotoUserTagBaseViewController *)weakSelf.userTagController).point = CGPointMake(weakSelf.currentImageView.bounds.size.width / 2.0 - 50.0, weakSelf.currentImageView.bounds.size.height / 2.0 - 24.0);
                 [weakSelf.navigationController pushViewController:weakSelf.userTagController animated:YES];
             }
-            */
         };
     }
     
@@ -352,27 +349,92 @@
     UIImageView *imageView = (UIImageView *)tapGesuture.view;
     if ([imageView isKindOfClass:[UIImageView class]]) {
         CGPoint p = [tapGesuture locationInView:imageView];
-        NSLog(@"%f , %f", p.x, p.y);
-        /* TODO RECOVERY
-         if ([self.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
-         ((FJPhotoUserTagBaseViewController *)self.userTagController).point = p;
-         [self.navigationController pushViewController:self.userTagController animated:YES];
-         }*/
-        // TODO
-        // TODO TEST
-        FJImageTagModel *model = [[FJImageTagModel alloc] init];
-        model.name = @"#消费升级";
-        [self _addImageTagOnImageView:imageView tag:model point:CGPointMake(imageView.bounds.size.width / 2.0 - 50.0, imageView.bounds.size.height / 2.0 - 24.0)];
+        if ([self.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
+            ((FJPhotoUserTagBaseViewController *)self.userTagController).point = p;
+            [self.navigationController pushViewController:self.userTagController animated:YES];
+        }
     }
 }
 
 - (void)_addImageTagOnImageView:(UIImageView *)imageView tag:(FJImageTagModel *)tag point:(CGPoint)point {
     
-    
+    MF_WEAK_SELF
+    [_alertView removeFromSuperview];
+    _alertView = nil;
+    tag.photoIndex = [FJPhotoManager shared].currentIndex;
+    tag.createdTime = [[NSDate date] timeIntervalSince1970];
+    tag.xPercent = point.x / imageView.bounds.size.width;
+    tag.yPercent = point.y / imageView.bounds.size.height;
+    FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
+        // 114.0 32.0 4.0
+        CGRect frame = CGRectZero;
+        if (photoImageTagView.frame.size.width > 114.0) {
+            if (photoImageTagView.frame.origin.y >= 36.0) {
+                // 置上
+                frame = CGRectMake(photoImageTagView.frame.origin.x + (photoImageTagView.frame.size.width - 114.0) / 2.0,
+                                   photoImageTagView.frame.origin.y - 36.0,
+                                   114.0,
+                                   32.0);
+            }else {
+                // 置下
+                frame = CGRectMake(photoImageTagView.frame.origin.x + (photoImageTagView.frame.size.width - 114.0) / 2.0,
+                                   photoImageTagView.frame.origin.y + photoImageTagView.frame.size.height + 4.0,
+                                   114.0,
+                                   32.0);
+            }
+        }else {
+            if (photoImageTagView.frame.origin.y >= 36.0) {
+                // 置上
+                frame = CGRectMake(photoImageTagView.frame.origin.x - (114.0 - photoImageTagView.frame.size.width) / 2.0,
+                                   photoImageTagView.frame.origin.y - 36.0,
+                                   114.0,
+                                   32.0);
+            }else {
+                // 置下
+                frame = CGRectMake(photoImageTagView.frame.origin.x - (114.0 - photoImageTagView.frame.size.width) / 2.0,
+                                   photoImageTagView.frame.origin.y + photoImageTagView.frame.size.height + 4.0,
+                                   114.0,
+                                   32.0);
+            }
+        }
+        if (weakSelf.alertView == nil) {
+            weakSelf.alertView = [FJPhotoTagAlertView create:frame deleteBlock:^{
+                [photoImageTagView removeFromSuperview];
+                [weakSelf.alertView removeFromSuperview];
+                weakSelf.alertView = nil;
+            } switchBlock:^{
+                [photoImageTagView reverseDirection];
+                [weakSelf.alertView removeFromSuperview];
+                weakSelf.alertView = nil;
+            }];
+            [imageView addSubview:weakSelf.alertView];
+        }else {
+            weakSelf.alertView.frame = frame;
+        }
+    } movingBlock:^{
+        if (weakSelf.alertView != nil) {
+            [weakSelf.alertView removeFromSuperview];
+            weakSelf.alertView = nil;
+        }
+    }];
+    [imageView addSubview:tagView];
 }
 
 - (void)_tapNext {
     
+    [_alertView removeFromSuperview];
+    _alertView = nil;
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    NSMutableArray *tags = [[NSMutableArray alloc] init];
+    for (int i = 0 ; i < self.scrollView.subviews.count; i++) {
+        UIImageView *imageView = [self.scrollView.subviews objectAtIndex:i];
+        [images addObject:imageView.image];
+        for (int j = 0; j < [imageView.subviews count]; j++) {
+            FJPhotoImageTagView *tagView = [imageView.subviews objectAtIndex:j];
+            [tags addObject:[tagView getTagModel]];
+        }
+    }
+    self.outputBlock == nil ? : self.outputBlock(images, tags);
 }
 
 #pragma mark - UIScrollView Delegate

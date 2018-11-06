@@ -35,6 +35,9 @@
 // Mode (Edit Controller)
 @property (nonatomic, assign) FJPhotoEditMode mode;
 
+// 相片和Tag输出Block (Edit Controller)
+@property (nonatomic, copy) void(^outputBlock)(NSArray<UIImage *> *images, NSArray<FJImageTagModel *> *tags);
+
 // 初始化
 - (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
 

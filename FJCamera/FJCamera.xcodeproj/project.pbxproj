@@ -63,6 +63,12 @@
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */; };
+		E792D2E12191438E004465A1 /* ic_photo_tag_triangle_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2DF2191438D004465A1 /* ic_photo_tag_triangle_up@2x.png */; };
+		E792D2E22191438E004465A1 /* ic_photo_tag_triangle_up@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */; };
+		E792D2E521914413004465A1 /* ic_photo_tag_triangle_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */; };
+		E792D2E621914413004465A1 /* ic_photo_tag_triangle_down@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2E421914412004465A1 /* ic_photo_tag_triangle_down@3x.png */; };
+		E792D2E921916134004465A1 /* FJPhotoTagAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E792D2E821916134004465A1 /* FJPhotoTagAlertView.m */; };
+		E792D2EB21916145004465A1 /* FJPhotoTagAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E792D2EA21916145004465A1 /* FJPhotoTagAlertView.xib */; };
 		E7B5D74021895D7300961662 /* ic_edit_ok@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */; };
 		E7B5D74121895D7300961662 /* ic_edit_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */; };
 		E7B5D74221895D7300961662 /* ic_edit_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */; };
@@ -172,6 +178,13 @@
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
 		E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoUserTagBaseViewController.h; sourceTree = "<group>"; };
 		E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoUserTagBaseViewController.m; sourceTree = "<group>"; };
+		E792D2DF2191438D004465A1 /* ic_photo_tag_triangle_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_up@2x.png"; sourceTree = "<group>"; };
+		E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_up@3x.png"; sourceTree = "<group>"; };
+		E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_down@2x.png"; sourceTree = "<group>"; };
+		E792D2E421914412004465A1 /* ic_photo_tag_triangle_down@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_down@3x.png"; sourceTree = "<group>"; };
+		E792D2E721916134004465A1 /* FJPhotoTagAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoTagAlertView.h; sourceTree = "<group>"; };
+		E792D2E821916134004465A1 /* FJPhotoTagAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoTagAlertView.m; sourceTree = "<group>"; };
+		E792D2EA21916145004465A1 /* FJPhotoTagAlertView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoTagAlertView.xib; sourceTree = "<group>"; };
 		E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_ok@2x.png"; sourceTree = "<group>"; };
 		E7B5D73D21895D7200961662 /* ic_edit_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@2x.png"; sourceTree = "<group>"; };
 		E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_edit_close@3x.png"; sourceTree = "<group>"; };
@@ -360,6 +373,9 @@
 				E7BA9DF0219043B5009DAD96 /* FJPhotoImageTagView.h */,
 				E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */,
 				E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */,
+				E792D2E721916134004465A1 /* FJPhotoTagAlertView.h */,
+				E792D2E821916134004465A1 /* FJPhotoTagAlertView.m */,
+				E792D2EA21916145004465A1 /* FJPhotoTagAlertView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -475,6 +491,10 @@
 				E7B5D73E21895D7200961662 /* ic_edit_close@3x.png */,
 				E7B5D73C21895D7200961662 /* ic_edit_ok@2x.png */,
 				E7B5D73F21895D7200961662 /* ic_edit_ok@3x.png */,
+				E792D2DF2191438D004465A1 /* ic_photo_tag_triangle_up@2x.png */,
+				E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */,
+				E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */,
+				E792D2E421914412004465A1 /* ic_photo_tag_triangle_down@3x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -547,6 +567,7 @@
 				E7DFFA932182EBAE0059CE32 /* ic_photo_unselected@3x.png in Resources */,
 				E75C06112188395700836ABD /* FJPhotoEditTitleScrollView.xib in Resources */,
 				E75C06592188783200836ABD /* ic_4_5_highlighted@3x.png in Resources */,
+				E792D2E621914413004465A1 /* ic_photo_tag_triangle_down@3x.png in Resources */,
 				E75C066B21887E0900836ABD /* ic_edit_contrast@2x.png in Resources */,
 				E75C061821883BC900836ABD /* ic_pagecontrol_selected@2x.png in Resources */,
 				E75C065F2188783200836ABD /* ic_3_4_highlighted@2x.png in Resources */,
@@ -565,10 +586,12 @@
 				E7B5D74321895D7300961662 /* ic_edit_ok@3x.png in Resources */,
 				E75C066D21887E0900836ABD /* ic_edit_contrast@3x.png in Resources */,
 				E7DFFA862182C5030059CE32 /* ic_arrow_up@2x.png in Resources */,
+				E792D2E12191438E004465A1 /* ic_photo_tag_triangle_up@2x.png in Resources */,
 				E7DFFA8C2182DE310059CE32 /* FJPhotoCollectionViewCell.xib in Resources */,
 				E75C065D2188783200836ABD /* ic_4_5@3x.png in Resources */,
 				E75C06572188783200836ABD /* ic_4_3@2x.png in Resources */,
 				E75C061621883BC900836ABD /* ic_pagecontrol_unselected@2x.png in Resources */,
+				E792D2EB21916145004465A1 /* FJPhotoTagAlertView.xib in Resources */,
 				E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */,
 				E7BA9DF4219044FA009DAD96 /* FJPhotoImageTagView.xib in Resources */,
 				E75C066E21887E0900836ABD /* ic_edit_light@3x.png in Resources */,
@@ -583,6 +606,7 @@
 				E7DFFA842182C5030059CE32 /* ic_arrow_up@3x.png in Resources */,
 				E75C062E2188640F00836ABD /* FJPhotoEditToolbarView.xib in Resources */,
 				E7DFFA922182EBAE0059CE32 /* ic_photo_selected@3x.png in Resources */,
+				E792D2E22191438E004465A1 /* ic_photo_tag_triangle_up@3x.png in Resources */,
 				E75C065A2188783200836ABD /* ic_1_1@3x.png in Resources */,
 				E75C06582188783200836ABD /* ic_3_4@3x.png in Resources */,
 				E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */,
@@ -607,6 +631,7 @@
 				E7DFFA982182EBC10059CE32 /* ic_camera_placeholder@2x.png in Resources */,
 				E7DFFA912182EBAE0059CE32 /* ic_photo_selected@2x.png in Resources */,
 				E7B5D74021895D7300961662 /* ic_edit_ok@2x.png in Resources */,
+				E792D2E521914413004465A1 /* ic_photo_tag_triangle_down@2x.png in Resources */,
 				E75C062B218863A100836ABD /* ic_edit_cropper@2x.png in Resources */,
 				E75C065E2188783200836ABD /* ic_1_1_highlighted@3x.png in Resources */,
 				E7DFFA782182BC640059CE32 /* ic_back@2x.png in Resources */,
@@ -713,6 +738,7 @@
 				E7B5D751218980A700961662 /* FJImageTagModel.m in Sources */,
 				E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */,
 				E7DFFA8B2182DE310059CE32 /* FJPhotoCollectionViewCell.m in Sources */,
+				E792D2E921916134004465A1 /* FJPhotoTagAlertView.m in Sources */,
 				E75C063121886A5A00836ABD /* FJPhotoEditCropperView.m in Sources */,
 				E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */,
 				E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */,

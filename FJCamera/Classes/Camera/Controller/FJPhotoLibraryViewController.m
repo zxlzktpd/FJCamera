@@ -321,6 +321,7 @@
         self.userNextBlock(self.selectedPhotoAssets);
     }else {
         FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] init];
+        editVC.outputBlock = self.outputBlock;
         editVC.selectedPhotoAssets = self.selectedPhotoAssets;
         if (self.mode != FJPhotoEditModeNotSet) {
             editVC.mode = self.mode;
