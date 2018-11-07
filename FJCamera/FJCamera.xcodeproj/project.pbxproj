@@ -110,6 +110,7 @@
 		E7DFFAA021830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFA9E21830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib */; };
 		E7DFFAA3218311C80059CE32 /* ic_album_unselected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFAA1218311C80059CE32 /* ic_album_unselected@3x.png */; };
 		E7DFFAA4218311C80059CE32 /* ic_album_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7DFFAA2218311C80059CE32 /* ic_album_unselected@2x.png */; };
+		E7EBF46F2192B51300CA35B7 /* PHAsset+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EBF46E2192B51300CA35B7 /* PHAsset+Utility.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -243,6 +244,8 @@
 		E7DFFA9E21830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoLibraryAlbumCell.xib; sourceTree = "<group>"; };
 		E7DFFAA1218311C80059CE32 /* ic_album_unselected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_album_unselected@3x.png"; sourceTree = "<group>"; };
 		E7DFFAA2218311C80059CE32 /* ic_album_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_album_unselected@2x.png"; sourceTree = "<group>"; };
+		E7EBF46D2192B51200CA35B7 /* PHAsset+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PHAsset+Utility.h"; sourceTree = "<group>"; };
+		E7EBF46E2192B51300CA35B7 /* PHAsset+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PHAsset+Utility.m"; sourceTree = "<group>"; };
 		EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FJCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -420,6 +423,8 @@
 		E7DFFA742182BBBA0059CE32 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				E7EBF46D2192B51200CA35B7 /* PHAsset+Utility.h */,
+				E7EBF46E2192B51300CA35B7 /* PHAsset+Utility.m */,
 				E7B5D74921897D4E00961662 /* FJPhotoManager.h */,
 				E7B5D74A21897D4E00961662 /* FJPhotoManager.m */,
 				E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */,
@@ -726,6 +731,7 @@
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
 				E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
+				E7EBF46F2192B51300CA35B7 /* PHAsset+Utility.m in Sources */,
 				E7B5D7552189A52200961662 /* TKImageView.m in Sources */,
 				E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */,
 				E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */,

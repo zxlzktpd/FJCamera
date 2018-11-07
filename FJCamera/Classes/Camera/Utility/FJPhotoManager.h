@@ -11,51 +11,57 @@
 #import "FJTuningObject.h"
 #import "FJImageTagModel.h"
 
+typedef NS_ENUM(NSInteger, FJFilterType) {
+    
+    FJFilterTypeNull,
+    FJFilterType0,
+    FJFilterType1,
+    FJFilterType2,
+    FJFilterType3,
+    FJFilterType4,
+    FJFilterType5,
+    FJFilterType6,
+    FJFilterType7
+};
+
+@interface FJPhotoModel : NSObject
+
+@property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, strong) UIImage *croppedImage;
+@property (nonatomic, strong) UIImage *originalImage;
+@property (nonatomic, strong) UIImage *currentImage;
+@property (nonatomic, strong) FJTuningObject *tuningObject;
+@property (nonatomic, strong) NSMutableArray<FJImageTagModel *> *imageTags;
+@property (nonatomic, assign) FJFilterType filterType;
+
+- (instancetype)initWithAsset:(PHAsset *)asset;
+
+@end
+
 @interface FJPhotoManager : NSObject
 
-@property (nonatomic, strong) PHAsset *currentPhotoAsset;
-@property (nonatomic, strong) UIImage *currentPhotoImage;
-@property (nonatomic, assign) NSUInteger currentIndex;
-@property (nonatomic, assign, readonly) BOOL currentPhotoChanged;
+@property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *allPhotos;
 
-@property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedPhotoAssets;
-@property (nonatomic, strong) NSMutableDictionary<PHAsset *, UIImage *> *selectedPhotoAssetsCroppedImages;
-@property (nonatomic, strong) NSMutableDictionary<PHAsset *, FJTuningObject *> *selectedPhotoAssetsTuningValues;
-@property (nonatomic, strong) NSMutableDictionary<PHAsset *, NSMutableArray<FJImageTagModel *> *> *selectedPhotoAssetsImageTags;
+@property (nonatomic, strong) FJPhotoModel *currentEditPhoto;
 
 + (FJPhotoManager *)shared;
 
-// 初始化
-- (void)initialOrAdd:(NSMutableArray<PHAsset *> *)selectedPhotoAssets;
+// 新增
+- (FJPhotoModel *)add:(PHAsset *)asset;
 
-// 清空参数
+// 删除
+- (void)remove:(PHAsset *)asset;
+
+// 删除（Index）
+- (void)removeByIndex:(NSUInteger)index;
+
+// 交换
+- (void)switchPosition:(NSUInteger)one another:(NSUInteger)another;
+
+// 插入首部
+- (void)setTopPosition:(NSUInteger)index;
+
+// 清空
 - (void)clean;
-
-// 获取当前照片的TuningObject
-- (FJTuningObject *)currentTuningObject;
-
-// 获取TuningObject
-- (FJTuningObject *)tuningObject:(PHAsset *)asset;
-
-// 设置当前照片的Tuning参数
-- (void)setCurrentTuningObject:(FJTuningType)type value:(float)value;
-
-// 设置照片的Tuning参数
-- (void)setTuningObject:(FJTuningType)type value:(float)value forAsset:(PHAsset *)asset;
-
-// 获取当前Cropped Image
-- (UIImage *)currentCroppedImage;
-
-// 获取Cropped Image
-- (UIImage *)croppedImage:(PHAsset *)asset;
-
-// 设置当前照片的Cropped Image
-- (void)setCurrentCroppedImage:(UIImage *)image;
-
-// 设置照片的Cropped Image
-- (void)setCroppedImage:(UIImage *)image forAsset:(PHAsset *)asset;
-
-// 同步获取固定尺寸的图片
-+ (void)getStaticTargetImage:(PHAsset *)asset async:(BOOL)async result:(void(^)(UIImage * image))result;
 
 @end

@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "FJCameraCommonHeader.h"
+#import "FJPhotoManager.h"
+
+@class FJPhotoUserTagBaseViewController;
 
 @protocol FJPhotoEditTagDelegate <NSObject>
 
@@ -39,6 +42,9 @@ typedef NS_ENUM(NSInteger, FJPhotoEditMode) {
 @property (nonatomic, copy) void(^outputBlock)(NSArray<UIImage *> *images, NSArray<FJImageTagModel *> *tags);
 
 // 已选相片
-@property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedPhotoAssets;
+@property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *selectedPhotos;
+
+// 初始化
+- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
 
 @end

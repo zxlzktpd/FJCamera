@@ -23,4 +23,38 @@
     return self;
 }
 
+- (void)setType:(FJTuningType)type value:(float)value {
+    
+    switch (type) {
+        case FJTuningTypeBrightness:
+        {
+            self.brightnessValue = value;
+            break;
+        }
+        case FJTuningTypeContrast:
+        {
+            self.contrastValue = value;
+            break;
+        }
+        case FJTuningTypeSaturation:
+        {
+            self.saturationValue = value;
+            break;
+        }
+        case FJTuningTypeTemperature:
+        {
+            self.temperatureValue = value;
+            break;
+        }
+        case FJTuningTypeVignette:
+        {
+            self.vignetteValue = value;
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
 @end

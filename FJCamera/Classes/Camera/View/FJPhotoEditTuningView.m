@@ -27,7 +27,7 @@
     
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
-    FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
+    FJTuningObject *object = [FJPhotoManager shared].currentEditPhoto.tuningObject;
     FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"亮度" value:object.brightnessValue defaultValue:0 range:@[@(-0.5), @(0.5)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeBrightness, value, NO);
@@ -41,7 +41,7 @@
 
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
-    FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
+    FJTuningObject *object = [FJPhotoManager shared].currentEditPhoto.tuningObject;
     FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"对比度" value:object.contrastValue defaultValue:1.0 range:@[@(0.25), @(4.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeContrast, value, NO);
@@ -55,7 +55,7 @@
     
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
-    FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
+    FJTuningObject *object = [FJPhotoManager shared].currentEditPhoto.tuningObject;
     FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"饱和度" value:object.saturationValue defaultValue:1.0 range:@[@(0), @(2.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeSaturation, value, NO);
@@ -69,7 +69,7 @@
     
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
-    FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
+    FJTuningObject *object = [FJPhotoManager shared].currentEditPhoto.tuningObject;
     FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"暖色调" value:object.temperatureValue defaultValue:6500.0 range:@[@(3000.0), @(15000.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeTemperature, value, NO);
@@ -83,7 +83,7 @@
     
     MF_WEAK_SELF
     self.editingBlock == nil ? : self.editingBlock(YES);
-    FJTuningObject *object = [[FJPhotoManager shared] currentTuningObject];
+    FJTuningObject *object = [FJPhotoManager shared].currentEditPhoto.tuningObject;
     FJPhotoEditTuningValueView *view = [FJPhotoEditTuningValueView create:self.bounds title:@"晕影" value:object.vignetteValue defaultValue:0 range:@[@(-1.0), @(1.0)] valueChangedBlock:^(float value) {
         weakSelf.editingBlock == nil ? : weakSelf.editingBlock(YES);
         weakSelf.tuneBlock == nil ? : weakSelf.tuneBlock(FJTuningTypeVignette, value, NO);

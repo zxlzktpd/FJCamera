@@ -48,10 +48,10 @@
     return self.imageView.image;
 }
 
-- (void)updateBrightness:(float)brightness contrast:(float)contrast saturation:(float)saturation {
+- (void)updatePhoto:(FJPhotoModel *)photo brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation {
 
-    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
-    CIFilter *filter1 =  [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:brightness contrast:contrast saturation:saturation];
+    FJTuningObject *tuneObject = photo.tuningObject;
+    CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:brightness contrast:contrast saturation:saturation];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
     MF_WEAK_SELF
@@ -62,9 +62,9 @@
     }];
 }
 
-- (void)updateTemperature:(float)temperature {
+- (void)updatePhoto:(FJPhotoModel *)photo temperature:(float)temperature {
 
-    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+    FJTuningObject *tuneObject = photo.tuningObject;
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:temperature];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
@@ -77,9 +77,9 @@
     }];
 }
 
-- (void)updateVignette:(float)vignette {
+- (void)updatePhoto:(FJPhotoModel *)photo vignette:(float)vignette {
 
-    FJTuningObject *tuneObject = [FJPhotoManager shared].currentTuningObject;
+    FJTuningObject *tuneObject = photo.tuningObject;
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:vignette];

@@ -20,10 +20,10 @@
 
 - (UIImage *)getFilterImage;
 
-- (void)updateBrightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;
+- (void)updatePhoto:(FJPhotoModel *)photo brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;
 
-- (void)updateTemperature:(float)temperature;
+- (void)updatePhoto:(FJPhotoModel *)photo temperature:(float)temperature;
 
-- (void)updateVignette:(float)vignette;
+- (void)updatePhoto:(FJPhotoModel *)photo vignette:(float)vignette;
 
 @end

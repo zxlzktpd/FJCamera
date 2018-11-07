@@ -26,7 +26,7 @@
 // 当前相册
 @property (nonatomic, strong) PHAssetCollection *currentPhotoAssetColletion;
 // 已选中的照片
-@property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedPhotoAssets;
+@property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *selectedPhotos;
 
 // Edit Controller Block
 @property (nonatomic, copy) __kindof FJPhotoUserTagBaseViewController * (^editController)(FJPhotoEditViewController *controller);
@@ -56,19 +56,19 @@
     return _photoAssetCollections;
 }
 
-- (NSMutableArray<PHAsset *> *)selectedPhotoAssets {
+- (NSMutableArray<FJPhotoModel *> *)selectedPhotos {
     
-    if (_selectedPhotoAssets == nil) {
-        _selectedPhotoAssets = (NSMutableArray<PHAsset *> *)[NSMutableArray new];
+    if (_selectedPhotos == nil) {
+        _selectedPhotos = (NSMutableArray<FJPhotoModel *> *)[NSMutableArray new];
     }
-    return _selectedPhotoAssets;
+    return _selectedPhotos;
 }
 
 // 设置已选的照片Asset数组
-- (void)updateSelectedPhotoAssets:(NSArray<PHAsset *> *)selectedPhotoAssets {
+- (void)updateSelectedPhotos:(NSArray<FJPhotoModel *> *)selectedPhotos {
     
-    [self.selectedPhotoAssets removeAllObjects];
-    [self.selectedPhotoAssets addObjectsFromArray:selectedPhotoAssets];
+    [self.selectedPhotos removeAllObjects];
+    [self.selectedPhotos addObjectsFromArray:selectedPhotos];
 }
 
 - (instancetype)init {
@@ -203,10 +203,17 @@
                         if (ds.isSelected) {
                             // 移除
                             ds.isSelected = NO;
-                            [weakSelf.selectedPhotoAssets removeObject:ds.photoAsset];
+                            [[FJPhotoManager shared] remove:ds.photoAsset];
+                            for (int i = (int)self.selectedPhotos.count - 1; i >= 0; i--) {
+                                FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
+                                if ([photoModel.asset isEqual:ds.photoAsset]) {
+                                    [weakSelf.selectedPhotos removeObjectAtIndex:i];
+                                    break;
+                                }
+                            }
                         }else {
                             // 判断是否超出最大选择数量
-                            if (weakSelf.selectedPhotoAssets.count == weakSelf.maxSelectionCount) {
+                            if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
                                 if (weakSelf.userOverLimitationBlock != nil) {
                                     weakSelf.userOverLimitationBlock();
                                 }else {
@@ -216,7 +223,8 @@
                             }
                             // 选择
                             ds.isSelected = YES;
-                            [weakSelf.selectedPhotoAssets fj_safeAddObject:ds.photoAsset];
+                            FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
+                            [weakSelf.selectedPhotos fj_safeAddObject:model];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -318,24 +326,13 @@
 - (void)_tapNext {
     
     if (self.userNextBlock != nil) {
-        self.userNextBlock(self.selectedPhotoAssets);
+        self.userNextBlock(self.selectedPhotos);
     }else {
-        
-        // 初始化Manager
-        [[FJPhotoManager shared] initialOrAdd:self.selectedPhotoAssets];
-        
         // 推出 FJPhotoEditViewController
-        FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] init];
-        editVC.selectedPhotoAssets = self.selectedPhotoAssets;
+        FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] initWithMode:self.mode editController:self.editController];
+        editVC.selectedPhotos = self.selectedPhotos;
         editVC.outputBlock = self.outputBlock;
-        if (self.mode != FJPhotoEditModeNotSet) {
-            editVC.mode = self.mode;
-        }
-        if (self.editController != nil) {
-            __kindof FJPhotoUserTagBaseViewController *userTagAddVC = self.editController(editVC);
-            userTagAddVC.delegate = editVC;
-            editVC.userTagController = userTagAddVC;
-        }
+        editVC.mode = self.mode;
         [self.navigationController pushViewController:editVC animated:YES];
     }
 }
@@ -350,7 +347,7 @@
 
 - (void)_checkNextState {
     
-    if (self.selectedPhotoAssets.count > 0) {
+    if (self.selectedPhotos.count > 0) {
         [self.nextBtn fj_setTitleColor:@"#FF7725".fj_color];
         [self.nextBtn setUserInteractionEnabled:YES];
     }else {
@@ -402,7 +399,7 @@
     PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
     for (PHAsset *asset in assets) {
         BOOL isSelected = NO;
-        for (PHAsset *selectedPhotoAsset in self.selectedPhotoAssets) {
+        for (PHAsset *selectedPhotoAsset in self.selectedPhotos) {
             if ([selectedPhotoAsset.localIdentifier isEqualToString:asset.localIdentifier]) {
                 isSelected = YES;
                 break;

@@ -11,18 +11,6 @@
 #import <CoreImage/CoreImage.h>
 #import "FJPhotoManager.h"
 
-typedef NS_ENUM(NSInteger, FJFilterType) {
-    FJFilterTypeNull,
-    FJFilterType0,
-    FJFilterType1,
-    FJFilterType2,
-    FJFilterType3,
-    FJFilterType4,
-    FJFilterType5,
-    FJFilterType6,
-    FJFilterType7
-};
-
 @interface FJFilterManager : NSObject
 
 @property (nonatomic, strong, readonly) CIImage *originalCIImage;
@@ -54,8 +42,14 @@ typedef NS_ENUM(NSInteger, FJFilterType) {
 
 - (void)getImage:(CIFilter *)filter result:(void(^)(UIImage *image))result;
 
+- (UIImage *)getImage:(CIFilter *)filter;
+
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result;
 
-- (void)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType result:(void(^)(UIImage *image))result;
+- (UIImage *)getImageCombine:(NSArray<CIFilter *> *)filters;
+
+- (UIImage *)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
+
+- (UIImage *)getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
 
 @end

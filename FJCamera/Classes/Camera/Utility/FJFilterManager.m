@@ -9,26 +9,7 @@
 #import "FJFilterManager.h"
 #import <FJKit_OC/NSMutableArray+Utility_FJ.h>
 #import <FJKit_OC/NSArray+Utility_FJ.h>
-
-// CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
-// CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
-// CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
-
-//CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-//NSDictionary* attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CIVignette"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
-//
-//filter = [CIFilter filterWithName:@"CIVignetteEffect"];
-//attributes = [filter attributes];
-//NSLog(@"filter attributes:%@",attributes);
+#import "PHAsset+Utility.h"
 
 @interface FJFilterManager ()
 
@@ -96,6 +77,26 @@ static bool isFirstAccess = YES;
 #pragma mark - Test
 
 - (void)_test1 {
+    
+    // CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
+    // CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
+    // CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
+    
+    //CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+    //NSDictionary* attributes = [filter attributes];
+    //NSLog(@"filter attributes:%@",attributes);
+    //
+    //filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
+    //attributes = [filter attributes];
+    //NSLog(@"filter attributes:%@",attributes);
+    //
+    //filter = [CIFilter filterWithName:@"CIVignette"];
+    //attributes = [filter attributes];
+    //NSLog(@"filter attributes:%@",attributes);
+    //
+    //filter = [CIFilter filterWithName:@"CIVignetteEffect"];
+    //attributes = [filter attributes];
+    //NSLog(@"filter attributes:%@",attributes);
     
     /* 滤镜分类Categories */
     /*
@@ -325,6 +326,15 @@ static bool isFirstAccess = YES;
     });
 }
 
+- (UIImage *)getImage:(CIFilter *)filter {
+    
+    CGImageRef ref = [self.context createCGImage:filter.outputImage fromRect:filter.outputImage.extent];
+    UIImage *filterImage = [UIImage imageWithCGImage:ref];
+    //释放
+    CGImageRelease(ref);
+    return filterImage;
+}
+
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result {
     
     __weak typeof(self) weakSelf = self;
@@ -352,18 +362,43 @@ static bool isFirstAccess = YES;
     });
 }
 
-- (void)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType result:(void(^)(UIImage *image))result {
+- (UIImage *)getImageCombine:(NSArray<CIFilter *> *)filters {
+    
+    // 去重
+    NSArray *uniqueArray = [filters fj_uniqueObjects];
+    
+    // 合成Filter
+    // 第一个Filter必须有CIImage输入源
+    for (int i = 1; i < uniqueArray.count; i++) {
+        CIFilter *filter = [uniqueArray objectAtIndex:i];
+        CIFilter *preFilter = [uniqueArray objectAtIndex:i-1];
+        [filter setValue:preFilter.outputImage forKey:kCIInputImageKey];
+    }
+    CIFilter *lastFilter = [uniqueArray lastObject];
+    CGImageRef ref = [self.context createCGImage:lastFilter.outputImage fromRect:lastFilter.outputImage.extent];
+    UIImage *filterImage = [UIImage imageWithCGImage:ref];
+    //释放
+    CGImageRelease(ref);
+    return filterImage;
+}
+
+- (UIImage *)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
     
     if (image == nil || ![image isKindOfClass:[UIImage class]]) {
-        result == nil ? : result(nil);
-        return;
+        return nil;
     }
     
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:ciImage brightness:tuningObject.brightnessValue contrast:tuningObject.contrastValue saturation:tuningObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuningObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuningObject.vignetteValue];
-    [self getImageCombine:@[filter1, filter2, filter3] result:result];
+    return [self getImageCombine:@[filter1, filter2, filter3]];
+}
+
+- (UIImage *)getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
+    
+    UIImage *image = [asset getStaticTargetImage];
+    return [self getImage:image tuningObject:tuningObject appendFilterType:filterType];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FJPhotoEditTuningValueView.h"
+#import "FJPhotoManager.h"
 
 @interface FJPhotoEditTuningView : UIView
 

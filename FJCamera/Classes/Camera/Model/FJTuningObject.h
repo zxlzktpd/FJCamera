@@ -32,4 +32,6 @@ typedef NS_ENUM(NSInteger, FJTuningType) {
 // 晕影 [-100, 100] 默认 0
 @property (nonatomic, assign) float vignetteValue;
 
+- (void)setType:(FJTuningType)type value:(float)value;
+
 @end

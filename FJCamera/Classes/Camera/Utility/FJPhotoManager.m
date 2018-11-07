@@ -7,10 +7,45 @@
 //
 
 #import "FJPhotoManager.h"
+#import "PHAsset+Utility.h"
+
+@implementation FJPhotoModel
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.tuningObject = [[FJTuningObject alloc] init];
+        self.imageTags = (NSMutableArray<FJImageTagModel *> *)[[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+- (instancetype)initWithAsset:(PHAsset *)asset {
+    
+    self = [self init];
+    self.asset = asset;
+    return self;
+}
+
+- (UIImage *)originalImage {
+    
+    if (_originalImage == nil) {
+        _originalImage = [self.asset getStaticTargetImage];
+    }
+    return _originalImage;
+}
+
+- (UIImage *)currentImage {
+    
+    if (_croppedImage != nil) {
+        return _croppedImage;
+    }
+    return _originalImage;
+}
+
+@end
 
 @interface FJPhotoManager ()
-
-@property (nonatomic, assign) BOOL currentPhotoChanged;
 
 @end
 
@@ -52,172 +87,69 @@ static bool isFirstAccess = YES;
         [self doesNotRecognizeSelector:_cmd];
     }
     self = [super init];
-    self.selectedPhotoAssets = (NSMutableArray<PHAsset *> *)[NSMutableArray new];
-    self.selectedPhotoAssetsCroppedImages = (NSMutableDictionary<PHAsset *, UIImage *> *)[NSMutableDictionary new];
-    self.selectedPhotoAssetsTuningValues = (NSMutableDictionary<PHAsset *, FJTuningObject *> *)[NSMutableDictionary new];
-    self.selectedPhotoAssetsImageTags = (NSMutableDictionary<PHAsset *, NSMutableArray<FJImageTagModel *> *> *)[NSMutableDictionary new];
     return self;
 }
 
-- (void)setCurrentIndex:(NSUInteger)currentIndex {
+- (NSMutableArray<FJPhotoModel *> *)allPhotos {
     
-    if (_currentIndex != currentIndex) {
-        _currentIndex = currentIndex;
-        self.currentPhotoAsset = [self.selectedPhotoAssets fj_safeObjectAtIndex:_currentIndex];
+    if (_allPhotos == nil) {
+        _allPhotos = (NSMutableArray<FJPhotoModel *> *)[[NSMutableArray alloc] init];
+    }
+    return _allPhotos;
+}
+
+// 新增
+- (FJPhotoModel *)add:(PHAsset *)asset {
+    
+    if (asset != nil) {
+        FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
+        [self.allPhotos addObject:model];
+        return model;
+    }
+    return nil;
+}
+
+// 删除
+- (void)remove:(PHAsset *)asset {
+    
+    if (asset != nil) {
+        for (int i = (int)self.allPhotos.count - 1; i >= 0; i-- ) {
+            FJPhotoModel *model = [self.allPhotos objectAtIndex:i];
+            if ([model.asset isEqual:asset]) {
+                [self.allPhotos removeObjectAtIndex:i];
+                break;
+            }
+        }
     }
 }
 
-- (void)setCurrentPhotoAsset:(PHAsset *)currentPhotoAsset {
+// 删除（Index）
+- (void)removeByIndex:(NSUInteger)index {
     
-    if ([_currentPhotoAsset isEqual:currentPhotoAsset]) {
-        _currentPhotoChanged = NO;
-    }else {
-        _currentPhotoAsset = currentPhotoAsset;
-        _currentPhotoChanged = YES;
-        _currentPhotoImage = nil;
-        MF_WEAK_SELF
-        [FJPhotoManager getStaticTargetImage:self.currentPhotoAsset async:YES result:^(UIImage *image) {
-            weakSelf.currentPhotoImage = image;
-        }];
-    }
+    [self.allPhotos removeObjectAtIndex:index];
 }
 
-// 初始化
-- (void)initialOrAdd:(NSMutableArray<PHAsset *> *)selectedPhotoAssets {
+// 交换
+- (void)switchPosition:(NSUInteger)one another:(NSUInteger)another {
     
-    if (selectedPhotoAssets == nil || selectedPhotoAssets.count == 0) {
+    [self.allPhotos exchangeObjectAtIndex:one withObjectAtIndex:another];
+}
+
+// 插入首部
+- (void)setTopPosition:(NSUInteger)index {
+    
+    if (index == 0) {
         return;
     }
-    self.currentPhotoAsset = [selectedPhotoAssets firstObject];
-    [self.selectedPhotoAssets addObjectsFromArray:selectedPhotoAssets];
-    for (PHAsset *asset in self.selectedPhotoAssets) {
-        [self.selectedPhotoAssetsTuningValues setObject:[FJTuningObject new] forKey:asset];
-    }
+    [self.allPhotos insertObject:[self.allPhotos objectAtIndex:index] atIndex:0];
+    [self.allPhotos removeObjectAtIndex:(index+1)];
 }
 
-// 清空参数
+// 清空
 - (void)clean {
     
-    self.currentPhotoChanged = NO;
-    self.currentPhotoAsset = nil;
-    self.currentPhotoImage = nil;
-    self.currentIndex = 0;
-    
-    [self.selectedPhotoAssets removeAllObjects];
-    [self.selectedPhotoAssetsCroppedImages removeAllObjects];
-    [self.selectedPhotoAssetsTuningValues removeAllObjects];
-    [self.selectedPhotoAssetsImageTags removeAllObjects];
+    [self.allPhotos removeAllObjects];
 }
 
-// 获取当前照片的TuningObject
-- (FJTuningObject *)currentTuningObject {
-    
-    return [self tuningObject:self.currentPhotoAsset];
-}
-
-// 获取TuningObject
-- (FJTuningObject *)tuningObject:(PHAsset *)asset {
-    
-    FJTuningObject *object = [self.selectedPhotoAssetsTuningValues objectForKey:asset];
-    return object;
-}
-
-// 设置当前照片的Tuning参数
-- (void)setCurrentTuningObject:(FJTuningType)type value:(float)value {
-    
-    [self setTuningObject:type value:value forAsset:self.currentPhotoAsset];
-}
-
-// 设置照片的Tuning参数
-- (void)setTuningObject:(FJTuningType)type value:(float)value forAsset:(PHAsset *)asset {
-    
-    FJTuningObject *tuningObject = [self currentTuningObject];
-    switch (type) {
-        case FJTuningTypeBrightness:
-        {
-            tuningObject.brightnessValue = value;
-            break;
-        }
-        case FJTuningTypeContrast:
-        {
-            tuningObject.contrastValue = value;
-            break;
-        }
-        case FJTuningTypeSaturation:
-        {
-            tuningObject.saturationValue = value;
-            break;
-        }
-        case FJTuningTypeTemperature:
-        {
-            tuningObject.temperatureValue = value;
-            break;
-        }
-        case FJTuningTypeVignette:
-        {
-            tuningObject.vignetteValue = value;
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-// 获取当前Cropped Image
-- (UIImage *)currentCroppedImage {
-    
-    return [self croppedImage:self.currentPhotoAsset];
-}
-
-// 获取Cropped Image
-- (UIImage *)croppedImage:(PHAsset *)asset {
-    
-    if (asset == nil) {
-        return nil;
-    }
-    return [self.selectedPhotoAssetsCroppedImages objectForKey:asset];
-}
-
-// 设置当前照片的Cropped Image
-- (void)setCurrentCroppedImage:(UIImage *)image {
-    
-    [self setCroppedImage:image forAsset:self.currentPhotoAsset];
-}
-
-// 设置照片的Cropped Image
-- (void)setCroppedImage:(UIImage *)image forAsset:(PHAsset *)asset {
-    
-    if (image == nil) {
-        [self.selectedPhotoAssetsCroppedImages removeObjectForKey:asset];
-    }else {
-        [self.selectedPhotoAssetsCroppedImages setObject:image forKey:asset];
-    }
-}
-
-// 同步获取固定尺寸的图片
-+ (void)getStaticTargetImage:(PHAsset *)asset async:(BOOL)async result:(void(^)(UIImage * image))result {
-    
-    if (async) {
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [FJPhotoManager _getStaticTargetImage:asset result:result];
-        });
-    }else {
-        [FJPhotoManager _getStaticTargetImage:asset result:result];
-    }
-}
-
-+ (void)_getStaticTargetImage:(PHAsset *)asset result:(void(^)(UIImage * image))result {
-
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    // 同步获得图片, 只会返回1张图片
-    options.synchronous = YES;
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
-    [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            result == nil ? : result(image);
-        });
-    }];
-}
 
 @end

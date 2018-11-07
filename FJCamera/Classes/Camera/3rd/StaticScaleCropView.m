@@ -80,16 +80,9 @@
     return cropped;
 }
 
-- (void)updateCurrentTuning:(FJTuningObject *)tuningObject; {
+- (void)updateCurrentTuning:(FJTuningObject *)tuningObject {
     
-    __weak typeof(self) weakSelf = self;
-    [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:FJFilterTypeNull result:^(UIImage *image) {
-        [weakSelf performSelectorOnMainThread:@selector(_setImage:) withObject:image waitUntilDone:NO];
-    }];
-}
-
-- (void)_setImage:(UIImage *)image {
-    
+    UIImage *image = [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:FJFilterTypeNull];
     self.imageView.image = image;
 }
 
