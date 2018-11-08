@@ -31,13 +31,19 @@
 @property (nonatomic, copy) void(^userOverLimitationBlock)(void);
 
 // Next Block
-@property (nonatomic, copy) void(^userNextBlock)(NSMutableArray<FJPhotoModel *> *selectedPhotoAssets);
+@property (nonatomic, copy) void(^userNextBlock)(NSMutableArray<FJPhotoModel *> *selectedPhotos);
+
+// 用户设置的未获得访问相册权限的Block
+@property (nonatomic, copy) void(^userNoPhotoLibraryPermissionBlock)(void);
+
+// 用户设置的未获得访问相机权限的Block
+@property (nonatomic, copy) void(^userNoCameraPermissionBlock)(void);
 
 // Mode (Edit Controller)
 @property (nonatomic, assign) FJPhotoEditMode mode;
 
-// 相片和Tag输出Block (Edit Controller)
-@property (nonatomic, copy) void(^outputBlock)(NSArray<UIImage *> *images, NSArray<FJImageTagModel *> *tags);
+// 编辑 Next Block (Edit Controller)
+@property (nonatomic, copy) void(^userEditNextBlock)(void);
 
 // 初始化
 - (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;

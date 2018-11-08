@@ -127,9 +127,11 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self fj_navigationBarHidden:NO];
     [self fj_navigationBarStyle:[UIColor whiteColor] translucent:NO bottomLineColor:@"#E6E6E6".fj_color];
-    [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
-        [weakSelf fj_dismiss];
-    }];
+    if (self.editPhotoIndex == nil) {
+        [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
+            [weakSelf fj_dismiss];
+        }];
+    }
     [self fj_addRightBarCustomView:self.nextBtn action:nil];
     
     // Title View
@@ -254,8 +256,6 @@
     }
     
     // ScrollView
-    self.index = 0;
-    [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:0];
     if (_scrollView == nil) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - _toolbar.bounds.size.height)];
         _scrollView.delegate = self;
@@ -292,6 +292,13 @@
             [weakScrollView addSubview:imageView];
             imageView.tag = [model.asset hash];
             
+            // 添加TagView
+            for (FJImageTagModel *tagModel in model.imageTags) {
+                
+                CGPoint p = CGPointMake(imageView.bounds.size.width * tagModel.xPercent, imageView.bounds.size.height * tagModel.yPercent);
+                [weakSelf _addImageTagOnImageView:imageView tag:tagModel point:p];
+            }
+            
             // 打Tag手势
             [imageView setUserInteractionEnabled:YES];
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAddTag:)];
@@ -300,6 +307,18 @@
         }
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width * self.selectedPhotos.count, _scrollView.bounds.size.height);
     }
+    
+    // 定位当前Photo Index
+    if (self.editPhotoIndex != nil) {
+        self.index = [self.editPhotoIndex intValue];
+    }else {
+        self.index = 0;
+    }
+    // 当从编辑进来的，相册数量同步FJPhotoManager
+    [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:0];
+    // 滚动到当前相片
+    [_scrollView setContentOffset:CGPointMake(UI_SCREEN_WIDTH * self.index, 0)];
+    [self.customTitleView updateIndex:self.index];
 }
 
 - (UIImageView *)currentImageView {
@@ -401,10 +420,14 @@
         }
         if (weakSelf.alertView == nil) {
             weakSelf.alertView = [FJPhotoTagAlertView create:frame deleteBlock:^{
+                
+                FJPhotoModel *photoModel = [FJPhotoManager shared].currentEditPhoto;
+                [photoModel.imageTags removeObject:[photoImageTagView getTagModel]];
                 [photoImageTagView removeFromSuperview];
                 [weakSelf.alertView removeFromSuperview];
                 weakSelf.alertView = nil;
             } switchBlock:^{
+                
                 [photoImageTagView reverseDirection];
                 [weakSelf.alertView removeFromSuperview];
                 weakSelf.alertView = nil;
@@ -426,19 +449,7 @@
     
     [_alertView removeFromSuperview];
     _alertView = nil;
-    NSMutableArray *images = [[NSMutableArray alloc] init];
-    NSMutableArray *tags = [[NSMutableArray alloc] init];
-    for (int i = 0 ; i < self.scrollView.subviews.count; i++) {
-        __block UIImageView *imageView = [self.scrollView.subviews objectAtIndex:i];
-        [images addObject:imageView.image];
-        for (int j = 0; j < [imageView.subviews count]; j++) {
-            FJPhotoImageTagView *tagView = [imageView.subviews objectAtIndex:j];
-            FJImageTagModel *tagModel = [tagView getTagModel];
-            tagModel.photoHash = [imageView.image hash];
-            [tags addObject:tagModel];
-        }
-    }
-    self.outputBlock == nil ? : self.outputBlock(images, tags);
+    self.userEditNextBlock == nil ? : self.userEditNextBlock();
 }
 
 #pragma mark - UIScrollView Delegate
@@ -453,6 +464,8 @@
 #pragma mark - FJPhotoEditTagDelegate
 - (void)fj_photoEditAddTag:(FJImageTagModel *)model point:(CGPoint)point {
     
+    FJPhotoModel *photoModel = [FJPhotoManager shared].currentEditPhoto;
+    [photoModel.imageTags addObject:model];
     [self _addImageTagOnImageView:self.currentImageView tag:model point:point];
 }
 

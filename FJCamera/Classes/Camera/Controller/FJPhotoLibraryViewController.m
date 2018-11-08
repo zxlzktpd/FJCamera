@@ -11,12 +11,14 @@
 #import "FJPhotoLibraryAlbumSelectionView.h"
 #import "FJPhotoCollectionViewCell.h"
 
-@interface FJPhotoLibraryViewController ()
+@interface FJPhotoLibraryViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 // CollectionView
 @property (nonatomic, strong) FJCollectionView *collectionView;
 // Navigation TitleView
 @property (nonatomic, strong) FJPhotoLibrarySelectionView *customTitleView;
+// Image Picker Controller
+@property (nonatomic, strong) UIImagePickerController *imagePickerController;
 // Next Button
 @property (nonatomic, strong) UIButton *nextBtn;
 // 选择相册组件
@@ -31,9 +33,24 @@
 // Edit Controller Block
 @property (nonatomic, copy) __kindof FJPhotoUserTagBaseViewController * (^editController)(FJPhotoEditViewController *controller);
 
+// First Picture Auto Selected (拍照后刷新自动选择)
+@property (nonatomic, assign) BOOL firstPhotoAutoSelected;
+
 @end
 
 @implementation FJPhotoLibraryViewController
+
+- (UIImagePickerController *)imagePickerController {
+    
+    if (_imagePickerController == nil) {
+        _imagePickerController = [[UIImagePickerController alloc] init];
+        _imagePickerController.delegate = self;
+        _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+        _imagePickerController.modalPresentationStyle = UIModalTransitionStyleCrossDissolve;
+        _imagePickerController.allowsEditing = YES;
+    }
+    return _imagePickerController;
+}
 
 - (UIButton *)nextBtn {
     
@@ -93,12 +110,37 @@
 
 - (void)viewDidLoad {
     
+    MF_WEAK_SELF
     [super viewDidLoad];
-    [self _buildUI];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.view.backgroundColor = @"#F5F5F5".fj_color;
+    [self fj_navigationBarHidden:NO];
+    [self fj_navigationBarStyle:[UIColor whiteColor] translucent:NO bottomLineColor:@"#E6E6E6".fj_color];
+    [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
+        [weakSelf fj_dismiss];
+    }];
+    
     // 获取权限
     // 加载相册
-    MF_WEAK_SELF
     PHAuthorizationStatus oldStatus = [PHPhotoLibrary authorizationStatus];
+    if (oldStatus == PHAuthorizationStatusDenied || oldStatus == PHAuthorizationStatusRestricted) {
+        if (self.userNoPhotoLibraryPermissionBlock != nil) {
+            self.userNoPhotoLibraryPermissionBlock();
+        }else {
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+                if (@available(iOS 10.0, *)) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
+                } else {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                }
+            }];
+            FJAlertModel *cancel = [FJAlertModel alertModel:@"取消" action:^{
+                [weakSelf fj_dismiss];
+            }];
+            [weakSelf fj_alertView:nil message:@"未获得相册权限" cancel:NO item:alert,cancel, nil];
+        }
+        return;
+    }
     // 如果用户还没有做出选择，会自动弹框，用户对弹框做出选择后才会调用block
     // 如果之前做过选择，会直接执行调用block
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
@@ -119,12 +161,13 @@
                     }];
                     [weakSelf fj_alertView:nil message:@"系统设置禁止App访问相册" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
                 }
-            }else if (status == PHAuthorizationStatusAuthorized) {
-                // 用户允许当前APP访问相册
-                [weakSelf _reloadPhotoAssetCollections];
             }else if (status == PHAuthorizationStatusRestricted) {
                 // (系统原因)无法访问相册
                 [weakSelf fj_dismiss];
+            }else if (status == PHAuthorizationStatusAuthorized) {
+                // 用户允许当前APP访问相册
+                [weakSelf _buildUI];
+                [weakSelf _reloadPhotoAssetCollections];
             }
         });
     }];
@@ -142,13 +185,6 @@
 - (void)_buildUI {
     
     MF_WEAK_SELF
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.view.backgroundColor = [UIColor whiteColor];
-    [self fj_navigationBarHidden:NO];
-    [self fj_navigationBarStyle:[UIColor whiteColor] translucent:NO bottomLineColor:@"#E6E6E6".fj_color];
-    [self fj_addLeftBarButton:[FJStorage podImage:@"ic_back" class:[self class]] action:^{
-        [weakSelf fj_dismiss];
-    }];
     [self fj_addRightBarCustomView:self.nextBtn action:nil];
     
     if (_customTitleView == nil) {
@@ -331,7 +367,7 @@
         // 推出 FJPhotoEditViewController
         FJPhotoEditViewController *editVC = [[FJPhotoEditViewController alloc] initWithMode:self.mode editController:self.editController];
         editVC.selectedPhotos = self.selectedPhotos;
-        editVC.outputBlock = self.outputBlock;
+        editVC.userEditNextBlock = self.userEditNextBlock;
         editVC.mode = self.mode;
         [self.navigationController pushViewController:editVC animated:YES];
     }
@@ -339,6 +375,24 @@
 
 - (void)_openCamera {
     
+    if ([self _cameraPermission] == NO) {
+        if (self.userNoCameraPermissionBlock != nil) {
+            self.userNoCameraPermissionBlock();
+        }else {
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+                if (@available(iOS 10.0, *)) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
+                } else {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                }
+            }];
+            [self fj_alertView:nil message:@"未获得相机权限" cancel:YES item:alert, nil];
+        }
+        return;
+    }else {
+        
+        [self.navigationController presentViewController:self.imagePickerController animated:YES completion:nil];
+    }
 }
 
 - (void)_openEditingController:(UIImage *)image {
@@ -376,6 +430,15 @@
         [self.photoAssetCollections fj_safeAddObject:collection];
     }
     
+    // 去除相册集数量为0的对象
+    for (int index = (int)self.photoAssetCollections.count - 1; index >= 0; index--) {
+        PHAssetCollection *assetCollection = [self.photoAssetCollections objectAtIndex:index];
+        PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+        if (assets == nil || assets.count == 0) {
+            [self.photoAssetCollections removeObjectAtIndex:index];
+        }
+    }
+    
     // 默认选择 系统相册
     self.currentPhotoAssetColletion = self.photoAssetCollections.firstObject;
     
@@ -397,23 +460,79 @@
     // 排序（最新排的在前面）
     option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
-    for (PHAsset *asset in assets) {
+    
+    // 判断firstPhotoAutoSelected
+    // 相片数据
+    int i = 0;
+    if (self.firstPhotoAutoSelected) {
+        self.firstPhotoAutoSelected = NO;
+        PHAsset *firstAsset = [assets firstObject];
+        i = 1;
+        FJPhotoModel *model = [[FJPhotoManager shared] add:firstAsset];
+        [self.selectedPhotos fj_safeAddObject:model];
+        
+        FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
+        ds.isMultiSelection = YES;
+        ds.isSelected = YES;
+        ds.photoAsset = firstAsset;
+        [self.collectionView.fj_dataSource addObject:ds];
+    }
+    for (; i < assets.count; i++) {
+        PHAsset *asset = [assets objectAtIndex:i];
         BOOL isSelected = NO;
-        for (PHAsset *selectedPhotoAsset in self.selectedPhotos) {
-            if ([selectedPhotoAsset.localIdentifier isEqualToString:asset.localIdentifier]) {
+        for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
+            if ([selectedPhoto.asset isEqual:asset]) {
                 isSelected = YES;
                 break;
             }
         }
-        
         FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
         ds.isSelected = isSelected;
         ds.photoAsset = asset;
-        
         [self.collectionView.fj_dataSource addObject:ds];
-        [self.collectionView fj_refresh];
     }
+    [self.collectionView fj_refresh];
+}
+
+- (BOOL)_cameraPermission {
+    
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)_photoLibraryPermission {
+    
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusDenied || status == PHAuthorizationStatusRestricted) {
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark - UIImagePickerViewController Delegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+        UIImage *image = info[@"UIImagePickerControllerEditedImage"];
+        void *contextInfo = NULL;
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), contextInfo);
+    }
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    
+    self.firstPhotoAutoSelected = YES;
+    [self.imagePickerController fj_dismiss];
+    [self _reloadPhotoAssetCollections];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [self.imagePickerController fj_dismiss];
 }
 
 /*
