@@ -18,6 +18,8 @@
 
 - (void)updateImage:(UIImage *)image;
 
+- (void)updateCurrentTuning:(FJTuningObject *)tuningObject;
+
 - (UIImage *)getFilterImage;
 
 - (void)updatePhoto:(FJPhotoModel *)photo brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;

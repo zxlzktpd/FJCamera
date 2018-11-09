@@ -17,4 +17,6 @@
 
 - (void)updateSelected:(BOOL)selected;
 
+- (void)updateFilterImage:(UIImage *)filterImage;
+
 @end

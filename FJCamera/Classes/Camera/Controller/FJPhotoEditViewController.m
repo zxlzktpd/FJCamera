@@ -169,8 +169,29 @@
                 weakSelf.cropperView.hidden = YES;
                 weakSelf.filterView.hidden = YES;
                 _ratio = nil;
+                FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
+                if (currentPhoto.imageTags.count > 0 && weakSelf.currentImageView.subviews.count == 0) {
+                    // 裁剪界面返回完成后恢复TagView
+                    for (FJImageTagModel *tagModel in currentPhoto.imageTags) {
+                        CGPoint p = CGPointMake(weakSelf.currentImageView.bounds.size.width * tagModel.xPercent, weakSelf.currentImageView.bounds.size.height * tagModel.yPercent);
+                        [weakSelf _addImageTagOnImageView:weakSelf.currentImageView tag:tagModel point:p];
+                    }
+                }
             }
+        } filterBlock:^(FJFilterType filterType) {
+            
+            FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
+            currentPhoto.tuningObject.filterType = filterType;
+            [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
+            
         } cropBlock:^(NSString *ratio, BOOL confirm) {
+            
+            // 暂时删除当前ImageView视图的所有TagView
+            for (FJPhotoImageTagView *tagView in self.currentImageView.subviews) {
+                if ([tagView isKindOfClass:[FJPhotoImageTagView class]]) {
+                    [tagView removeFromSuperview];
+                }
+            }
             
             if ([ratio isEqualToString:_ratio] && confirm == _confirm) {
                 return;
@@ -181,8 +202,14 @@
             // NSLog(@"Ration : %@ Confirm : %@", ratio, confirm ? @"YES" : @"NO");
             if (confirm) {
                 UIImage *croppedImage = [weakSelf.cropperView croppedImage];
+                FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
                 [FJPhotoManager shared].currentEditPhoto.croppedImage = croppedImage;
                 [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
+                // 裁剪完成后恢复TagView
+                for (FJImageTagModel *tagModel in currentPhoto.imageTags) {
+                    CGPoint p = CGPointMake(weakSelf.currentImageView.bounds.size.width * tagModel.xPercent, weakSelf.currentImageView.bounds.size.height * tagModel.yPercent);
+                    [weakSelf _addImageTagOnImageView:weakSelf.currentImageView tag:tagModel point:p];
+                }
             }else {
                 __block float r = 1.0;
                 if ([ratio isEqualToString:@"1:1"]) {
@@ -212,8 +239,53 @@
             }else {
                 [weakSelf.view bringSubviewToFront:weakSelf.filterView];
                 weakSelf.filterView.hidden = NO;
-                // 效果图
-                [weakSelf.filterView updateImage:currentPhoto.currentImage];
+                
+                // 当点击调整Tab时候，默认会进来一次
+                // 当tuningObject值和value相等表示是第一次进来
+                // 否则，非第一次进来，不设置效果图，提高性能
+                BOOL isFirst = NO;
+                switch (type) {
+                    case FJTuningTypeBrightness:
+                    {
+                        if (currentPhoto.tuningObject.brightnessValue == value) {
+                            isFirst = YES;
+                        }
+                        break;
+                    }
+                    case FJTuningTypeContrast:
+                    {
+                        if (currentPhoto.tuningObject.contrastValue == value) {
+                            isFirst = YES;
+                        }
+                        break;
+                    }
+                    case FJTuningTypeSaturation:
+                    {
+                        if (currentPhoto.tuningObject.saturationValue == value) {
+                            isFirst = YES;
+                        }
+                        break;
+                    }
+                    case FJTuningTypeTemperature:
+                    {
+                        if (currentPhoto.tuningObject.temperatureValue == value) {
+                            isFirst = YES;
+                        }
+                        break;
+                    }
+                    case FJTuningTypeVignette:
+                    {
+                        if (currentPhoto.tuningObject.vignetteValue == value) {
+                            isFirst = YES;
+                        }
+                        break;
+                    }
+                }
+                if (isFirst) {
+                    // 效果图
+                    [weakSelf.filterView updateImage:currentPhoto.currentImage];
+                    [weakSelf.filterView updateCurrentTuning:currentPhoto.tuningObject];
+                }
                 switch (type) {
                     case FJTuningTypeBrightness:
                     {
@@ -251,11 +323,7 @@
             make.left.bottom.right.equalTo(weakSelf.view);
             make.height.equalTo(@167.0);
         }];
-        
-        _toolbar.filterBlock = ^{
-            NSLog(@"tap filter");
-        };
-        
+
         _toolbar.tagBlock = ^{
             
             if ([weakSelf.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
@@ -459,8 +527,15 @@
     
     NSUInteger page = (NSUInteger)(scrollView.contentOffset.x / UI_SCREEN_WIDTH);
     self.index = page;
-    [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:page];
     [self.customTitleView updateIndex:page];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    
+    [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:self.index];
+    if ([_toolbar getIndex] == 0) {
+        [self.toolbar refreshFilterToolbar];
+    }
 }
 
 #pragma mark - FJPhotoEditTagDelegate

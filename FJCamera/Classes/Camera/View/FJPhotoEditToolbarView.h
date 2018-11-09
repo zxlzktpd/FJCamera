@@ -12,12 +12,16 @@
 
 @interface FJPhotoEditToolbarView : UIView
 
-@property (nonatomic, copy) void(^filterBlock)(void);
 @property (nonatomic, copy) void(^tagBlock)(void);
 @property (nonatomic, copy) void(^editingBlock)(BOOL inEditing);
+@property (nonatomic, copy) void(^filterBlock)(FJFilterType filterType);
 @property (nonatomic, copy) void(^cropBlock)(NSString *ratio, BOOL confirm);
 @property (nonatomic, copy) void(^tuneBlock)(FJTuningType type, float value, BOOL confirm);
 
-+ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode editingBlock:(void (^)(BOOL inEditing))editingBlock cropBlock:(void (^)(NSString *ratio, BOOL confirm))cropBlock tuneBlock:(void(^)(FJTuningType type, float value, BOOL confirm))tuneBlock;
++ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode editingBlock:(void (^)(BOOL inEditing))editingBlock filterBlock:(void(^)(FJFilterType filterType))filterBlock cropBlock:(void (^)(NSString *ratio, BOOL confirm))cropBlock tuneBlock:(void(^)(FJTuningType type, float value, BOOL confirm))tuneBlock;
+
+- (NSUInteger)getIndex;
+
+- (void)refreshFilterToolbar;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "FJPhotoManager.h"
 #import "PHAsset+Utility.h"
+#import "FJFilterManager.h"
 
 @implementation FJPhotoModel
 
@@ -49,6 +50,37 @@
         return _croppedImage;
     }
     return _originalImage;
+}
+
+- (NSMutableArray<UIImage *> *)filterThumbImages {
+    
+    if (_filterThumbImages == nil) {
+        _filterThumbImages = (NSMutableArray<UIImage *> *)[[NSMutableArray alloc] init];
+        for (int i = 0; i < [FJPhotoModel filterTypes].count; i++ ) {
+            FJFilterType type = [[[FJPhotoModel filterTypes] objectAtIndex:i] integerValue];
+            UIImage *filteredSmallImage = [[FJFilterManager shared] getImage:self.smallOriginalImage filterType:type];
+            [_filterThumbImages addObject:filteredSmallImage];
+        }
+    }
+    return _filterThumbImages;
+}
+
++ (NSArray *)filterTypes {
+    
+    return @[@(FJFilterTypeOriginal),
+             @(FJFilterTypePhotoEffectChrome),
+             @(FJFilterTypePhotoEffectFade),
+             @(FJFilterTypePhotoEffectInstant),
+             @(FJFilterTypePhotoEffectMono),
+             @(FJFilterTypePhotoEffectNoir),
+             @(FJFilterTypePhotoEffectProcess),
+             @(FJFilterTypePhotoEffectTonal),
+             @(FJFilterTypePhotoEffectTransfer)];
+}
+
++ (NSArray *)filterTitles {
+    
+    return @[@"原图",@"Chrome",@"Fade",@"Instant",@"Mono",@"Noir",@"Process",@"Tonal",@"Transfer"];
 }
 
 @end

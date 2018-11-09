@@ -12,13 +12,14 @@
 @interface FJPhotoEditFilterView ()
 
 @property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicator;
 @property (nonatomic, copy) void(^selectedBlock)(NSUInteger index);
 
 @end
 
 @implementation FJPhotoEditFilterView
 
-+ (FJPhotoEditFilterView *)create:(CGRect)frame filterImages:(NSArray *)filterImages filterNames:(NSArray *)filterNames selectedBlock:(void(^)(NSUInteger index))selectedBlock {
++ (FJPhotoEditFilterView *)create:(CGRect)frame filterImages:(NSArray *)filterImages filterNames:(NSArray *)filterNames selectedIndex:(NSUInteger)selectedIndex selectedBlock:(void(^)(NSUInteger index))selectedBlock {
     
     if (filterImages == nil || filterImages.count == 0 || filterNames == nil || filterNames.count == 0 || filterImages.count != filterNames.count) {
         return nil;
@@ -37,15 +38,35 @@
     view.scrollView.showsVerticalScrollIndicator = NO;
     view.scrollView.showsHorizontalScrollIndicator = NO;
     view.scrollView.contentSize = CGSizeMake(filterImages.count * (80.0 + 4.0) + 4.0, 100.0);
+    [view setSelectedIndex:selectedIndex scrollable:NO];
     return view;
+}
+
+- (void)updateFilterImages:(NSArray *)filterImages {
+    
+    for (int i = 0; i < self.scrollView.subviews.count; i++) {
+        FJPhotoEditFilterGenreView *genreView = [self.scrollView.subviews objectAtIndex:i];
+        if ([genreView isKindOfClass:[FJPhotoEditFilterGenreView class]]) {
+            [genreView updateFilterImage:[filterImages fj_safeObjectAtIndex:i]];
+        }
+    }
 }
 
 - (void)_tap:(UIButton *)button {
     
     self.selectedBlock == nil ? : self.selectedBlock(button.tag);
+    [self setSelectedIndex:button.tag scrollable:NO];
+}
+
+- (void)setSelectedIndex:(NSUInteger)index scrollable:(BOOL)scrollable {
+    
+    if (scrollable) {
+        [self.scrollView setContentOffset:CGPointMake(index * (80.0 + 4.0), 0)];
+    }
+    
     for (int i = 0; i < self.scrollView.subviews.count; i++) {
         FJPhotoEditFilterGenreView *view = [self.scrollView.subviews objectAtIndex:i];
-        if (view.button.tag == button.tag) {
+        if (view.button.tag == index) {
             [view updateSelected:YES];
         }else {
             [view updateSelected:NO];

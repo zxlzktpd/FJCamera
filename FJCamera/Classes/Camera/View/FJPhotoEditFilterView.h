@@ -11,6 +11,10 @@
 
 @interface FJPhotoEditFilterView : UIView
 
-+ (FJPhotoEditFilterView *)create:(CGRect)frame filterImages:(NSArray *)filterImages filterNames:(NSArray *)filterNames selectedBlock:(void(^)(NSUInteger index))selectedBlock;
++ (FJPhotoEditFilterView *)create:(CGRect)frame filterImages:(NSArray *)filterImages filterNames:(NSArray *)filterNames selectedIndex:(NSUInteger)selectedIndex selectedBlock:(void(^)(NSUInteger index))selectedBlock;
+
+- (void)updateFilterImages:(NSArray *)filterImages;
+
+- (void)setSelectedIndex:(NSUInteger)index scrollable:(BOOL)scrollable;
 
 @end

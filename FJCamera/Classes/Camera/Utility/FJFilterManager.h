@@ -40,9 +40,7 @@
 
 - (CIFilter *)filterApplyTo:(CIImage *)ciImage vignette:(float)vignette;
 
-- (void)getImage:(CIFilter *)filter result:(void(^)(UIImage *image))result;
-
-- (UIImage *)getImage:(CIFilter *)filter;
+- (UIImage *)getImage:(UIImage *)image filterType:(FJFilterType)filterType;
 
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result;
 
@@ -51,5 +49,7 @@
 - (UIImage *)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
 
 - (UIImage *)getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
+
+- (CIFilter *)filterBy:(FJFilterType)type;
 
 @end

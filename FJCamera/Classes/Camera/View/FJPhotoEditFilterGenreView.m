@@ -73,6 +73,11 @@
     [self updateSelected:self.selected];
 }
 
+- (void)updateFilterImage:(UIImage *)filterImage {
+    
+    self.filterImageView.image = filterImage;
+}
+
 - (void)updateSelected:(BOOL)selected {
     
     self.selected = selected;

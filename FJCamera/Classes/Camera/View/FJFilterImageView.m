@@ -43,6 +43,12 @@
     self.updated = YES;
 }
 
+- (void)updateCurrentTuning:(FJTuningObject *)tuningObject {
+    
+    UIImage *image = [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:tuningObject.filterType];
+    self.imageView.image = image;
+}
+
 - (UIImage *)getFilterImage {
     
     return self.imageView.image;
@@ -54,8 +60,15 @@
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:brightness contrast:contrast saturation:saturation];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
+    CIFilter *filter4 = [[FJFilterManager shared] filterBy:photo.tuningObject.filterType];
     MF_WEAK_SELF
-    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
+    NSArray *filters = nil;
+    if (filter4 != nil) {
+        filters = @[filter1, filter2, filter3, filter4];
+    }else {
+        filters = @[filter1, filter2, filter3];
+    }
+    [[FJFilterManager shared] getImageCombine:filters result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.imageView.image = image;
         });
@@ -68,9 +81,15 @@
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:temperature];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuneObject.vignetteValue];
-    
+    CIFilter *filter4 = [[FJFilterManager shared] filterBy:photo.tuningObject.filterType];
     MF_WEAK_SELF
-    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
+    NSArray *filters = nil;
+    if (filter4 != nil) {
+        filters = @[filter1, filter2, filter3, filter4];
+    }else {
+        filters = @[filter1, filter2, filter3];
+    }
+    [[FJFilterManager shared] getImageCombine:filters result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.imageView.image = image;
         });
@@ -83,9 +102,15 @@
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:[FJFilterManager shared].originalCIImage brightness:tuneObject.brightnessValue contrast:tuneObject.contrastValue saturation:tuneObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuneObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:vignette];
-    
+    CIFilter *filter4 = [[FJFilterManager shared] filterBy:photo.tuningObject.filterType];
     MF_WEAK_SELF
-    [[FJFilterManager shared] getImageCombine:@[filter1, filter2, filter3] result:^(UIImage *image) {
+    NSArray *filters = nil;
+    if (filter4 != nil) {
+        filters = @[filter1, filter2, filter3, filter4];
+    }else {
+        filters = @[filter1, filter2, filter3];
+    }
+    [[FJFilterManager shared] getImageCombine:filters result:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.imageView.image = image;
         });

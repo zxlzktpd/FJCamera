@@ -28,6 +28,15 @@
 @property (nonatomic, strong) CIFilter *vignetteFilter;
 
 // 固定滤镜
+// 预制滤镜Photo 8款 
+@property (nonatomic, strong) CIFilter *photoEffectChromeFilter;
+@property (nonatomic, strong) CIFilter *photoEffectFadeFilter;
+@property (nonatomic, strong) CIFilter *photoEffectInstantFilter;
+@property (nonatomic, strong) CIFilter *photoEffectMonoFilter;
+@property (nonatomic, strong) CIFilter *photoEffectNoirFilter;
+@property (nonatomic, strong) CIFilter *photoEffectProcessFilter;
+@property (nonatomic, strong) CIFilter *photoEffectTonalFilter;
+@property (nonatomic, strong) CIFilter *photoEffectTransferFilter;
 
 @end
 
@@ -76,147 +85,6 @@ static bool isFirstAccess = YES;
     return self;
 }
 
-#pragma mark - Test
-
-- (void)_test1 {
-    
-    // CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
-    // CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
-    // CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
-    
-    //CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-    //NSDictionary* attributes = [filter attributes];
-    //NSLog(@"filter attributes:%@",attributes);
-    //
-    //filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-    //attributes = [filter attributes];
-    //NSLog(@"filter attributes:%@",attributes);
-    //
-    //filter = [CIFilter filterWithName:@"CIVignette"];
-    //attributes = [filter attributes];
-    //NSLog(@"filter attributes:%@",attributes);
-    //
-    //filter = [CIFilter filterWithName:@"CIVignetteEffect"];
-    //attributes = [filter attributes];
-    //NSLog(@"filter attributes:%@",attributes);
-    
-    /* 滤镜分类Categories */
-    /*
-     CORE_IMAGE_EXPORT NSString * const kCICategoryDistortionEffect;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryGeometryAdjustment;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryCompositeOperation;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryHalftoneEffect;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryColorAdjustment;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryColorEffect;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryTransition;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryTileEffect;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryGenerator;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryReduction NS_AVAILABLE(10_5, 5_0);
-     CORE_IMAGE_EXPORT NSString * const kCICategoryGradient;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryStylize;
-     CORE_IMAGE_EXPORT NSString * const kCICategorySharpen;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryBlur;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryVideo;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryStillImage;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryInterlaced;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryNonSquarePixels;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryHighDynamicRange;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryBuiltIn;
-     CORE_IMAGE_EXPORT NSString * const kCICategoryFilterGenerator NS_AVAILABLE(10_5, 9_0);
-     */
-    
-    /*
-    NSArray *filterNames = [CIFilter filterNamesInCategory:kCICategoryBuiltIn];
-    NSLog(@"总共有%ld种滤镜效果:%@",filterNames.count,filterNames);
-    
-    
-    NSArray* filters = [CIFilter filterNamesInCategory:kCICategoryDistortionEffect];
-    for (NSString* filterName in filters) {
-        NSLog(@"filter name:%@",filterName);
-        // 我们可以通过filterName创建对应的滤镜对象
-        CIFilter* filter = [CIFilter filterWithName:filterName];
-        NSDictionary* attributes = [filter attributes];
-        // 获取属性键/值对(在这个字典中我们可以看到滤镜的属性以及对应的key)
-        NSLog(@"filter attributes:%@",attributes);
-    }
-    
-    // CIColorControls --> 亮度、饱和度、对比度控制 kCIInputBrightnessKey kCIInputSaturationKey kCIInputContrastKey
-    // CITemperatureAndTint --> 色温 kCIInputNeutralTemperatureKey kCIInputNeutralTintKey
-    // CIVignette CIVignetteEffect --> 暗角  inputIntensity inputRadius
-    
-    CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-    NSDictionary* attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CITemperatureAndTint"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CIVignette"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    
-    filter = [CIFilter filterWithName:@"CIVignetteEffect"];
-    attributes = [filter attributes];
-    NSLog(@"filter attributes:%@",attributes);
-    */
-}
-
-- (void)_test2 {
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    // 滤镜效果
-    /*
-    NSArray *operations = @[@"CILinearToSRGBToneCurve",
-                            @"CIPhotoEffectChrome",
-                            @"CIPhotoEffectFade",
-                            @"CIPhotoEffectInstant",
-                            @"CIPhotoEffectMono",
-                            @"CIPhotoEffectNoir",
-                            @"CIPhotoEffectProcess",
-                            @"CIPhotoEffectTonal",
-                            @"CIPhotoEffectTransfer",
-                            @"CISRGBToneCurveToLinear",
-                            @"CIVignetteEffect"];
-    CGFloat width = self.view.frame.size.width / 3;
-    CGFloat height = self.view.frame.size.height / 4;
-    NSMutableArray *imageViews = [NSMutableArray arrayWithCapacity:0];
-    for (int i = 0; i < [operations count]; i++) {
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame: CGRectMake(i%3*width, i/3*height, width, height)];
-        imageView.image = [UIImage imageNamed:@"timg.jpeg"];
-        [imageViews addObject:imageView];
-        [self.view addSubview:imageView];
-    }
-    dispatch_async(dispatch_get_global_queue(0, 0),^{
-        NSMutableArray *images = [NSMutableArray arrayWithCapacity:0];
-        for (int i = 0; i < [operations count]; i++) {
-            UIImage *image = [UIImage imageNamed:@"timg.jpeg"];
-            CIImage *cImage = [[CIImage alloc]initWithImage:image];
-            //使用资源
-            CIFilter *filter = [CIFilter filterWithName:operations[i] keysAndValues:kCIInputImageKey,cImage, nil];
-            //使用默认参数
-            [filter setDefaults];
-            //生成上下文
-            CIContext*context = [CIContext contextWithOptions:nil];
-            //滤镜生成器输出图片
-            CIImage *outputimage = [filter outputImage];
-            //转换为UIImage
-            CGImageRef ref = [context createCGImage:outputimage fromRect:[outputimage extent]];
-            UIImage *temp = [UIImage imageWithCGImage:ref];
-            [images addObject:temp];
-            //释放
-            CGImageRelease(ref);
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for (int x = 0; x < [images count]; x++) {
-                UIImageView *imageView = imageViews[x];
-                imageView.image = images[x];
-            }
-        });
-    });
-    */
-}
-
 #pragma mark - Filter
 - (CIFilter *)colorControlFilter {
     
@@ -240,6 +108,72 @@ static bool isFirstAccess = YES;
         _vignetteFilter = [CIFilter filterWithName:@"CIVignette"];
     }
     return _vignetteFilter;
+}
+
+#pragma mark - Photo Effect Filters
+
+- (CIFilter *)photoEffectChromeFilter {
+    
+    if (_photoEffectChromeFilter == nil) {
+        _photoEffectChromeFilter = [CIFilter filterWithName:@"CIPhotoEffectChrome"];
+    }
+    return _photoEffectChromeFilter;
+}
+
+- (CIFilter *)photoEffectFadeFilter {
+    
+    if (_photoEffectFadeFilter == nil) {
+        _photoEffectFadeFilter = [CIFilter filterWithName:@"CIPhotoEffectFade"];
+    }
+    return _photoEffectFadeFilter;
+}
+
+- (CIFilter *)photoEffectInstantFilter {
+    
+    if (_photoEffectInstantFilter == nil) {
+        _photoEffectInstantFilter = [CIFilter filterWithName:@"CIPhotoEffectInstant"];
+    }
+    return _photoEffectInstantFilter;
+}
+
+- (CIFilter *)photoEffectMonoFilter {
+    
+    if (_photoEffectMonoFilter == nil) {
+        _photoEffectMonoFilter = [CIFilter filterWithName:@"CIPhotoEffectMono"];
+    }
+    return _photoEffectMonoFilter;
+}
+
+- (CIFilter *)photoEffectNoirFilter {
+    
+    if (_photoEffectNoirFilter == nil) {
+        _photoEffectNoirFilter = [CIFilter filterWithName:@"CIPhotoEffectNoir"];
+    }
+    return _photoEffectNoirFilter;
+}
+
+- (CIFilter *)photoEffectProcessFilter {
+    
+    if (_photoEffectProcessFilter == nil) {
+        _photoEffectProcessFilter = [CIFilter filterWithName:@"CIPhotoEffectProcess"];
+    }
+    return _photoEffectProcessFilter;
+}
+
+- (CIFilter *)photoEffectTonalFilter {
+    
+    if (_photoEffectTonalFilter == nil) {
+        _photoEffectTonalFilter = [CIFilter filterWithName:@"CIPhotoEffectTonal"];
+    }
+    return _photoEffectTonalFilter;
+}
+
+- (CIFilter *)photoEffectTransferFilter {
+    
+    if (_photoEffectTransferFilter == nil) {
+        _photoEffectTransferFilter = [CIFilter filterWithName:@"CIPhotoEffectTransfer"];
+    }
+    return _photoEffectTransferFilter;
 }
 
 #pragma mark - Public
@@ -312,24 +246,14 @@ static bool isFirstAccess = YES;
     return self.vignetteFilter;
 }
 
-- (void)getImage:(CIFilter *)filter result:(void(^)(UIImage *image))result {
+- (UIImage *)getImage:(UIImage *)image filterType:(FJFilterType)filterType {
     
-    __weak typeof(self) weakSelf = self;
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-    dispatch_async(queue, ^{
-       
-        CGImageRef ref = [weakSelf.context createCGImage:filter.outputImage fromRect:filter.outputImage.extent];
-        __block UIImage *filterImage = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            result == nil ? : result(filterImage);
-        });
-    });
-}
-
-- (UIImage *)getImage:(CIFilter *)filter {
-    
+    CIFilter *filter = [self filterBy:filterType];
+    if (filter == nil) {
+        return image;
+    }
+    CIImage *ciImage = [[CIImage alloc] initWithImage:image];
+    [filter setValue:ciImage forKey:kCIInputImageKey];
     CGImageRef ref = [self.context createCGImage:filter.outputImage fromRect:filter.outputImage.extent];
     UIImage *filterImage = [UIImage imageWithCGImage:ref];
     //释放
@@ -394,6 +318,10 @@ static bool isFirstAccess = YES;
     CIFilter *filter1 = [[FJFilterManager shared] filterApplyTo:ciImage brightness:tuningObject.brightnessValue contrast:tuningObject.contrastValue saturation:tuningObject.saturationValue];
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuningObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuningObject.vignetteValue];
+    CIFilter *filter4 = [self filterBy:filterType];
+    if (filter4 != nil) {
+        return [self getImageCombine:@[filter1, filter2, filter3, filter4]];
+    }
     return [self getImageCombine:@[filter1, filter2, filter3]];
 }
 
@@ -401,6 +329,47 @@ static bool isFirstAccess = YES;
     
     UIImage *image = [asset getStaticTargetImage];
     return [self getImage:image tuningObject:tuningObject appendFilterType:filterType];
+}
+
+- (CIFilter *)filterBy:(FJFilterType)type {
+    
+    switch (type) {
+        case FJFilterTypePhotoEffectChrome:
+        {
+            return self.photoEffectChromeFilter;
+        }
+        case FJFilterTypePhotoEffectFade:
+        {
+            return self.photoEffectFadeFilter;
+        }
+        case FJFilterTypePhotoEffectInstant:
+        {
+            return self.photoEffectInstantFilter;
+        }
+        case FJFilterTypePhotoEffectMono:
+        {
+            return self.photoEffectMonoFilter;
+        }
+        case FJFilterTypePhotoEffectNoir:
+        {
+            return self.photoEffectNoirFilter;
+        }
+        case FJFilterTypePhotoEffectProcess:
+        {
+            return self.photoEffectProcessFilter;
+        }
+        case FJFilterTypePhotoEffectTonal:
+        {
+            return self.photoEffectTonalFilter;
+        }
+        case FJFilterTypePhotoEffectTransfer:
+        {
+            return self.photoEffectTransferFilter;
+        }
+        case FJFilterTypeOriginal:
+        default:
+            return nil;
+    }
 }
 
 @end

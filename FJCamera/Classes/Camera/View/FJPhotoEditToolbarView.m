@@ -29,6 +29,8 @@
 
 @property (nonatomic, strong) FJPhotoEditFilterView *editFilterView;
 
+@property (nonatomic, assign) NSUInteger index;
+
 @end
 
 @implementation FJPhotoEditToolbarView
@@ -36,36 +38,44 @@
 - (FJPhotoEditFilterView *)editFilterView {
     
     if (_editFilterView == nil) {
-        NSMutableArray *filterImages = [[NSMutableArray alloc] init];
         FJPhotoModel *currentPhotoModel = [FJPhotoManager shared].currentEditPhoto;
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        [filterImages addObject:currentPhotoModel.smallOriginalImage];
-        _editFilterView = [FJPhotoEditFilterView create:CGRectMake(0, 0, UI_SCREEN_WIDTH, 118.0) filterImages:filterImages filterNames:@[@"原图",@"滤镜1",@"滤镜2",@"滤镜3",@"滤镜4",@"滤镜5",@"滤镜6",@"滤镜7",@"滤镜8"] selectedBlock:^(NSUInteger index) {
-            NSLog(@"select %d", index);
+        MF_WEAK_SELF
+        _editFilterView = [FJPhotoEditFilterView create:CGRectMake(0, 0, UI_SCREEN_WIDTH, 118.0) filterImages:currentPhotoModel.filterThumbImages filterNames:[FJPhotoModel filterTitles] selectedIndex:(NSUInteger)currentPhotoModel.tuningObject.filterType selectedBlock:^(NSUInteger index) {
+            static NSUInteger lastIndex = -1;
+            if (lastIndex != index) {
+                weakSelf.filterBlock == nil ? : weakSelf.filterBlock(index);
+            }
+            lastIndex = index;
         }];
         [self addSubview:_editFilterView];
     }
     return _editFilterView;
 }
 
-+ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode editingBlock:(void (^)(BOOL inEditing))editingBlock cropBlock:(void (^)(NSString *ratio, BOOL confirm))cropBlock tuneBlock:(void(^)(FJTuningType type, float value, BOOL confirm))tuneBlock {
++ (FJPhotoEditToolbarView *)create:(FJPhotoEditMode)mode editingBlock:(void (^)(BOOL inEditing))editingBlock filterBlock:(void(^)(FJFilterType filterType))filterBlock cropBlock:(void (^)(NSString *ratio, BOOL confirm))cropBlock tuneBlock:(void(^)(FJTuningType type, float value, BOOL confirm))tuneBlock {
     
     FJPhotoEditToolbarView *view = MF_LOAD_NIB(@"FJPhotoEditToolbarView");
     view.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, 167.0);
     view.editingBlock = editingBlock;
+    view.filterBlock = filterBlock;
     view.cropBlock = cropBlock;
     view.tuneBlock = tuneBlock;
     [view _buildUI:mode];
     [view _setHighlighted:0];
     view.editFilterView.hidden = NO;
     return view;
+}
+
+- (NSUInteger)getIndex {
+    
+    return self.index;
+}
+
+- (void)refreshFilterToolbar {
+    
+    FJPhotoModel *currentPhotoModel = [FJPhotoManager shared].currentEditPhoto;
+    [self.editFilterView updateFilterImages:currentPhotoModel.filterThumbImages];
+    [self.editFilterView setSelectedIndex:currentPhotoModel.tuningObject.filterType scrollable:NO];
 }
 
 - (void)_buildUI:(FJPhotoEditMode)mode {
@@ -84,12 +94,15 @@
     
     self.editFilterView.hidden = NO;
     [self _setHighlighted:0];
+    self.index = 0;
+    [self refreshFilterToolbar];
 }
 
 - (IBAction)_tapCropper:(id)sender {
     
     _editFilterView.hidden = YES;
     [self _setHighlighted:1];
+    self.index = 1;
     MF_WEAK_SELF
     FJPhotoEditCropperView *view = [FJPhotoEditCropperView create:self.bounds editingBlock:self.editingBlock crop1to1:^{
         weakSelf.cropBlock == nil ? : weakSelf.cropBlock(@"1:1", NO);
@@ -111,6 +124,7 @@
     
     _editFilterView.hidden = YES;
     [self _setHighlighted:2];
+    self.index = 2;
     FJPhotoEditTuningView *view = [FJPhotoEditTuningView create:self.bounds editingBlock:self.editingBlock tuneBlock:self.tuneBlock];
     [self addSubview:view];
 }
@@ -119,6 +133,7 @@
     
     _editFilterView.hidden = YES;
     [self _setHighlighted:3];
+    self.index = 3;
     self.tagBlock == nil ? : self.tagBlock();
 }
 

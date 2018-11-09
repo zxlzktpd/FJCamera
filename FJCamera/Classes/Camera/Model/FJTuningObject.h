@@ -19,14 +19,14 @@ typedef NS_ENUM(NSInteger, FJTuningType) {
 typedef NS_ENUM(NSInteger, FJFilterType) {
     
     FJFilterTypeOriginal = 0,
-    FJFilterTypeMorning,
-    FJFilterType1,
-    FJFilterType2,
-    FJFilterType3,
-    FJFilterType4,
-    FJFilterType5,
-    FJFilterType6,
-    FJFilterType7
+    FJFilterTypePhotoEffectChrome,
+    FJFilterTypePhotoEffectFade,
+    FJFilterTypePhotoEffectInstant,
+    FJFilterTypePhotoEffectMono,
+    FJFilterTypePhotoEffectNoir,
+    FJFilterTypePhotoEffectProcess,
+    FJFilterTypePhotoEffectTonal,
+    FJFilterTypePhotoEffectTransfer
 };
 
 @protocol FJTuningObject <NSObject>

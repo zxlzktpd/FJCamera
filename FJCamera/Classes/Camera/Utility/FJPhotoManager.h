@@ -20,8 +20,11 @@
 @property (nonatomic, strong) UIImage *currentImage;
 @property (nonatomic, strong) FJTuningObject *tuningObject;
 @property (nonatomic, strong) NSMutableArray<FJImageTagModel *> *imageTags;
+@property (nonatomic, strong) NSMutableArray<UIImage *> *filterThumbImages;
 
 - (instancetype)initWithAsset:(PHAsset *)asset;
+
++ (NSArray *)filterTitles;
 
 @end
 
