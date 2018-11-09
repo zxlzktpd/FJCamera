@@ -82,7 +82,7 @@
 
 - (void)updateCurrentTuning:(FJTuningObject *)tuningObject {
     
-    UIImage *image = [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:FJFilterTypeNull];
+    UIImage *image = [[FJFilterManager shared] getImage:self.imageView.image tuningObject:tuningObject appendFilterType:tuningObject.filterType];
     self.imageView.image = image;
 }
 

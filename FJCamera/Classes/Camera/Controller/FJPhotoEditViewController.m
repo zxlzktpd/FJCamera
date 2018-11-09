@@ -134,6 +134,16 @@
     }
     [self fj_addRightBarCustomView:self.nextBtn action:nil];
     
+    // 定位当前Photo Index
+    if (self.editPhotoIndex != nil) {
+        self.index = [self.editPhotoIndex intValue];
+        // 当从编辑进来的，相册数量同步FJPhotoManager
+        [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:self.index];
+    }else {
+        self.index = 0;
+        [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:0];
+    }
+    
     // Title View
     if (_customTitleView == nil) {
         _customTitleView = [FJPhotoEditTitleScrollView create:self.selectedPhotos.count];
@@ -277,7 +287,7 @@
             }
             
             // 加调整和滤镜效果
-            image = [[FJFilterManager shared] getImage:image tuningObject:model.tuningObject appendFilterType:FJFilterTypeNull];
+            image = [[FJFilterManager shared] getImage:image tuningObject:model.tuningObject appendFilterType:model.tuningObject.filterType];
             UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             if (image.size.width / image.size.height >= weakScrollView.bounds.size.width / weakScrollView.bounds.size.height) {
@@ -308,14 +318,6 @@
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width * self.selectedPhotos.count, _scrollView.bounds.size.height);
     }
     
-    // 定位当前Photo Index
-    if (self.editPhotoIndex != nil) {
-        self.index = [self.editPhotoIndex intValue];
-    }else {
-        self.index = 0;
-    }
-    // 当从编辑进来的，相册数量同步FJPhotoManager
-    [FJPhotoManager shared].currentEditPhoto = [self.selectedPhotos objectAtIndex:0];
     // 滚动到当前相片
     [_scrollView setContentOffset:CGPointMake(UI_SCREEN_WIDTH * self.index, 0)];
     [self.customTitleView updateIndex:self.index];
@@ -347,7 +349,7 @@
         cropped = YES;
     }
     // 加调整和滤镜效果
-    image = [[FJFilterManager shared] getImage:image tuningObject:currentModel.tuningObject appendFilterType:FJFilterTypeNull];
+    image = [[FJFilterManager shared] getImage:image tuningObject:currentModel.tuningObject appendFilterType:currentModel.tuningObject.filterType];
     if (refresh) {
         self.currentImageView.image = image;
         if (cropped) {

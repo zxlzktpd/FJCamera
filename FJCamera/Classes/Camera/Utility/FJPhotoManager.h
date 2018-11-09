@@ -11,28 +11,15 @@
 #import "FJTuningObject.h"
 #import "FJImageTagModel.h"
 
-typedef NS_ENUM(NSInteger, FJFilterType) {
-    
-    FJFilterTypeNull,
-    FJFilterType0,
-    FJFilterType1,
-    FJFilterType2,
-    FJFilterType3,
-    FJFilterType4,
-    FJFilterType5,
-    FJFilterType6,
-    FJFilterType7
-};
-
 @interface FJPhotoModel : NSObject
 
 @property (nonatomic, strong) PHAsset *asset;
 @property (nonatomic, strong) UIImage *croppedImage;
 @property (nonatomic, strong) UIImage *originalImage;
+@property (nonatomic, strong) UIImage *smallOriginalImage;
 @property (nonatomic, strong) UIImage *currentImage;
 @property (nonatomic, strong) FJTuningObject *tuningObject;
 @property (nonatomic, strong) NSMutableArray<FJImageTagModel *> *imageTags;
-@property (nonatomic, assign) FJFilterType filterType;
 
 - (instancetype)initWithAsset:(PHAsset *)asset;
 

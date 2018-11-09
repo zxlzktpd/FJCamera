@@ -28,7 +28,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ueh-gh-Os3">
                             <rect key="frame" x="0.0" y="1" width="94" height="47"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_filter.png" translatesAutoresizingMaskIntoConstraints="NO" id="lEy-zT-4oL">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_filter.png" highlightedImage="ic_edit_filter_highlighted.png" translatesAutoresizingMaskIntoConstraints="NO" id="lEy-zT-4oL">
                                     <rect key="frame" x="35" y="4" width="24" height="24"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="24" id="Sh2-U0-CE5"/>
@@ -63,7 +63,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N0W-4W-y2r">
                             <rect key="frame" x="94" y="1" width="93.5" height="47"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_cropper.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gjn-nL-VPV">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_cropper.png" highlightedImage="ic_edit_cropper_highlighted.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gjn-nL-VPV">
                                     <rect key="frame" x="34.5" y="4" width="24" height="24"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="24" id="4Zw-Tt-jQl"/>
@@ -98,7 +98,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FiH-ws-sdZ">
                             <rect key="frame" x="281.5" y="1" width="93.5" height="47"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_tag.png" translatesAutoresizingMaskIntoConstraints="NO" id="1MM-YQ-94Z">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_tag.png" highlightedImage="ic_edit_tag_highlighted.png" translatesAutoresizingMaskIntoConstraints="NO" id="1MM-YQ-94Z">
                                     <rect key="frame" x="34.5" y="4" width="24" height="24"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="24" id="Nm7-TT-jVZ"/>
@@ -133,7 +133,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WF3-l7-wNX">
                             <rect key="frame" x="187.5" y="1" width="94" height="47"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_tuning.png" translatesAutoresizingMaskIntoConstraints="NO" id="95H-eZ-8zd">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit_tuning.png" highlightedImage="ic_edit_tuning_highlighted.png" translatesAutoresizingMaskIntoConstraints="NO" id="95H-eZ-8zd">
                                     <rect key="frame" x="35" y="4" width="24" height="24"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="24" id="HQa-i3-T9Q"/>
@@ -208,9 +208,17 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="cropperImageView" destination="Gjn-nL-VPV" id="1tf-oM-Seb"/>
+                <outlet property="cropperLabel" destination="a4c-E9-Obs" id="dei-rx-1TO"/>
                 <outlet property="cropperView" destination="N0W-4W-y2r" id="VDd-HB-4Ep"/>
+                <outlet property="filterImageView" destination="lEy-zT-4oL" id="ZO5-dS-9Zc"/>
+                <outlet property="filterLabel" destination="Bdg-Ep-k9t" id="EtX-6r-nfc"/>
                 <outlet property="filterView" destination="ueh-gh-Os3" id="wjc-cR-VGa"/>
+                <outlet property="tagImageView" destination="1MM-YQ-94Z" id="Fn0-rQ-xyd"/>
+                <outlet property="tagLabel" destination="ETo-o6-zlv" id="HOf-S9-0uU"/>
                 <outlet property="tagView" destination="FiH-ws-sdZ" id="VmD-Si-ZnJ"/>
+                <outlet property="tuningImageView" destination="95H-eZ-8zd" id="ico-6o-rvF"/>
+                <outlet property="tuningLabel" destination="yGk-aY-TgT" id="v4h-zG-hwG"/>
                 <outlet property="tuningView" destination="WF3-l7-wNX" id="Cvm-Bj-LRg"/>
             </connections>
             <point key="canvasLocation" x="25.5" y="51.5"/>
@@ -218,8 +226,12 @@
     </objects>
     <resources>
         <image name="ic_edit_cropper.png" width="24" height="24"/>
+        <image name="ic_edit_cropper_highlighted.png" width="24" height="24"/>
         <image name="ic_edit_filter.png" width="24" height="24"/>
+        <image name="ic_edit_filter_highlighted.png" width="24" height="24"/>
         <image name="ic_edit_tag.png" width="24" height="24"/>
+        <image name="ic_edit_tag_highlighted.png" width="24" height="24"/>
         <image name="ic_edit_tuning.png" width="24" height="24"/>
+        <image name="ic_edit_tuning_highlighted.png" width="24" height="24"/>
     </resources>
 </document>

@@ -27,6 +27,8 @@
 // 暗角滤镜
 @property (nonatomic, strong) CIFilter *vignetteFilter;
 
+// 固定滤镜
+
 @end
 
 @implementation FJFilterManager

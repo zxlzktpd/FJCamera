@@ -35,6 +35,14 @@
     return _originalImage;
 }
 
+- (UIImage *)smallOriginalImage {
+    
+    if (_smallOriginalImage == nil) {
+        _smallOriginalImage = [self.asset getStaticSmallTargetImage];
+    }
+    return _smallOriginalImage;
+}
+
 - (UIImage *)currentImage {
     
     if (_croppedImage != nil) {

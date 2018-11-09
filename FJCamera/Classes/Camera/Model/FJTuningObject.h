@@ -16,6 +16,19 @@ typedef NS_ENUM(NSInteger, FJTuningType) {
     FJTuningTypeVignette
 };
 
+typedef NS_ENUM(NSInteger, FJFilterType) {
+    
+    FJFilterTypeOriginal = 0,
+    FJFilterTypeMorning,
+    FJFilterType1,
+    FJFilterType2,
+    FJFilterType3,
+    FJFilterType4,
+    FJFilterType5,
+    FJFilterType6,
+    FJFilterType7
+};
+
 @protocol FJTuningObject <NSObject>
 @end
 
@@ -31,6 +44,9 @@ typedef NS_ENUM(NSInteger, FJTuningType) {
 @property (nonatomic, assign) float temperatureValue;
 // 晕影 [-100, 100] 默认 0
 @property (nonatomic, assign) float vignetteValue;
+
+// 固定滤镜
+@property (nonatomic, assign) FJFilterType filterType;
 
 - (void)setType:(FJTuningType)type value:(float)value;
 

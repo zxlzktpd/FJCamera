@@ -13,6 +13,9 @@
 
 @interface PHAsset (Utility)
 
+// 同步获取固定小尺寸的图片
+- (UIImage *)getStaticSmallTargetImage;
+
 // 同步获取固定尺寸的图片
 - (UIImage *)getStaticTargetImage;
 

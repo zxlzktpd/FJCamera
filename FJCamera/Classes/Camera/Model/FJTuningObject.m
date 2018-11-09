@@ -19,6 +19,7 @@
         self.saturationValue = 1.0;
         self.temperatureValue = 6500.0;
         self.vignetteValue = 0;
+        self.filterType = FJFilterTypeOriginal;
     }
     return self;
 }

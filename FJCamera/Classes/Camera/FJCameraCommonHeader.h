@@ -24,6 +24,7 @@
 #import <FJKit_OC/UIView+Toast_FJ.h>
 #import <FJKit_OC/FJCollectionViewHeader.h>
 #import <FJKit_OC/FJTableViewHeader.h>
+#import <FJKit_OC/UIView+Utility_FJ.h>
 
 #import <Masonry/Masonry.h>
 #import <BlocksKit/UIView+BlocksKit.h>
