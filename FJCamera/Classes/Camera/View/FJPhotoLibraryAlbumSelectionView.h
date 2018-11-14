@@ -13,6 +13,6 @@
 
 - (void)setAssetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block;
 
-+ (FJPhotoLibraryAlbumSelectionView *)create:(CGPoint)point photoAssetCollections:(NSArray<PHAssetCollection *> *)photoAssetCollections selectedPhotoAssetCollection:(PHAssetCollection *)selectedPhotoAssetCollection assetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block;
++ (FJPhotoLibraryAlbumSelectionView *)create:(CGPoint)point maxColumn:(NSUInteger)maxColumn photoAssetCollections:(NSArray<PHAssetCollection *> *)photoAssetCollections selectedPhotoAssetCollection:(PHAssetCollection *)selectedPhotoAssetCollection assetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block;
 
 @end

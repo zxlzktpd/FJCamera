@@ -25,9 +25,15 @@
     _assetCollectionChangedBlock = block;
 }
 
-+ (FJPhotoLibraryAlbumSelectionView *)create:(CGPoint)point photoAssetCollections:(NSArray<PHAssetCollection *> *)photoAssetCollections selectedPhotoAssetCollection:(PHAssetCollection *)selectedPhotoAssetCollection assetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block {
++ (FJPhotoLibraryAlbumSelectionView *)create:(CGPoint)point maxColumn:(NSUInteger)maxColumn photoAssetCollections:(NSArray<PHAssetCollection *> *)photoAssetCollections selectedPhotoAssetCollection:(PHAssetCollection *)selectedPhotoAssetCollection assetCollectionChangedBlock:(void(^)(PHAssetCollection *currentCollection))block {
     
-    CGFloat h = photoAssetCollections.count > 5 ? 5 * 80.0 : photoAssetCollections.count * 80.0;
+    CGFloat h = 0;
+    if (maxColumn == 0) {
+        // 撑满全屏
+        h = UI_SCREEN_HEIGHT - UI_TOP_HEIGHT;
+    }else {
+        h = photoAssetCollections.count > maxColumn ? maxColumn * 80.0 : photoAssetCollections.count * 80.0;
+    }
     FJPhotoLibraryAlbumSelectionView *view = [[FJPhotoLibraryAlbumSelectionView alloc] initWithFrame:CGRectMake(point.x, point.y, UIScreen.mainScreen.bounds.size.width, h)];
     view.photoAssetCollections = photoAssetCollections;
     view.selectedPhotoAssetCollection = selectedPhotoAssetCollection;

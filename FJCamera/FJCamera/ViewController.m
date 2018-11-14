@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "FJPhotoLibraryViewController.h"
+#import "FJPhotoLibraryCropperViewController.h"
 
 @interface ViewController ()
 
@@ -26,7 +27,7 @@
 
 - (IBAction)tapPhotoLibrary:(id)sender {
     
-    FJPhotoLibraryViewController *photoLibVC = [[FJPhotoLibraryViewController alloc] init];
+    FJPhotoLibraryCropperViewController *photoLibVC = [[FJPhotoLibraryCropperViewController alloc] init];
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }
 

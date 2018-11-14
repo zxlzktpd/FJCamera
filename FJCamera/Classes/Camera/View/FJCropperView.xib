@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="FJCropperView">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a2a-oV-rBJ">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+                </scrollView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rcl-32-Llr">
+                    <rect key="frame" x="0.0" y="335" width="375" height="40"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZZ-Td-ZlE">
+                            <rect key="frame" x="16" y="8" width="60" height="24"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_compress.png" highlightedImage="ic_photo_expand.png" translatesAutoresizingMaskIntoConstraints="NO" id="X7p-qY-DBG">
+                                    <rect key="frame" x="12" y="6" width="12" height="12"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="12" id="b0N-F9-v88"/>
+                                        <constraint firstAttribute="width" constant="12" id="mMp-RF-IJ8"/>
+                                    </constraints>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="留白" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqH-rb-oop">
+                                    <rect key="frame" x="30" y="0.0" width="22" height="24"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="NqH-rb-oop" secondAttribute="bottom" id="7kg-hn-pTD"/>
+                                <constraint firstAttribute="height" constant="24" id="A4V-fr-kRh"/>
+                                <constraint firstItem="X7p-qY-DBG" firstAttribute="leading" secondItem="FZZ-Td-ZlE" secondAttribute="leading" constant="12" id="KfB-dB-RE3"/>
+                                <constraint firstItem="NqH-rb-oop" firstAttribute="top" secondItem="FZZ-Td-ZlE" secondAttribute="top" id="ept-EZ-jhL"/>
+                                <constraint firstAttribute="width" constant="60" id="jGE-il-qYn"/>
+                                <constraint firstItem="NqH-rb-oop" firstAttribute="leading" secondItem="X7p-qY-DBG" secondAttribute="trailing" constant="6" id="nSv-tv-96z"/>
+                                <constraint firstItem="X7p-qY-DBG" firstAttribute="centerY" secondItem="FZZ-Td-ZlE" secondAttribute="centerY" id="y6o-ym-2Gx"/>
+                                <constraint firstAttribute="trailing" secondItem="NqH-rb-oop" secondAttribute="trailing" constant="8" id="yAY-gd-eik"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="FZZ-Td-ZlE" firstAttribute="centerY" secondItem="Rcl-32-Llr" secondAttribute="centerY" id="5GV-M8-2Uh"/>
+                        <constraint firstAttribute="height" constant="40" id="IIX-Q7-WYU"/>
+                        <constraint firstItem="FZZ-Td-ZlE" firstAttribute="leading" secondItem="Rcl-32-Llr" secondAttribute="leading" constant="16" id="cMJ-nX-8qE"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="0.72156862749999995" blue="0.1137254902" alpha="0.0" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="Rcl-32-Llr" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="JTg-yD-LdM"/>
+                <constraint firstAttribute="bottom" secondItem="a2a-oV-rBJ" secondAttribute="bottom" id="USY-ta-Yff"/>
+                <constraint firstAttribute="trailing" secondItem="Rcl-32-Llr" secondAttribute="trailing" id="VRF-dg-HVS"/>
+                <constraint firstAttribute="trailing" secondItem="a2a-oV-rBJ" secondAttribute="trailing" id="WnY-Ff-fab"/>
+                <constraint firstItem="a2a-oV-rBJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="lkT-Lw-9Lv"/>
+                <constraint firstAttribute="bottom" secondItem="Rcl-32-Llr" secondAttribute="bottom" id="mh5-zl-r16"/>
+                <constraint firstItem="a2a-oV-rBJ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="nxK-9e-pwF"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="expandView" destination="FZZ-Td-ZlE" id="SmG-PZ-TKm"/>
+                <outlet property="scrollView" destination="a2a-oV-rBJ" id="bsO-Wt-Gsj"/>
+            </connections>
+            <point key="canvasLocation" x="23.199999999999999" y="50.824587706146929"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_photo_compress.png" width="24" height="24"/>
+        <image name="ic_photo_expand.png" width="24" height="24"/>
+    </resources>
+</document>

@@ -1,18 +1,22 @@
 //
-//  FJPhotoLibraryViewController.m
+//  FJPhotoLibraryCropperViewController.m
 //  FJCamera
 //
-//  Created by Fu Jie on 2018/10/26.
-//  Copyright © 2018年 Fu Jie. All rights reserved.
+//  Created by Fu Jie on 2018/11/13.
+//  Copyright © 2018 Fu Jie. All rights reserved.
 //
 
-#import "FJPhotoLibraryViewController.h"
+#import "FJPhotoLibraryCropperViewController.h"
 #import "FJPhotoLibrarySelectionView.h"
 #import "FJPhotoLibraryAlbumSelectionView.h"
 #import "FJPhotoCollectionViewCell.h"
+#import "FJCropperView.h"
+#import "PHAsset+Utility.h"
 
-@interface FJPhotoLibraryViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface FJPhotoLibraryCropperViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
+// CropperView
+@property (nonatomic, strong) FJCropperView *cropperView;
 // CollectionView
 @property (nonatomic, strong) FJCollectionView *collectionView;
 // Navigation TitleView
@@ -38,7 +42,7 @@
 
 @end
 
-@implementation FJPhotoLibraryViewController
+@implementation FJPhotoLibraryCropperViewController
 
 - (UIImagePickerController *)imagePickerController {
     
@@ -191,12 +195,19 @@
         }];
     }
     
+    if (_cropperView == nil) {
+        _cropperView = [FJCropperView create];
+        _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+        _cropperView.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:_cropperView];
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panAction:)];
+        [_cropperView addGestureRecognizer:panGesture];
+    }
+    
     if (_collectionView == nil) {
         _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
-        [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(weakSelf.view);
-        }];
+        _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
     }
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
@@ -254,6 +265,9 @@
                             ds.isSelected = YES;
                             FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
                             [weakSelf.selectedPhotos fj_safeAddObject:model];
+                            
+                            // 更新CropperView
+                            [weakSelf.cropperView updateImage:[model.asset getStaticTargetImage]];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -262,6 +276,38 @@
             }
         }
     };
+}
+
+- (void)_panAction:(UIPanGestureRecognizer *)panGesture {
+    
+    CGPoint point = [panGesture translationInView:panGesture.view];
+    static CGFloat y = 0;
+    switch (panGesture.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            y = self.cropperView.frame.origin.y;
+            break;
+        }
+        case UIGestureRecognizerStateChanged:
+        {
+            CGRect frame = CGRectMake(0,  y + point.y, self.cropperView.bounds.size.width, self.cropperView.bounds.size.height);
+            if (frame.origin.y >= 0) {
+                frame.origin.y = 0;
+            }else if (frame.origin.y <= -(UI_SCREEN_WIDTH - 80.0)) {
+                frame.origin.y = -(UI_SCREEN_WIDTH - 80.0);
+            }
+            self.cropperView.frame = frame;
+            self.collectionView.frame = CGRectMake(0, self.cropperView.frame.origin.y + self.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - self.cropperView.frame.origin.y);
+            break;
+        }
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateEnded:
+        {
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 - (void)_setAblumSelectionViewHidden:(BOOL)hidden animation:(BOOL)animation {
@@ -287,7 +333,7 @@
         [btn addTarget:self action:@selector(_tapBlurView) forControlEvents:UIControlEventTouchUpInside];
         
         CGPoint point = CGPointZero;
-        _albumSelectionView = [FJPhotoLibraryAlbumSelectionView create:point maxColumn:5 photoAssetCollections:self.photoAssetCollections selectedPhotoAssetCollection:self.currentPhotoAssetColletion assetCollectionChangedBlock:^(PHAssetCollection *currentCollection) {
+        _albumSelectionView = [FJPhotoLibraryAlbumSelectionView create:point maxColumn:0 photoAssetCollections:self.photoAssetCollections selectedPhotoAssetCollection:self.currentPhotoAssetColletion assetCollectionChangedBlock:^(PHAssetCollection *currentCollection) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf _setAblumSelectionViewHidden:YES animation:YES];
@@ -299,6 +345,7 @@
                 [weakSelf.customTitleView updateAlbumTitle:currentCollection.localizedTitle];
                 [weakSelf _render];
             });
+            
         }];
         
         _albumSelectionView.frame = CGRectMake(0, - _albumSelectionView.bounds.size.height, UI_SCREEN_WIDTH, _albumSelectionView.bounds.size.height);

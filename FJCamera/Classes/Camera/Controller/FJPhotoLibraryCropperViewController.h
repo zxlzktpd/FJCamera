@@ -1,9 +1,9 @@
 //
-//  FJPhotoLibraryViewController.h
+//  FJPhotoLibraryCropperViewController.h
 //  FJCamera
 //
-//  Created by Fu Jie on 2018/10/26.
-//  Copyright © 2018年 Fu Jie. All rights reserved.
+//  Created by Fu Jie on 2018/11/13.
+//  Copyright © 2018 Fu Jie. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -13,7 +13,7 @@
 #import "FJPhotoUserTagBaseViewController.h"
 #import "FJPhotoManager.h"
 
-@interface FJPhotoLibraryViewController : UIViewController
+@interface FJPhotoLibraryCropperViewController : UIViewController
 
 // 是否选择单张/多张照片
 @property (nonatomic, assign) BOOL singleSelection;

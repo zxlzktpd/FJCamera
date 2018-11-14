@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		1AC570155FB11E3D18E22480 /* Pods_FJCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC5949F2A68D623410E4833D /* Pods_FJCamera.framework */; };
+		E705B40D219C1A8000E99880 /* ic_photo_compress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B409219C1A7F00E99880 /* ic_photo_compress@2x.png */; };
+		E705B40E219C1A8000E99880 /* ic_photo_compress@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40A219C1A8000E99880 /* ic_photo_compress@3x.png */; };
+		E705B40F219C1A8000E99880 /* ic_photo_expand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40B219C1A8000E99880 /* ic_photo_expand@3x.png */; };
+		E705B410219C1A8000E99880 /* ic_photo_expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40C219C1A8000E99880 /* ic_photo_expand@2x.png */; };
+		E73A26BF219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */; };
+		E73A26D3219AA618001799BA /* FJCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26D2219AA618001799BA /* FJCropperView.m */; };
+		E73A26D5219AA630001799BA /* FJCropperView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E73A26D4219AA630001799BA /* FJCropperView.xib */; };
 		E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */; };
 		E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060E2188393300836ABD /* FJPhotoEditTitleScrollView.m */; };
 		E75C06112188395700836ABD /* FJPhotoEditTitleScrollView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E75C06102188395700836ABD /* FJPhotoEditTitleScrollView.xib */; };
@@ -127,6 +134,15 @@
 /* Begin PBXFileReference section */
 		0E2778AEBE844386692B7E2C /* Pods-FJCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.release.xcconfig"; sourceTree = "<group>"; };
 		A6059165467C238BDF2622DD /* Pods-FJCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera.debug.xcconfig"; sourceTree = "<group>"; };
+		E705B409219C1A7F00E99880 /* ic_photo_compress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_compress@2x.png"; sourceTree = "<group>"; };
+		E705B40A219C1A8000E99880 /* ic_photo_compress@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_compress@3x.png"; sourceTree = "<group>"; };
+		E705B40B219C1A8000E99880 /* ic_photo_expand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_expand@3x.png"; sourceTree = "<group>"; };
+		E705B40C219C1A8000E99880 /* ic_photo_expand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_expand@2x.png"; sourceTree = "<group>"; };
+		E73A26BD219A6DC7001799BA /* FJPhotoLibraryCropperViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryCropperViewController.h; sourceTree = "<group>"; };
+		E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryCropperViewController.m; sourceTree = "<group>"; };
+		E73A26D1219AA618001799BA /* FJCropperView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCropperView.h; sourceTree = "<group>"; };
+		E73A26D2219AA618001799BA /* FJCropperView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJCropperView.m; sourceTree = "<group>"; };
+		E73A26D4219AA630001799BA /* FJCropperView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJCropperView.xib; sourceTree = "<group>"; };
 		E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditViewController.h; sourceTree = "<group>"; };
 		E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoEditViewController.m; sourceTree = "<group>"; };
 		E75C060D2188393300836ABD /* FJPhotoEditTitleScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditTitleScrollView.h; sourceTree = "<group>"; };
@@ -408,6 +424,9 @@
 				E792D2E721916134004465A1 /* FJPhotoTagAlertView.h */,
 				E792D2E821916134004465A1 /* FJPhotoTagAlertView.m */,
 				E792D2EA21916145004465A1 /* FJPhotoTagAlertView.xib */,
+				E73A26D1219AA618001799BA /* FJCropperView.h */,
+				E73A26D2219AA618001799BA /* FJCropperView.m */,
+				E73A26D4219AA630001799BA /* FJCropperView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -441,6 +460,8 @@
 			children = (
 				E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */,
 				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
+				E73A26BD219A6DC7001799BA /* FJPhotoLibraryCropperViewController.h */,
+				E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */,
 				E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */,
 				E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */,
 				E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */,
@@ -537,6 +558,10 @@
 				E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */,
 				E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */,
 				E792D2E421914412004465A1 /* ic_photo_tag_triangle_down@3x.png */,
+				E705B409219C1A7F00E99880 /* ic_photo_compress@2x.png */,
+				E705B40A219C1A8000E99880 /* ic_photo_compress@3x.png */,
+				E705B40C219C1A8000E99880 /* ic_photo_expand@2x.png */,
+				E705B40B219C1A8000E99880 /* ic_photo_expand@3x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -600,6 +625,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E73A26D5219AA630001799BA /* FJCropperView.xib in Resources */,
 				E75C06542188783200836ABD /* ic_4_3_highlighted@3x.png in Resources */,
 				E7DFFAA3218311C80059CE32 /* ic_album_unselected@3x.png in Resources */,
 				E7B5D74221895D7300961662 /* ic_edit_close@3x.png in Resources */,
@@ -619,6 +645,7 @@
 				E75C06562188783200836ABD /* ic_5_4@3x.png in Resources */,
 				E75C067321887E0900836ABD /* ic_edit_warm@3x.png in Resources */,
 				E75C0629218863A100836ABD /* ic_edit_tag@2x.png in Resources */,
+				E705B40F219C1A8000E99880 /* ic_photo_expand@3x.png in Resources */,
 				E7B6FFEF2194361B000AC768 /* ic_edit_filter_highlighted@2x.png in Resources */,
 				E75C06532188783200836ABD /* ic_4_5@2x.png in Resources */,
 				E75C063821886B5C00836ABD /* FJPhotoEditTuningView.xib in Resources */,
@@ -628,6 +655,7 @@
 				E75C062C218863A100836ABD /* ic_edit_filter@2x.png in Resources */,
 				E75C063321886A6F00836ABD /* FJPhotoEditCropperView.xib in Resources */,
 				E75C061721883BC900836ABD /* ic_pagecontrol_unselected@3x.png in Resources */,
+				E705B40D219C1A8000E99880 /* ic_photo_compress@2x.png in Resources */,
 				E7DFF9FD2182B3EB0059CE32 /* LaunchScreen.storyboard in Resources */,
 				E7B5D74321895D7300961662 /* ic_edit_ok@3x.png in Resources */,
 				E75C066D21887E0900836ABD /* ic_edit_contrast@3x.png in Resources */,
@@ -652,6 +680,7 @@
 				E7DFFA842182C5030059CE32 /* ic_arrow_up@3x.png in Resources */,
 				E75C062E2188640F00836ABD /* FJPhotoEditToolbarView.xib in Resources */,
 				E7DFFA922182EBAE0059CE32 /* ic_photo_selected@3x.png in Resources */,
+				E705B410219C1A8000E99880 /* ic_photo_expand@2x.png in Resources */,
 				E792D2E22191438E004465A1 /* ic_photo_tag_triangle_up@3x.png in Resources */,
 				E75C065A2188783200836ABD /* ic_1_1@3x.png in Resources */,
 				E75C06582188783200836ABD /* ic_3_4@3x.png in Resources */,
@@ -673,6 +702,7 @@
 				E75C067221887E0900836ABD /* ic_edit_halation@2x.png in Resources */,
 				E75C0625218863A100836ABD /* ic_edit_tuning@2x.png in Resources */,
 				E75C0627218863A100836ABD /* ic_edit_cropper@3x.png in Resources */,
+				E705B40E219C1A8000E99880 /* ic_photo_compress@3x.png in Resources */,
 				E7B6FFF82194362E000AC768 /* ic_edit_tuning_highlighted@2x.png in Resources */,
 				E7DFFAA021830FC40059CE32 /* FJPhotoLibraryAlbumCell.xib in Resources */,
 				E75C064E2188783200836ABD /* ic_4_5_highlighted@2x.png in Resources */,
@@ -781,6 +811,7 @@
 				E7EBF46F2192B51300CA35B7 /* PHAsset+Utility.m in Sources */,
 				E7B5D7552189A52200961662 /* TKImageView.m in Sources */,
 				E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */,
+				E73A26D3219AA618001799BA /* FJCropperView.m in Sources */,
 				E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */,
 				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
@@ -789,6 +820,7 @@
 				E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */,
 				E7B6000021943DE4000AC768 /* FJPhotoEditFilterGenreView.m in Sources */,
 				E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */,
+				E73A26BF219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m in Sources */,
 				E7B5D751218980A700961662 /* FJImageTagModel.m in Sources */,
 				E7DFFA9F21830FC40059CE32 /* FJPhotoLibraryAlbumCell.m in Sources */,
 				E7DFFA8B2182DE310059CE32 /* FJPhotoCollectionViewCell.m in Sources */,
