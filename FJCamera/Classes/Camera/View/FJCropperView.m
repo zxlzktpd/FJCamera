@@ -12,6 +12,10 @@
 
 @property (nonatomic, weak) IBOutlet UIView *expandView;
 @property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *scrollViewBottomConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *scrollViewLeftConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *scrollViewRightConstraint;
 @property (nonatomic, strong) UIImageView *imageView;
 
 // 留白和充满标记
@@ -36,10 +40,13 @@
     [view.expandView fj_cornerRadius:6.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     // ScrollView
     view.scrollView.clipsToBounds = NO;
+    view.scrollView.maximumZoomScale = 1.0;
     view.scrollView.minimumZoomScale = 1.0;
     view.scrollView.zoomScale = 1.0;
-    view.scrollView.maximumZoomScale = 3.0;
     view.scrollView.delegate = view;
+    view.scrollView.showsVerticalScrollIndicator = NO;
+    view.scrollView.showsHorizontalScrollIndicator = NO;
+    view.scrollView.bounces = YES;
     return view;
 }
 
@@ -59,24 +66,73 @@
 - (void)updateCompressed:(BOOL)compressed {
     
     self.compressed = compressed;
-    // 初始化计算
+    compressed  = YES;
+    
+    CGRect scrollViewFrame = CGRectZero;
+    CGRect imageViewFrame = CGRectZero;
+    CGSize scrollViewContentSize = CGSizeZero;
+    CGFloat maxScale = 3.0;
+    CGFloat minScale = 1.0;
+    CGPoint scrollViewOffset = CGPointZero;
+    
+    self.scrollView.contentOffset = CGPointZero;
     UIImage *image = self.imageView.image;
-    if (image.size.width / image.size.height >= self.scrollView.bounds.size.width / self.scrollView.bounds.size.height) {
+    // 初始化计算
+    if (image.size.width / image.size.height >= 1.0) {
         // 水平扁长图片或同等比例
-        // max scale = image.size.height / scrollView.size.height (至少为1.0)
-        
-        // 充满
-        
-        // 留白 (垂直缩小)
-        
+        if (compressed) {
+            // 留白 (垂直缩小)
+            if (image.size.width / image.size.height >= 5.0 / 3.0) {
+                // 宽高比大于等于5/3 (固定)
+                scrollViewFrame = CGRectMake(0, UI_SCREEN_WIDTH / 5.0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH * 3.0 / 5.0);
+                imageViewFrame = CGRectMake(0, 0, (UI_SCREEN_WIDTH * 3.0 / 5.0) * image.size.width / image.size.height, UI_SCREEN_WIDTH * 3.0 / 5.0);
+                scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
+                maxScale = 3.0;
+                scrollViewOffset = CGPointMake((imageViewFrame.size.width - scrollViewFrame.size.width) / 2.0, 0);
+            }else {
+                // 宽高比小于5/3 (固定超出两边10，倒推比例)
+                CGFloat imageFrameWidth = UI_SCREEN_WIDTH + 20.0;
+                CGFloat imageFrameHeight = imageFrameWidth * (image.size.height / image.size.width);
+                scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - imageFrameHeight) / 2.0, UI_SCREEN_WIDTH, imageFrameHeight);
+                imageViewFrame = CGRectMake(0, 0, imageFrameWidth, imageFrameHeight);
+                scrollViewContentSize = CGSizeMake(imageFrameWidth, imageFrameHeight);
+                maxScale = 3.0;
+                scrollViewOffset = CGPointMake(10, 0);
+            }
+        }else {
+            // 充满
+            scrollViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+            imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH * (image.size.width / image.size.height), UI_SCREEN_WIDTH);
+            scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
+            maxScale = 3.0;
+            scrollViewOffset = CGPointMake((imageViewFrame.size.width - scrollViewFrame.size.width) / 2.0, 0);
+        }
     }else {
         // 垂直扁长图片
-        // max scale = image.size.width / scrollView.size.width (至少为1.0)
-        
-        // 充满
-        
-        // 留白（水平缩小）
+        if (compressed) {
+            // 留白（水平缩小）
+            if (image.size.height / image.size.width > 5.0 / 3.0) {
+                // 高宽比大于等于5/3
+            }else {
+                // 高宽比小于5/3
+            }
+        }else {
+            // 充满
+            scrollViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+            imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH * (image.size.height / image.size.width));
+            scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
+            maxScale = 3.0;
+            scrollViewOffset = CGPointMake(0 , (imageViewFrame.size.height - scrollViewFrame.size.height) / 2.0);
+        }
     }
+    // 设置参数
+    self.scrollView.frame = scrollViewFrame;
+    self.scrollView.contentSize = scrollViewContentSize;
+    self.imageView.frame = imageViewFrame;
+    self.scrollView.maximumZoomScale = maxScale;
+    self.scrollView.minimumZoomScale = minScale;
+    self.scrollView.zoomScale = minScale;
+    self.scrollView.contentOffset = scrollViewOffset;
 }
 
 #pragma mark - UISCrollView Delegate
