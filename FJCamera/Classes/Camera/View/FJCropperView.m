@@ -112,9 +112,21 @@
         if (compressed) {
             // 留白（水平缩小）
             if (image.size.height / image.size.width > 5.0 / 3.0) {
-                // 高宽比大于等于5/3
+                // 高宽比大于等于5/3（固定）
+                scrollViewFrame = CGRectMake(UI_SCREEN_WIDTH / 5.0, 0, UI_SCREEN_WIDTH * 3.0 / 5.0, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH * 3.0 / 5.0, (UI_SCREEN_WIDTH * 3.0 / 5.0) * image.size.height / image.size.width);
+                scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
+                maxScale = 3.0;
+                scrollViewOffset = CGPointMake(0, (imageViewFrame.size.height - scrollViewFrame.size.height) / 2.0);
             }else {
                 // 高宽比小于5/3
+                CGFloat imageFrameHeight = UI_SCREEN_WIDTH + 20.0;
+                CGFloat imageFrameWidth = imageFrameHeight * (image.size.width / image.size.height);
+                scrollViewFrame = CGRectMake((UI_SCREEN_WIDTH - imageFrameWidth) / 2.0, 0, imageFrameWidth, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, imageFrameWidth, imageFrameHeight);
+                scrollViewContentSize = CGSizeMake(imageFrameWidth, imageFrameHeight);
+                maxScale = 3.0;
+                scrollViewOffset = CGPointMake(0, 10);
             }
         }else {
             // 充满
