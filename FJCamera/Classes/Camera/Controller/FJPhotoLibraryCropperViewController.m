@@ -196,12 +196,13 @@
     }
     
     if (_cropperView == nil) {
-        _cropperView = [FJCropperView create];
+        _cropperView = [FJCropperView create:^(FJPhotoModel *photoModel, CGRect frame) {
+            
+        }];
         _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-        _cropperView.backgroundColor = [UIColor whiteColor];
         [self.view addSubview:_cropperView];
-//        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panAction:)];
-//        [_cropperView addGestureRecognizer:panGesture];
+        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panAction:)];
+        [_cropperView addGestureRecognizer:panGesture];
     }
     
     if (_collectionView == nil) {
@@ -267,8 +268,7 @@
                             [weakSelf.selectedPhotos fj_safeAddObject:model];
                             
                             // 更新CropperView
-                            [weakSelf.cropperView updateImage:[model.asset getStaticTargetImage]];
-                            // [weakSelf.cropperView updateCompressed:NO];
+                            [weakSelf.cropperView updateModel:model];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];

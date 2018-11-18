@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "FJCameraCommonHeader.h"
+#import "FJPhotoManager.h"
 
 @interface FJCropperView : UIView
 
-+ (FJCropperView *)create;
++ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock;
 
 // 更新图片
-- (void)updateImage:(UIImage *)image;
+- (void)updateModel:(FJPhotoModel *)model;
 
 // 更新留白和充满状态
 - (void)updateCompressed:(BOOL)compressed;
