@@ -102,6 +102,14 @@
 		E7B6FFFD21943A0E000AC768 /* FJPhotoEditFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7B6FFFC21943A0E000AC768 /* FJPhotoEditFilterView.xib */; };
 		E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */; };
 		E7BA9DF4219044FA009DAD96 /* FJPhotoImageTagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */; };
+		E7DA209521A3EF1200FB41C9 /* FJMotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA209321A3EF1100FB41C9 /* FJMotionManager.m */; };
+		E7DA209C21A3F29500FB41C9 /* UIView+FJHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA209921A3F29500FB41C9 /* UIView+FJHUD.m */; };
+		E7DA209D21A3F29500FB41C9 /* UIView+FJAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA209B21A3F29500FB41C9 /* UIView+FJAdditions.m */; };
+		E7DA20A221A3F8CB00FB41C9 /* FJMovieManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA209F21A3F8CB00FB41C9 /* FJMovieManager.m */; };
+		E7DA20A321A3F8CB00FB41C9 /* FJCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA20A121A3F8CB00FB41C9 /* FJCameraManager.m */; };
+		E7DA20AA21A3F91C00FB41C9 /* FJVideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA20A421A3F91B00FB41C9 /* FJVideoPreview.m */; };
+		E7DA20AB21A3F91C00FB41C9 /* FJImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA20A521A3F91B00FB41C9 /* FJImagePreviewController.m */; };
+		E7DA20AC21A3F91C00FB41C9 /* FJCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DA20A721A3F91C00FB41C9 /* FJCameraView.m */; };
 		E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */; };
 		E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7DFF9F42182B3EA0059CE32 /* ViewController.m */; };
 		E7DFF9F82182B3EA0059CE32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7DFF9F62182B3EA0059CE32 /* Main.storyboard */; };
@@ -252,6 +260,24 @@
 		E7BA9DF0219043B5009DAD96 /* FJPhotoImageTagView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoImageTagView.h; sourceTree = "<group>"; };
 		E7BA9DF1219043B5009DAD96 /* FJPhotoImageTagView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoImageTagView.m; sourceTree = "<group>"; };
 		E7BA9DF3219044FA009DAD96 /* FJPhotoImageTagView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoImageTagView.xib; sourceTree = "<group>"; };
+		E7DA209321A3EF1100FB41C9 /* FJMotionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJMotionManager.m; sourceTree = "<group>"; };
+		E7DA209421A3EF1200FB41C9 /* FJMotionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJMotionManager.h; sourceTree = "<group>"; };
+		E7DA209621A3EF9C00FB41C9 /* FJCameraCommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCameraCommonHeader.h; sourceTree = "<group>"; };
+		E7DA209721A3EFE800FB41C9 /* FJAVCatpureCommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJAVCatpureCommonHeader.h; sourceTree = "<group>"; };
+		E7DA209821A3F29500FB41C9 /* UIView+FJHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FJHUD.h"; sourceTree = "<group>"; };
+		E7DA209921A3F29500FB41C9 /* UIView+FJHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FJHUD.m"; sourceTree = "<group>"; };
+		E7DA209A21A3F29500FB41C9 /* UIView+FJAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FJAdditions.h"; sourceTree = "<group>"; };
+		E7DA209B21A3F29500FB41C9 /* UIView+FJAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FJAdditions.m"; sourceTree = "<group>"; };
+		E7DA209E21A3F8CB00FB41C9 /* FJCameraManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJCameraManager.h; sourceTree = "<group>"; };
+		E7DA209F21A3F8CB00FB41C9 /* FJMovieManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJMovieManager.m; sourceTree = "<group>"; };
+		E7DA20A021A3F8CB00FB41C9 /* FJMovieManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJMovieManager.h; sourceTree = "<group>"; };
+		E7DA20A121A3F8CB00FB41C9 /* FJCameraManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJCameraManager.m; sourceTree = "<group>"; };
+		E7DA20A421A3F91B00FB41C9 /* FJVideoPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJVideoPreview.m; sourceTree = "<group>"; };
+		E7DA20A521A3F91B00FB41C9 /* FJImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJImagePreviewController.m; sourceTree = "<group>"; };
+		E7DA20A621A3F91C00FB41C9 /* FJCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJCameraView.h; sourceTree = "<group>"; };
+		E7DA20A721A3F91C00FB41C9 /* FJCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJCameraView.m; sourceTree = "<group>"; };
+		E7DA20A821A3F91C00FB41C9 /* FJImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJImagePreviewController.h; sourceTree = "<group>"; };
+		E7DA20A921A3F91C00FB41C9 /* FJVideoPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJVideoPreview.h; sourceTree = "<group>"; };
 		E7DFF9ED2182B3EA0059CE32 /* FJCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7DFF9F02182B3EA0059CE32 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E7DFF9F12182B3EA0059CE32 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -273,7 +299,7 @@
 		E7DFFA802182C5030059CE32 /* ic_arrow_up@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_up@3x.png"; sourceTree = "<group>"; };
 		E7DFFA812182C5030059CE32 /* ic_arrow_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_down@2x.png"; sourceTree = "<group>"; };
 		E7DFFA822182C5030059CE32 /* ic_arrow_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrow_up@2x.png"; sourceTree = "<group>"; };
-		E7DFFA872182C5410059CE32 /* FJCameraCommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCameraCommonHeader.h; sourceTree = "<group>"; };
+		E7DFFA872182C5410059CE32 /* FJPhotoEditCommonHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditCommonHeader.h; sourceTree = "<group>"; };
 		E7DFFA882182DE310059CE32 /* FJPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJPhotoCollectionViewCell.m; sourceTree = "<group>"; };
 		E7DFFA892182DE310059CE32 /* FJPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FJPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		E7DFFA8A2182DE310059CE32 /* FJPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FJPhotoCollectionViewCell.h; sourceTree = "<group>"; };
@@ -335,6 +361,77 @@
 			path = 3rd;
 			sourceTree = "<group>";
 		};
+		E7DA208D21A3ED2100FB41C9 /* AVCapture */ = {
+			isa = PBXGroup;
+			children = (
+				E7DA209721A3EFE800FB41C9 /* FJAVCatpureCommonHeader.h */,
+				E7DA209221A3EF0000FB41C9 /* Manager */,
+				E7DA208F21A3EEB700FB41C9 /* Utility */,
+				E7DA208E21A3EEAC00FB41C9 /* Controller */,
+				E7DA209121A3EEE200FB41C9 /* View */,
+			);
+			path = AVCapture;
+			sourceTree = "<group>";
+		};
+		E7DA208E21A3EEAC00FB41C9 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E7A7FABF21A2CE6300A3AB9B /* FJAVCaptureViewController.h */,
+				E7A7FAC021A2CE6300A3AB9B /* FJAVCaptureViewController.m */,
+				E769026521A2C71900B15DD0 /* FJImagePickerController.h */,
+				E769026621A2C71900B15DD0 /* FJImagePickerController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E7DA208F21A3EEB700FB41C9 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				E7DA209A21A3F29500FB41C9 /* UIView+FJAdditions.h */,
+				E7DA209B21A3F29500FB41C9 /* UIView+FJAdditions.m */,
+				E7DA209821A3F29500FB41C9 /* UIView+FJHUD.h */,
+				E7DA209921A3F29500FB41C9 /* UIView+FJHUD.m */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		E7DA209021A3EEC100FB41C9 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				E7B5D74921897D4E00961662 /* FJPhotoManager.h */,
+				E7B5D74A21897D4E00961662 /* FJPhotoManager.m */,
+				E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */,
+				E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		E7DA209121A3EEE200FB41C9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E7DA20A621A3F91C00FB41C9 /* FJCameraView.h */,
+				E7DA20A721A3F91C00FB41C9 /* FJCameraView.m */,
+				E7DA20A821A3F91C00FB41C9 /* FJImagePreviewController.h */,
+				E7DA20A521A3F91B00FB41C9 /* FJImagePreviewController.m */,
+				E7DA20A921A3F91C00FB41C9 /* FJVideoPreview.h */,
+				E7DA20A421A3F91B00FB41C9 /* FJVideoPreview.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E7DA209221A3EF0000FB41C9 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				E7DA209421A3EF1200FB41C9 /* FJMotionManager.h */,
+				E7DA209321A3EF1100FB41C9 /* FJMotionManager.m */,
+				E7DA209E21A3F8CB00FB41C9 /* FJCameraManager.h */,
+				E7DA20A121A3F8CB00FB41C9 /* FJCameraManager.m */,
+				E7DA20A021A3F8CB00FB41C9 /* FJMovieManager.h */,
+				E7DA209F21A3F8CB00FB41C9 /* FJMovieManager.m */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 		E7DFF9E42182B3EA0059CE32 = {
 			isa = PBXGroup;
 			children = (
@@ -373,16 +470,19 @@
 		E7DFFA062182B4160059CE32 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				E7DFFA072182B4210059CE32 /* Camera */,
+				E7DA209621A3EF9C00FB41C9 /* FJCameraCommonHeader.h */,
+				E7DA208D21A3ED2100FB41C9 /* AVCapture */,
+				E7DFFA072182B4210059CE32 /* PhotoEdit */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
 		};
-		E7DFFA072182B4210059CE32 /* Camera */ = {
+		E7DFFA072182B4210059CE32 /* PhotoEdit */ = {
 			isa = PBXGroup;
 			children = (
-				E7DFFA872182C5410059CE32 /* FJCameraCommonHeader.h */,
+				E7DFFA872182C5410059CE32 /* FJPhotoEditCommonHeader.h */,
 				E7DFFA752182BC560059CE32 /* Images */,
+				E7DA209021A3EEC100FB41C9 /* Manager */,
 				E7DFFA742182BBBA0059CE32 /* Utility */,
 				E7DFFA702182B67F0059CE32 /* Controller */,
 				E7DFFA6F2182B6750059CE32 /* Model */,
@@ -390,7 +490,7 @@
 				E7DFFA2E2182B4210059CE32 /* Cell */,
 				E7B5D7522189A51200961662 /* 3rd */,
 			);
-			path = Camera;
+			path = PhotoEdit;
 			sourceTree = "<group>";
 		};
 		E7DFFA0B2182B4210059CE32 /* View */ = {
@@ -472,10 +572,6 @@
 				E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */,
 				E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */,
 				E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */,
-				E769026521A2C71900B15DD0 /* FJImagePickerController.h */,
-				E769026621A2C71900B15DD0 /* FJImagePickerController.m */,
-				E7A7FABF21A2CE6300A3AB9B /* FJAVCaptureViewController.h */,
-				E7A7FAC021A2CE6300A3AB9B /* FJAVCaptureViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -485,10 +581,6 @@
 			children = (
 				E7EBF46D2192B51200CA35B7 /* PHAsset+Utility.h */,
 				E7EBF46E2192B51300CA35B7 /* PHAsset+Utility.m */,
-				E7B5D74921897D4E00961662 /* FJPhotoManager.h */,
-				E7B5D74A21897D4E00961662 /* FJPhotoManager.m */,
-				E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */,
-				E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -815,12 +907,17 @@
 				E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */,
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
+				E7DA209521A3EF1200FB41C9 /* FJMotionManager.m in Sources */,
 				E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
 				E7B6FFFB219439E5000AC768 /* FJPhotoEditFilterView.m in Sources */,
+				E7DA20AC21A3F91C00FB41C9 /* FJCameraView.m in Sources */,
 				E7EBF46F2192B51300CA35B7 /* PHAsset+Utility.m in Sources */,
+				E7DA209C21A3F29500FB41C9 /* UIView+FJHUD.m in Sources */,
 				E7B5D7552189A52200961662 /* TKImageView.m in Sources */,
+				E7DA20A321A3F8CB00FB41C9 /* FJCameraManager.m in Sources */,
 				E7B5D74B21897D4E00961662 /* FJPhotoManager.m in Sources */,
+				E7DA20AB21A3F91C00FB41C9 /* FJImagePreviewController.m in Sources */,
 				E73A26D3219AA618001799BA /* FJCropperView.m in Sources */,
 				E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */,
 				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
@@ -838,9 +935,12 @@
 				E792D2E921916134004465A1 /* FJPhotoTagAlertView.m in Sources */,
 				E75C063121886A5A00836ABD /* FJPhotoEditCropperView.m in Sources */,
 				E7DFF9F22182B3EA0059CE32 /* AppDelegate.m in Sources */,
+				E7DA209D21A3F29500FB41C9 /* UIView+FJAdditions.m in Sources */,
+				E7DA20A221A3F8CB00FB41C9 /* FJMovieManager.m in Sources */,
 				E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */,
 				E75C063621886B4A00836ABD /* FJPhotoEditTuningView.m in Sources */,
 				E769026721A2C71900B15DD0 /* FJImagePickerController.m in Sources */,
+				E7DA20AA21A3F91C00FB41C9 /* FJVideoPreview.m in Sources */,
 				E7DFFA732182B8CE0059CE32 /* FJPhotoLibraryViewController.m in Sources */,
 				E7B5D7582189B80B00961662 /* StaticScaleCropView.m in Sources */,
 			);

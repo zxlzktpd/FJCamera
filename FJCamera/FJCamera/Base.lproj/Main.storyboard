@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vj8-hD-TCQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vj8-hD-TCQ">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,27 +22,41 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="axa-fI-BVy">
-                                <rect key="frame" x="16" y="80" width="46" height="40"/>
+                                <rect key="frame" x="67.5" y="96" width="240" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="zZ7-5H-2iI"/>
+                                    <constraint firstAttribute="height" constant="40" id="7a6-IZ-KHu"/>
+                                    <constraint firstAttribute="width" constant="240" id="g7i-CE-2jb"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="相册 图片 选择 编辑 滤镜 裁切 效果"/>
                                 <connections>
                                     <action selector="tapPhotoLibrary:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o3x-Or-zBg"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0wK-Pz-6aH">
+                                <rect key="frame" x="67.5" y="168" width="240" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="gHN-k7-qOj"/>
+                                    <constraint firstAttribute="width" constant="240" id="hNP-J6-yVe"/>
+                                </constraints>
+                                <state key="normal" title="相机 视频 图片"/>
+                                <connections>
+                                    <action selector="tapAVCapture:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yzm-5y-kBe"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="axa-fI-BVy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Eth-z3-oe6"/>
-                            <constraint firstAttribute="trailing" secondItem="axa-fI-BVy" secondAttribute="trailing" constant="313" id="Utt-TC-0ND"/>
-                            <constraint firstItem="axa-fI-BVy" firstAttribute="top" secondItem="JNe-2F-Szt" secondAttribute="bottom" constant="16" id="j4C-6l-hdG"/>
+                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="69z-ug-Tw2"/>
+                            <constraint firstItem="axa-fI-BVy" firstAttribute="top" secondItem="JNe-2F-Szt" secondAttribute="bottom" constant="32" id="afh-kq-HlW"/>
+                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="top" secondItem="axa-fI-BVy" secondAttribute="bottom" constant="32" id="o7r-cd-RdW"/>
+                            <constraint firstItem="axa-fI-BVy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ydU-pC-H5O"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gA4-7M-bkW"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="669.60000000000002" y="133.5832083958021"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ewx-vB-KQ3">
