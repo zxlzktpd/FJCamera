@@ -43,12 +43,19 @@
                                     <action selector="tapAVCapture:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yzm-5y-kBe"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="Ibw-82-LwJ">
+                                <rect key="frame" x="0.0" y="218" width="375" height="449"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="0wK-Pz-6aH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="69z-ug-Tw2"/>
+                            <constraint firstAttribute="trailing" secondItem="Ibw-82-LwJ" secondAttribute="trailing" id="9Jk-MX-JiT"/>
+                            <constraint firstAttribute="bottom" secondItem="Ibw-82-LwJ" secondAttribute="bottom" id="YTj-Kz-WGo"/>
                             <constraint firstItem="axa-fI-BVy" firstAttribute="top" secondItem="JNe-2F-Szt" secondAttribute="bottom" constant="32" id="afh-kq-HlW"/>
                             <constraint firstItem="0wK-Pz-6aH" firstAttribute="top" secondItem="axa-fI-BVy" secondAttribute="bottom" constant="32" id="o7r-cd-RdW"/>
+                            <constraint firstItem="Ibw-82-LwJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pqb-TP-2WT"/>
+                            <constraint firstItem="Ibw-82-LwJ" firstAttribute="top" secondItem="0wK-Pz-6aH" secondAttribute="bottom" constant="10" id="vzK-6E-tf0"/>
                             <constraint firstItem="axa-fI-BVy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ydU-pC-H5O"/>
                         </constraints>
                     </view>
@@ -75,4 +82,7 @@
             <point key="canvasLocation" x="-722" y="29"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="test" width="484" height="580"/>
+    </resources>
 </document>

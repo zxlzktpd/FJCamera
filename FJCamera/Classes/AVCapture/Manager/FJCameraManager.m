@@ -175,7 +175,7 @@ static const NSString *CameraAdjustingExposureContext;
 #pragma mark -
 - (NSError *)error:(NSString *)text code:(NSInteger)code  {
     NSDictionary *desc = @{NSLocalizedDescriptionKey: text};
-    NSError *error = [NSError errorWithDomain:@"com.cc.camera" code:code userInfo:desc];
+    NSError *error = [NSError errorWithDomain:@"com.fj.camera" code:code userInfo:desc];
     return error;
 }
 

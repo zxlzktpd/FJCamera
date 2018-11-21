@@ -7,13 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FJMediaObject.h"
 
 @interface FJImagePreviewController : UIViewController
 
-+ (instancetype)new  NS_UNAVAILABLE;
-
-- (instancetype)init NS_UNAVAILABLE;
-
-- (instancetype)initWithImage:(UIImage *)image frame:(CGRect)frame NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithMedia:(FJMediaObject *)media callback:(void(^)(BOOL saved, FJMediaObject *media))callback;
 
 @end

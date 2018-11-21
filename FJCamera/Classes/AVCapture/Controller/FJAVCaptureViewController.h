@@ -8,21 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import "FJCameraView.h"
-
-NS_ASSUME_NONNULL_BEGIN
+#import "FJMediaObject.h"
 
 @interface FJAVCaptureViewController : UIViewController
+
+@property (nonatomic, strong, readonly) NSMutableArray *medias;
 
 // FJCameraViewConfig参数
 @property (nonatomic, strong) FJCameraViewConfig *cameraViewConfig;
 
-// 是否允许拍照（默认YES）
-@property (nonatomic, assign) BOOL enablePhoto;
-// 是否允许录像（默认YES）
-@property (nonatomic, assign) BOOL enableVideo;
-// 录像最长时间显示（默认15秒）
-@property (nonatomic, assign) float videoMaxDuration;
+// 每次拍照、录像完成确认界面
+@property (nonatomic, assign) BOOL enableConfirmPreview;
+
+// 支持浏览和编辑所有照片、录像
+@property (nonatomic, assign) BOOL enablePreviewAll;
+
+// 单张图片/单个视频的回调
+@property (nonatomic, copy) void(^oneMediaTakenBlock)(FJMediaObject *media);
 
 @end
-
-NS_ASSUME_NONNULL_END

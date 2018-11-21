@@ -11,6 +11,8 @@
 #import "FJPhotoLibraryCropperViewController.h"
 #import "FJAVCaptureViewController.h"
 
+#import "FJTakePhotoView.h"
+
 @interface ViewController ()
 
 @end
@@ -40,7 +42,8 @@
     config.enableLightSupplement = NO;
     config.enableFlashLight = NO;
     config.enableAutoFocusAndExposure = NO;
-    config.widgetUsingImageBottomView = NO;
+    config.widgetUsingImageBottomView = YES;
+    config.captureType = FJCaptureTypeAll;
     avCaptureVC.cameraViewConfig = config;
     [self.navigationController pushViewController:avCaptureVC animated:YES];
 }

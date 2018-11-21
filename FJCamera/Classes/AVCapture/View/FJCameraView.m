@@ -7,8 +7,9 @@
 //
 
 #import "FJCameraView.h"
-#import "UIView+FJHUD.h"
 #import "FJAVCatpureCommonHeader.h"
+#import "UIView+FJHUD.h"
+#import "FJTakePhotoView.h"
 
 @implementation FJCameraViewConfig
 
@@ -28,6 +29,8 @@
         self.enableZoom = YES;
         // 支持缩放显示条
         self.enableZoomIndicator = YES;
+        // 支持手动聚焦/曝光
+        self.enableManualTapFocusAndExposure = YES;
         // 支持拍摄模式
         self.captureType = FJCaptureTypeAll;
         // Preview全屏
@@ -39,7 +42,7 @@
         // Top Bar 高度
         self.topBarHeight = 64.0;
         // Bottom Bar 高度
-        self.bottomBarHeight = 120.0;
+        self.bottomBarHeight = 220.0;
         // 聚焦框颜色
         self.focusBorderColor = [UIColor whiteColor];
         // 聚焦框边长
@@ -72,6 +75,20 @@
         self.widgetUsingImageCancel = NO;
         // 控件使用图标 Bottom Button
         self.widgetUsingImageBottomView = NO;
+        // Take View Size
+        self.takeViewSize = CGSizeMake(90.0, 90.0);
+        // Take Button Size
+        self.takeButtonSize = CGSizeMake(70.0, 70.0);
+        // Take Button Stroke Color
+        self.takeButtonStrokeColor = @"#00D76E".fj_color;
+        // Take Button Stroke Width
+        self.takeButtonStrokeWidth = 10.0;
+        // Take Button Stroke Long Press Duration
+        self.takeButtonLongTapPressDuration = 0.5;
+        // Take Button Stroke Circle Duration
+        self.takeButtonCircleDuration = 15.0;
+        // Hint Height
+        self.hintHeight = 27.0;
     }
     return self;
 }
@@ -196,6 +213,7 @@
 #pragma mark - Private
 -(void)_buildUI:(FJCameraViewConfig *)config {
     
+    __weak typeof(self) weakSelf = self;
     if (config == nil) {
         self.config = [[FJCameraViewConfig alloc] init];
     }else {
@@ -210,31 +228,78 @@
     [self addSubview:self.previewView];
     [self addSubview:self.topView];
     [self addSubview:self.bottomView];
-    [self.previewView addSubview:self.focusView];
-    [self.previewView addSubview:self.exposureView];
-    [self.previewView addSubview:self.slider];
-
+    if (self.config.enableManualTapFocusAndExposure) {
+        [self.previewView addSubview:self.focusView];
+        [self.previewView addSubview:self.exposureView];
+    }
+    if (self.config.enableZoom && self.config.enableZoomIndicator) {
+        [self.previewView addSubview:self.slider];
+    }
     // ----------------------- 手势
-    // 点击-->聚焦
-    // 双击-->曝光
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAction:)];
-    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_doubleTapAction:)];
-    doubleTap.numberOfTapsRequired = 2;
-    [self.previewView addGestureRecognizer:tap];
-    [self.previewView addGestureRecognizer:doubleTap];
-    [tap requireGestureRecognizerToFail:doubleTap];
-
-    // 捏合-->缩放
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action: @selector(_pinchAction:)];
-    [self.previewView addGestureRecognizer:pinch];
-
-    // ----------------------- UI
-    // 缩放
-    self.slider.transform = CGAffineTransformMakeRotation(M_PI_2);
-    self.slider.frame = CGRectMake(self.width - self.config.zoomIndicatorOffsetRight, self.config.zoomIndicatorOffsetTop, self.config.zoomIndicatorWidth, self.config.zoomIndicatorHeight);
+    if (self.config.enableManualTapFocusAndExposure) {
+        // 点击-->聚焦
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAction:)];
+        [self.previewView addGestureRecognizer:tap];
+        // 双击-->曝光
+        UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_doubleTapAction:)];
+        doubleTap.numberOfTapsRequired = 2;
+        [self.previewView addGestureRecognizer:doubleTap];
+        [tap requireGestureRecognizerToFail:doubleTap];
+    }
+    
+    if (self.config.enableZoom) {
+        // 捏合-->缩放
+        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action: @selector(_pinchAction:)];
+        [self.previewView addGestureRecognizer:pinch];
+        if (self.config.enableZoomIndicator) {
+            // 缩放 UI 条
+            self.slider.transform = CGAffineTransformMakeRotation(M_PI_2);
+            self.slider.frame = CGRectMake(self.width - self.config.zoomIndicatorOffsetRight, self.config.zoomIndicatorOffsetTop, self.config.zoomIndicatorWidth, self.config.zoomIndicatorHeight);
+        }
+    }
 
     // Bottom Bar
     if (self.config.widgetUsingImageBottomView) {
+        
+        UILabel *labelHint = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.bottomView.size.width, self.config.hintHeight)];
+        NSString *hint = nil;
+        int type = 0;
+        if (self.config.captureType == FJCaptureTypeAll) {
+            hint = @"轻触拍照，长按摄像";
+            type = 3;
+        }else if (self.config.captureType == FJCaptureTypePhoto) {
+            hint = @"轻触拍照";
+            type = 1;
+        }else if (self.config.captureType == FJCaptureTypeVidio) {
+            hint = @"长按摄像";
+            type = 2;
+        }
+        labelHint.text = hint;
+        labelHint.textAlignment = NSTextAlignmentCenter;
+        labelHint.textColor = [UIColor whiteColor];
+        labelHint.font = [UIFont systemFontOfSize:14.0];
+        [self.bottomView addSubview:labelHint];
+       
+        
+        FJTakePhotoView *takeView = [FJTakePhotoView create:CGRectMake((self.bottomView.size.width - self.config.takeViewSize.width) / 2.0, (self.bottomView.size.height - self.config.takeViewSize.height) / 2.0, self.config.takeViewSize.width, self.config.takeViewSize.height) takeButtonSize:self.config.takeButtonSize strokeColor:self.config.takeButtonStrokeColor strokeWidth:self.config.takeButtonStrokeWidth longTapPressDuration:self.config.takeButtonLongTapPressDuration circleDuration:self.config.takeButtonCircleDuration type:type tapBlock:^{
+            // 拍照
+            if ([weakSelf.delegate respondsToSelector:@selector(takePhotoAction:)]) {
+                [weakSelf.delegate takePhotoAction:self];
+            }
+            
+        } longPressBlock:^(BOOL begin) {
+            // 拍摄
+            if (begin) {
+                if ([weakSelf.delegate respondsToSelector:@selector(startRecordVideoAction:)]) {
+                    [weakSelf.delegate startRecordVideoAction:self];
+                }
+            }else {
+                if ([weakSelf.delegate respondsToSelector:@selector(stopRecordVideoAction:)]) {
+                    [weakSelf.delegate stopRecordVideoAction:self];
+                }
+            }
+        }];
+        [self.bottomView addSubview:takeView];
         
     }else {
         // 拍照
@@ -376,10 +441,12 @@
 
 -(void)_pinchAction:(UIPinchGestureRecognizer *)pinch {
     
+    @weakify(self)
     if ([_delegate respondsToSelector:@selector(zoomAction:factor:)]) {
         if (pinch.state == UIGestureRecognizerStateBegan) {
             [UIView animateWithDuration:0.1 animations:^{
-                self->_slider.alpha = 1;
+                @strongify(self)
+                self.slider.alpha = 1;
             }];
         } else if (pinch.state == UIGestureRecognizerStateChanged) {
             if (pinch.velocity > 0) {
@@ -390,7 +457,8 @@
             [_delegate zoomAction:self factor: powf(5, _slider.value)];
         } else {
             [UIView animateWithDuration:0.1 animations:^{
-                self->_slider.alpha = 0.0;
+                @strongify(self)
+                self.slider.alpha = 0.0;
             }];
         }
     }
@@ -402,7 +470,9 @@
     if ([_delegate respondsToSelector:@selector(focusAction:point:handle:)]) {
         CGPoint point = [tap locationInView:self.previewView];
         [self _runFocusAnimation:self.focusView point:point];
+        @weakify(self)
         [_delegate focusAction:self point:[self.previewView captureDevicePointForPoint:point] handle:^(NSError *error) {
+            @strongify(self)
             if (error) [self showError:error];
         }];
     }
@@ -414,7 +484,9 @@
     if ([_delegate respondsToSelector:@selector(exposAction:point:handle:)]) {
         CGPoint point = [tap locationInView:self.previewView];
         [self _runFocusAnimation:self.exposureView point:point];
+        @weakify(self)
         [_delegate exposAction:self point:[self.previewView captureDevicePointForPoint:point] handle:^(NSError *error) {
+            @strongify(self)
             if (error) [self showError:error];
         }];
     }
@@ -425,7 +497,9 @@
     
     if ([_delegate respondsToSelector:@selector(autoFocusAndExposureAction:handle:)]) {
         [self _runResetAnimation];
+        @weakify(self)
         [_delegate autoFocusAndExposureAction:self handle:^(NSError *error) {
+            @strongify(self)
             if (error) [self showError:error];
         }];
     }
@@ -491,13 +565,15 @@
 // 手电筒
 -(void)_torchClick:(UIButton *)btn {
     
+    @weakify(self)
     if ([_delegate respondsToSelector:@selector(torchLightAction:handle:)]) {
         [_delegate torchLightAction:self handle:^(NSError *error) {
+            @strongify(self)
             if (error) {
                 [self showError:error];
             } else {
-                self->_flashBtn.selected = NO;
-                self->_torchBtn.selected = !self->_torchBtn.selected;
+                self.flashBtn.selected = NO;
+                self.torchBtn.selected = !self.torchBtn.selected;
             }
         }];
     }
@@ -506,13 +582,15 @@
 // 闪光灯
 -(void)_flashClick:(UIButton *)btn {
     
+    @weakify(self)
     if ([_delegate respondsToSelector:@selector(flashLightAction:handle:)]) {
         [_delegate flashLightAction:self handle:^(NSError *error) {
+            @strongify(self)
             if (error) {
                 [self showError:error];
             } else {
-                self->_flashBtn.selected = !self->_flashBtn.selected;
-                self->_torchBtn.selected = NO;
+                self.flashBtn.selected = !self.flashBtn.selected;
+                self.torchBtn.selected = NO;
             }
         }];
     }

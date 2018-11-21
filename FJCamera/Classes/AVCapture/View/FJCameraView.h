@@ -69,6 +69,8 @@ typedef NS_ENUM(NSInteger, FJCaptureType) {
 @property (nonatomic, assign) BOOL enableZoom;
 // 支持缩放显示条
 @property (nonatomic, assign) BOOL enableZoomIndicator;
+// 支持手动聚焦/曝光
+@property (nonatomic, assign) BOOL enableManualTapFocusAndExposure;
 // 支持拍摄模式
 @property (nonatomic, assign) FJCaptureType captureType;
 // Preview全屏
@@ -113,6 +115,20 @@ typedef NS_ENUM(NSInteger, FJCaptureType) {
 @property (nonatomic, assign) BOOL widgetUsingImageCancel;
 // 控件使用图标 Bottom View
 @property (nonatomic, assign) BOOL widgetUsingImageBottomView;
+// Take View Size
+@property (nonatomic, assign) CGSize takeViewSize;
+// Take Button Size
+@property (nonatomic, assign) CGSize takeButtonSize;
+// Take Button Stroke Color
+@property (nonatomic, strong) UIColor *takeButtonStrokeColor;
+// Take Button Stroke Width
+@property (nonatomic, assign) CGFloat takeButtonStrokeWidth;
+// Take Button Stroke Long Press Duration
+@property (nonatomic, assign) CGFloat takeButtonLongTapPressDuration;
+// Take Button Stroke Circle Duration
+@property (nonatomic, assign) CGFloat takeButtonCircleDuration;
+// Hint Height
+@property (nonatomic, assign) CGFloat hintHeight;
 
 @end
 

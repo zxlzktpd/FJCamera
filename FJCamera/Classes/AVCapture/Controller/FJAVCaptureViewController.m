@@ -16,6 +16,7 @@
 #import "FJCameraManager.h"
 #import "FJMotionManager.h"
 #import "FJMovieManager.h"
+#import "FJSaveMedia.h"
 #import "FJAVCatpureCommonHeader.h"
 
 @interface FJAVCaptureViewController () <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, FJCameraViewDelegate>
@@ -36,29 +37,36 @@
     BOOL                       _recording;
 }
 
+@property (nonatomic, strong) FJCameraView    *cameraView;       // 界面布局
+@property (nonatomic, strong) FJMovieManager  *movieManager;     // 视频管理
+@property (nonatomic, strong) FJCameraManager *cameraManager;    // 相机管理
+@property (nonatomic, strong) FJMotionManager *motionManager;    // 陀螺仪管理
+@property (nonatomic, strong) AVCaptureDevice *activeCamera;     // 当前输入设备
+@property (nonatomic, strong) AVCaptureDevice *inactiveCamera;   // 不活跃的设备(这里指前摄像头或后摄像头，不包括外接输入设备)
 
-@property(nonatomic, strong) FJCameraView *cameraView;          // 界面布局
-@property(nonatomic, strong) FJMovieManager  *movieManager;     // 视频管理
-@property(nonatomic, strong) FJCameraManager *cameraManager;    // 相机管理
-@property(nonatomic, strong) FJMotionManager *motionManager;    // 陀螺仪管理
-@property(nonatomic, strong) AVCaptureDevice *activeCamera;     // 当前输入设备
-@property(nonatomic, strong) AVCaptureDevice *inactiveCamera;   // 不活跃的设备(这里指前摄像头或后摄像头，不包括外接输入设备)
-
+@property (nonatomic, strong) NSMutableArray *medias;
 
 @end
 
 @implementation FJAVCaptureViewController
 
+- (NSMutableArray *)medias {
+    
+    if (_medias == nil) {
+        _medias = [[NSMutableArray alloc] init];
+    }
+    return _medias;
+}
+
 - (instancetype)init {
     
     self = [super init];
     if (self) {
-        self.enablePhoto = YES;
-        self.enableVideo = YES;
-        self.videoMaxDuration = 15.0;
-        _movieManager  = [[FJMovieManager alloc]  init];
+        _movieManager  = [[FJMovieManager alloc] init];
         _motionManager = [[FJMotionManager alloc] init];
         _cameraManager = [[FJCameraManager alloc] init];
+        _enableConfirmPreview = YES;
+        _enablePreviewAll = YES;
     }
     return self;
 }
@@ -80,12 +88,14 @@
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden = YES;
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated {
+    
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = NO;
 }
@@ -95,12 +105,14 @@
     return YES;
 }
 
-- (void)dealloc{
+- (void)dealloc {
+    
     NSLog(@"相机界面销毁了");
 }
 
 #pragma mark - -输入设备
-- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position{
+- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position {
+    
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in devices) {
         if (device.position == position) {
@@ -110,11 +122,13 @@
     return nil;
 }
 
-- (AVCaptureDevice *)activeCamera{
+- (AVCaptureDevice *)activeCamera {
+    
     return _deviceInput.device;
 }
 
-- (AVCaptureDevice *)inactiveCamera{
+- (AVCaptureDevice *)inactiveCamera {
+    
     AVCaptureDevice *device = nil;
     if ([[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo] count] > 1) {
         if ([self activeCamera].position == AVCaptureDevicePositionBack) {
@@ -128,8 +142,9 @@
 
 #pragma mark - -相关配置
 /// 会话
-- (void)setupSession:(NSError **)error{
-    _session = [[AVCaptureSession alloc]init];
+- (void)setupSession:(NSError **)error {
+    
+    _session = [[AVCaptureSession alloc] init];
     _session.sessionPreset = AVCaptureSessionPresetHigh;
     
     [self setupSessionInputs:error];
@@ -137,7 +152,8 @@
 }
 
 /// 输入
-- (void)setupSessionInputs:(NSError **)error{
+- (void)setupSessionInputs:(NSError **)error {
+    
     // 视频输入
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:error];
@@ -157,15 +173,16 @@
 }
 
 /// 输出
-- (void)setupSessionOutputs:(NSError **)error{
-    dispatch_queue_t captureQueue = dispatch_queue_create("com.cc.captureQueue", DISPATCH_QUEUE_SERIAL);
+- (void)setupSessionOutputs:(NSError **)error {
+    
+    dispatch_queue_t captureQueue = dispatch_queue_create("com.fj.captureQueue", DISPATCH_QUEUE_SERIAL);
     
     // 视频输出
     AVCaptureVideoDataOutput *videoOut = [[AVCaptureVideoDataOutput alloc] init];
     [videoOut setAlwaysDiscardsLateVideoFrames:YES];
     [videoOut setVideoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey: [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]}];
     [videoOut setSampleBufferDelegate:self queue:captureQueue];
-    if ([_session canAddOutput:videoOut]){
+    if ([_session canAddOutput:videoOut]) {
         [_session addOutput:videoOut];
     }
     _videoOutput = videoOut;
@@ -174,7 +191,7 @@
     // 音频输出
     AVCaptureAudioDataOutput *audioOut = [[AVCaptureAudioDataOutput alloc] init];
     [audioOut setSampleBufferDelegate:self queue:captureQueue];
-    if ([_session canAddOutput:audioOut]){
+    if ([_session canAddOutput:audioOut]) {
         [_session addOutput:audioOut];
     }
     _audioConnection = [audioOut connectionWithMediaType:AVMediaTypeAudio];
@@ -190,47 +207,54 @@
 
 #pragma mark - -会话控制
 // 开启捕捉
-- (void)startCaptureSession{
-    if (!_session.isRunning){
+- (void)startCaptureSession {
+    
+    if (!_session.isRunning) {
         [_session startRunning];
     }
 }
 
 // 停止捕捉
-- (void)stopCaptureSession{
-    if (_session.isRunning){
+- (void)stopCaptureSession {
+    
+    if (_session.isRunning) {
         [_session stopRunning];
     }
 }
 
 #pragma mark - -操作相机
 // 缩放
--(void)zoomAction:(FJCameraView *)cameraView factor:(CGFloat)factor {
+- (void)zoomAction:(FJCameraView *)cameraView factor:(CGFloat)factor {
+    
     NSError *error = [_cameraManager zoom:[self activeCamera] factor:factor];
     if (error) NSLog(@"%@", error);
 }
 
 // 聚焦
--(void)focusAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void (^)(NSError *))handle {
+- (void)focusAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void (^)(NSError *))handle {
+    
     NSError *error = [_cameraManager focus:[self activeCamera] point:point];
     handle(error);
     NSLog(@"%f", [self activeCamera].activeFormat.videoMaxZoomFactor);
 }
 
 // 曝光
--(void)exposAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void (^)(NSError *))handle {
+- (void)exposAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void (^)(NSError *))handle {
+    
     NSError *error = [_cameraManager expose:[self activeCamera] point:point];
     handle(error);
 }
 
 // 自动聚焦、曝光
--(void)autoFocusAndExposureAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+- (void)autoFocusAndExposureAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+    
     NSError *error = [_cameraManager resetFocusAndExposure:[self activeCamera]];
     handle(error);
 }
 
 // 闪光灯
--(void)flashLightAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+- (void)flashLightAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+    
     BOOL on = [_cameraManager flashMode:[self activeCamera]] == AVCaptureFlashModeOn;
     AVCaptureFlashMode mode = on ? AVCaptureFlashModeOff : AVCaptureFlashModeOn;
     NSError *error = [_cameraManager changeFlash:[self activeCamera] mode: mode];
@@ -238,7 +262,8 @@
 }
 
 // 手电筒
--(void)torchLightAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+- (void)torchLightAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+    
     BOOL on = [_cameraManager torchMode:[self activeCamera]] == AVCaptureTorchModeOn;
     AVCaptureTorchMode mode = on ? AVCaptureTorchModeOff : AVCaptureTorchModeOn;
     NSError *error = [_cameraManager changeTorch:[self activeCamera] model:mode];
@@ -247,6 +272,7 @@
 
 // 转换摄像头
 - (void)swicthCameraAction:(FJCameraView *)cameraView handle:(void (^)(NSError *))handle {
+    
     NSError *error;
     AVCaptureDevice *videoDevice = [self inactiveCamera];
     AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
@@ -280,88 +306,97 @@
 
 #pragma mark - -拍摄照片
 // 拍照
-- (void)takePhotoAction:(FJCameraView *)cameraView{
+- (void)takePhotoAction:(FJCameraView *)cameraView {
+    
     AVCaptureConnection *connection = [_imageOutput connectionWithMediaType:AVMediaTypeVideo];
     if (connection.isVideoOrientationSupported) {
         connection.videoOrientation = [self currentVideoOrientation];
     }
+    @weakify(self)
     [_imageOutput captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef _Nullable imageDataSampleBuffer, NSError * _Nullable error) {
+        @strongify(self)
         if (error) {
             [self.view showError:error];
             return;
         }
         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        UIImage *image = [[UIImage alloc]initWithData:imageData];
-        FJImagePreviewController *vc = [[FJImagePreviewController alloc]initWithImage:image frame:self.cameraView.previewView.frame];
-        [self.navigationController pushViewController:vc animated:YES];
+        UIImage *image = [[UIImage alloc] initWithData:imageData];
+        if (self.enableConfirmPreview) {
+            FJMediaObject *media = [FJMediaObject new];
+            media.image = image;
+            media.imageData = imageData;
+            FJImagePreviewController *previewVC = [[FJImagePreviewController alloc] initWithMedia:media callback:^(BOOL saved, FJMediaObject *media) {
+                
+                if (self.enablePreviewAll) {
+                    if (saved) {
+                        [self.medias addObject:media];
+                    }
+                }else {
+                    self.oneMediaTakenBlock == nil ? : self.oneMediaTakenBlock(media);
+                }
+            }];
+            [self.navigationController pushViewController:previewVC animated:YES];
+        }else {
+            
+            [FJSaveMedia savePhotoToPhotoLibrary:image completionBlock:^(UIImage *image, NSURL *imageURL, NSError *error) {
+                
+                FJMediaObject *media = [FJMediaObject new];
+                if (self.enablePreviewAll) {
+                    if (error) {
+                        [self.view showError:error];
+                        return;
+                    }
+                    media.image = image;
+                    media.imageURL = imageURL;
+                    [self.medias addObject:media];
+                }else {
+                    self.oneMediaTakenBlock == nil ? : self.oneMediaTakenBlock(media);
+                }
+            }];
+        }
     }];
 }
 
 // 取消拍照
-- (void)cancelAction:(FJCameraView *)cameraView{
+- (void)cancelAction:(FJCameraView *)cameraView {
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - -录制视频
 // 开始录像
--(void)startRecordVideoAction:(FJCameraView *)cameraView{
+- (void)startRecordVideoAction:(FJCameraView *)cameraView {
+    
     _recording = YES;
     _movieManager.currentDevice = [self activeCamera];
     _movieManager.currentOrientation = [self currentVideoOrientation];
+    @weakify(self)
     [_movieManager start:^(NSError * _Nonnull error) {
+        @strongify(self)
         if (error) [self.view showError:error];
     }];
 }
 
 // 停止录像
--(void)stopRecordVideoAction:(FJCameraView *)cameraView{
+- (void)stopRecordVideoAction:(FJCameraView *)cameraView {
+    
     _recording = NO;
+    @weakify(self)
     [_movieManager stop:^(NSURL * _Nonnull url, NSError * _Nonnull error) {
+        @strongify(self)
         if (error) {
             [self.view showError:error];
         } else {
-            [self.view showAlertView:@"是否保存到相册" ok:^(UIAlertAction *act) {
-                [self saveMovieToCameraRoll: url];
-            } cancel:nil];
+            if (self.enableConfirmPreview) {
+                
+            }
         }
     }];
 }
 
-// 保存视频
-- (void)saveMovieToCameraRoll:(NSURL *)url {
-    
-    
-    [self.view showLoadHUD:@"保存中..."];
-
-    if (@available(iOS 9.0, *)) {
-        
-        [PHPhotoLibrary requestAuthorization:^( PHAuthorizationStatus status ) {
-            
-            if (status != PHAuthorizationStatusAuthorized) return;
-            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-                PHAssetCreationRequest *videoRequest = [PHAssetCreationRequest creationRequestForAsset];
-                [videoRequest addResourceWithType:PHAssetResourceTypeVideo fileURL:url options:nil];
-            } completionHandler:^( BOOL success, NSError * _Nullable error ) {
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    [self.view hideHUD];
-                });
-                success?:[self.view showError:error];
-            }];
-        }];
-    }else {
-        
-        ALAssetsLibrary *lab = [[ALAssetsLibrary alloc]init];
-        [lab writeVideoAtPathToSavedPhotosAlbum:url completionBlock:^(NSURL *assetURL, NSError *error) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.view hideHUD];
-            });
-            !error?:[self.view showError:error];
-        }];
-    }
-}
-
 #pragma mark - -输出代理
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    
     if (_recording) {
         [_movieManager writeData:connection video:_videoConnection audio:_audioConnection buffer:sampleBuffer];
     }
@@ -369,7 +404,8 @@
 
 #pragma mark - -其它方法
 // 当前设备取向
-- (AVCaptureVideoOrientation)currentVideoOrientation{
+- (AVCaptureVideoOrientation)currentVideoOrientation {
+    
     AVCaptureVideoOrientation orientation;
     switch (self.motionManager.deviceOrientation) {
         case UIDeviceOrientationPortrait:
@@ -392,6 +428,7 @@
 }
 
 - (void)didReceiveMemoryWarning {
+    
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
