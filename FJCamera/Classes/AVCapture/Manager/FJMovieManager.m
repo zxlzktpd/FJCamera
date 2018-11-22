@@ -18,6 +18,8 @@
     AVAssetWriter      *_movieWriter;
     AVAssetWriterInput *_movieAudioInput;
     AVAssetWriterInput *_movieVideoInput;
+    
+    FJAVFileType       _exportAVFileType;
 }
 
 @end
@@ -25,10 +27,33 @@
 @implementation FJMovieManager
 
 - (instancetype)init {
+    
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Use -initWithAVFileType:" userInfo:nil];
+}
+
+- (instancetype)initWithAVFileType:(FJAVFileType)type {
+    
     self = [super init];
     if (self) {
+        _exportAVFileType = type;
         _movieWritingQueue = dispatch_queue_create("Movie.Writing.Queue", DISPATCH_QUEUE_SERIAL);
-        _movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"movie.mov"]];
+        long long date = [[NSDate date] timeIntervalSince1970];
+        NSString *extension = nil;
+        switch (type) {
+            case FJAVFileTypeMOV:
+            {
+                extension = @".mov";
+                break;
+            }
+            case FJAVFileTypeMP4:
+            {
+                extension = @".mp4";
+                break;
+            }
+            default:
+                break;
+        }
+        _movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@movie_%lld%@", NSTemporaryDirectory(), date, extension]];
         _referenceOrientation = AVCaptureVideoOrientationPortrait;
     }
     return self;
@@ -39,7 +64,22 @@
     dispatch_async(_movieWritingQueue, ^{
         NSError *error;
         if (!self->_movieWriter) {
-            self->_movieWriter = [[AVAssetWriter alloc] initWithURL:self->_movieURL fileType:AVFileTypeQuickTimeMovie error:&error];
+            AVFileType exportAVFileType;
+            switch (self->_exportAVFileType) {
+                case FJAVFileTypeMOV:
+                {
+                    exportAVFileType = AVFileTypeQuickTimeMovie;
+                    break;
+                }
+                case FJAVFileTypeMP4:
+                {
+                    exportAVFileType = AVFileTypeMPEG4;
+                    break;
+                }
+                default:
+                    break;
+            }
+            self->_movieWriter = [[AVAssetWriter alloc] initWithURL:self->_movieURL fileType:exportAVFileType error:&error];
         }
         handle(error);
     });

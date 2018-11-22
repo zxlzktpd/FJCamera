@@ -12,98 +12,12 @@
 #import "FJTakePhotoView.h"
 #import "FJMediaObject.h"
 
-@implementation FJCameraViewConfig
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        // 默认最大拍摄Media数量
-        self.maxMediaCount = 9;
-        // 支持前后置摄像头切换
-        self.enableSwitch = YES;
-        // 支持补光
-        self.enableLightSupplement = YES;
-        // 支持闪光灯
-        self.enableFlashLight = YES;
-        // 支持自动聚焦和曝光
-        self.enableAutoFocusAndExposure = YES;
-        // 支持缩放
-        self.enableZoom = YES;
-        // 支持缩放显示条
-        self.enableZoomIndicator = YES;
-        // 支持手动聚焦/曝光
-        self.enableManualTapFocusAndExposure = YES;
-        // 支持拍摄模式
-        self.captureType = FJCaptureTypeAll;
-        // Preview全屏
-        self.capturePreviewFullScreen = YES;
-        // Top Bar 背景颜色
-        self.topBarTintColor = [UIColor clearColor];
-        // Bottom Bar 背景颜色
-        self.bottomBarTintColor = [UIColor clearColor];
-        // Top Bar 高度
-        self.topBarHeight = 64.0;
-        // Bottom Bar 高度
-        self.bottomBarHeight = 220.0;
-        // 聚焦框颜色
-        self.focusBorderColor = [UIColor whiteColor];
-        // 聚焦框边长
-        self.focusSideLength = 160.0;
-        // 聚焦框厚度
-        self.focusBorderWidth = 2.0;
-        // 曝光框颜色
-        self.exposureBorderColor = [UIColor whiteColor];
-        // 曝光框边长
-        self.exposureSideLength = 180.0;
-        // 曝光框厚度
-        self.exposureBorderWidth = 5.0;
-        // 缩放显示条 maximumTrackTintColor
-        self.zoomIndicatorMaximumTrackTintColor = [UIColor whiteColor];
-        // 缩放显示条 minimumTrackTintColor
-        self.zoomIndicatorMinimumTrackTintColor = [UIColor whiteColor];
-        // 缩放显示条 thumbTintColor
-        self.zoomIndicatorThumbTintColor = [UIColor whiteColor];
-        // 缩放显示条 OffsetTop
-        self.zoomIndicatorOffsetTop = 104.0;
-        // 缩放显示条 OffsetRight
-        self.zoomIndicatorOffsetRight = 30.0;
-        // 缩放显示条 Width
-        self.zoomIndicatorWidth = 10.0;
-        // 缩放显示条 Height
-        self.zoomIndicatorHeight = 200.0;
-        // 控件使用图标 Top View (Cancel Button除外)
-        self.widgetUsingImageTopView = NO;
-        // 控件使用图标 Cancel Button
-        self.widgetUsingImageCancel = NO;
-        // 控件使用图标 Bottom Button
-        self.widgetUsingImageBottomView = NO;
-        // Take View Size
-        CGFloat w = 0.25 * UIScreen.mainScreen.bounds.size.width;
-        self.takeViewSize = CGSizeMake(w, w);
-        // Take Button Size
-        self.takeButtonSize = CGSizeMake(w - 20.0, w - 20.0);
-        // Take Button Stroke Color
-        self.takeButtonStrokeColor = @"#00D76E".fj_color;
-        // Take Button Stroke Width
-        self.takeButtonStrokeWidth = 10.0;
-        // Take Button Stroke Long Press Duration
-        self.takeButtonLongTapPressDuration = 0.5;
-        // Take Button Stroke Circle Duration
-        self.takeButtonCircleDuration = 15.0;
-        // Hint Height
-        self.hintHeight = 27.0;
-    }
-    return self;
-}
-
-@end
-
 @interface FJCameraView()
 
 // 1：拍照 2：视频
 @property (nonatomic, assign) FJCaptureType captureType;
 @property (nonatomic, strong) FJVideoPreview *previewView;
+@property (nonatomic, strong) FJTakePhotoView *takeView;
 @property (nonatomic, strong) UIView *topView;      // 上面的bar
 @property (nonatomic, strong) UIView *bottomView;   // 下面的bar
 @property (nonatomic, strong) UIView *focusView;    // 聚焦动画view
@@ -137,7 +51,7 @@
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame config:(FJCameraViewConfig *)config {
+- (instancetype)initWithFrame:(CGRect)frame config:(FJCaptureConfig *)config {
     
     // NSAssert(frame.size.height > 164 || frame.size.width > 374, @"相机视图的高不小于164，宽不小于375");
     self = [super initWithFrame:frame];
@@ -232,15 +146,22 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         weakSelf.previewImageView.image = image;
         weakSelf.mediaCountLabel.text = text;
+        
+        // Check
+        if (medias.count == self.config.maxMediaCount) {
+            [weakSelf.takeView setUserInteractionEnabled:NO];
+        }else {
+            [weakSelf.takeView setUserInteractionEnabled:YES];
+        }
     });
 }
 
 #pragma mark - Private
-- (void)_buildUI:(FJCameraViewConfig *)config {
+- (void)_buildUI:(FJCaptureConfig *)config {
     
     __weak typeof(self) weakSelf = self;
     if (config == nil) {
-        self.config = [[FJCameraViewConfig alloc] init];
+        self.config = [[FJCaptureConfig alloc] init];
     }else {
         self.config = config;
     }
@@ -324,7 +245,7 @@
             }
         }];
         [self.bottomView addSubview:takeView];
-        
+        self.takeView = takeView;
     }else {
         // 拍照
         UIButton *photoButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -347,18 +268,29 @@
         [self.bottomView addSubview:typeButton];
     }
     
-    self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0, self.bottomView.bounds.size.height / 2.0 - 30.0, 60.0, 60.0)];
-    self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.previewImageView.layer.masksToBounds = YES;
-    [self.bottomView addSubview:self.previewImageView];
-    self.mediaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x + self.previewImageView.frame.size.width, self.bottomView.bounds.size.height / 2.0 - 10.0, 40.0, 20.0)];
-    self.mediaCountLabel.font = [UIFont systemFontOfSize:14.0];
-    self.mediaCountLabel.textColor = [UIColor whiteColor];
-    self.mediaCountLabel.textAlignment = NSTextAlignmentCenter;
-    [self.bottomView addSubview:self.mediaCountLabel];
-    UIButton *previewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x, self.previewImageView.frame.origin.y, self.previewImageView.bounds.size.width + self.self.mediaCountLabel.bounds.size.width, self.previewImageView.bounds.size.height)];
-    [self.bottomView addSubview:previewButton];
-    [previewButton addTarget:self action:@selector(_tapPreview) forControlEvents:UIControlEventTouchUpInside];
+    if (self.config.enablePreviewAll) {
+        self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0, self.bottomView.bounds.size.height / 2.0 - 30.0, 60.0, 60.0)];
+        self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.previewImageView.layer.masksToBounds = YES;
+        [self.bottomView addSubview:self.previewImageView];
+        self.mediaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x + self.previewImageView.frame.size.width, self.bottomView.bounds.size.height / 2.0 - 10.0, 40.0, 20.0)];
+        self.mediaCountLabel.font = [UIFont systemFontOfSize:14.0];
+        self.mediaCountLabel.textColor = [UIColor whiteColor];
+        self.mediaCountLabel.textAlignment = NSTextAlignmentCenter;
+        [self.bottomView addSubview:self.mediaCountLabel];
+        UIButton *previewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x, self.previewImageView.frame.origin.y, self.previewImageView.bounds.size.width + self.self.mediaCountLabel.bounds.size.width, self.previewImageView.bounds.size.height)];
+        [self.bottomView addSubview:previewButton];
+        [previewButton addTarget:self action:@selector(_tapPreview) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.bottomView.bounds.size.width - 80.0, self.bottomView.bounds.size.height / 2.0 - 30.0, 60.0, 60.0)];
+        [doneButton setTitle:@"完成" forState:UIControlStateNormal];
+        [doneButton setTitle:@"完成" forState:UIControlStateHighlighted];
+        [doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        doneButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
+        [doneButton addTarget:self action:@selector(_tapDone) forControlEvents:UIControlEventTouchUpInside];
+        [self.bottomView addSubview:doneButton];
+    }
     
     // Top Bar
     int w = 0;
@@ -391,7 +323,7 @@
         switchCameraButton.frame = CGRectMake(cancelButton.width, 0, (self.topView.width - cancelButton.width) / (float)w , self.topView.height);
         [self.topView addSubview:switchCameraButton];
         if (self.config.widgetUsingImageTopView) {
-            // TODO ICON
+            [switchCameraButton setImage:[FJStorage podImage:@"ic_switch" class:[self class]] forState:UIControlStateNormal];
         }else {
             [switchCameraButton setTitle:@"转换" forState:UIControlStateNormal];
             [switchCameraButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -414,7 +346,8 @@
         [self.topView addSubview:lightButton];
         _torchBtn = lightButton;
         if (self.config.widgetUsingImageTopView) {
-            // TODO ICON
+            [lightButton setImage:[FJStorage podImage:@"ic_torch_off" class:[self class]] forState:UIControlStateNormal];
+            [lightButton setImage:[FJStorage podImage:@"ic_torch_on" class:[self class]] forState:UIControlStateSelected];
         }else {
             [lightButton setTitle:@"补光" forState:UIControlStateNormal];
             [lightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -440,7 +373,8 @@
         [self.topView addSubview:flashButton];
         _flashBtn = flashButton;
         if (self.config.widgetUsingImageTopView) {
-            // TODO ICON
+            [flashButton setImage:[FJStorage podImage:@"ic_light_off" class:[self class]] forState:UIControlStateNormal];
+            [flashButton setImage:[FJStorage podImage:@"ic_light_on" class:[self class]] forState:UIControlStateSelected];
         }else {
             [flashButton setTitle:@"闪光灯" forState:UIControlStateNormal];
             [flashButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -467,12 +401,19 @@
         focusAndExposureButton.frame = frame;
         [self.topView addSubview:focusAndExposureButton];
         if (self.config.widgetUsingImageTopView) {
-            // TODO ICON
+            [focusAndExposureButton setImage:[FJStorage podImage:@"ic_auto_focus_exposure" class:[self class]] forState:UIControlStateNormal];
         }else {
             [focusAndExposureButton setTitle:@"自动聚焦/曝光" forState:UIControlStateNormal];
             [focusAndExposureButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             focusAndExposureButton.titleLabel.font = [UIFont systemFontOfSize:14.0 - w];
         }
+    }
+}
+
+- (void)_tapDone {
+    
+    if ([_delegate respondsToSelector:@selector(doneAction:)]) {
+        [_delegate doneAction:self];
     }
 }
 

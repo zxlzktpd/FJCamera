@@ -26,6 +26,7 @@
 #import <FJKit_OC/NSMutableArray+Utility_FJ.h>
 #import <FJKit_OC/UIView+Toast_FJ.h>
 #import <FJKit_OC/UIView+Utility_FJ.h>
+#import <FJKit_OC/NSObject+Notification_FJ.h>
 
 #import <FJKit_OC/FJCollectionViewHeader.h>
 #import <FJKit_OC/FJTableViewHeader.h>

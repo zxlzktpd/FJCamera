@@ -80,10 +80,10 @@
     if (tapGesture.state == UIGestureRecognizerStateEnded) {
         // 拍照动画
         [tapGesture.view setUserInteractionEnabled:NO];
-        [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
+        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
             tapGesture.view.transform = CGAffineTransformMakeScale(0.8, 0.8);
         } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
                 tapGesture.view.transform = CGAffineTransformMakeScale(1.0, 1.0);
             } completion:^(BOOL finished) {
                 [tapGesture.view setUserInteractionEnabled:YES];
@@ -160,15 +160,15 @@
             weakSelf.transform = CGAffineTransformMakeScale(1.0, 1.0);
             weakSelf.takeView.transform = CGAffineTransformMakeScale(1.0, 1.0);
         } completion:^(BOOL finished) {
-            weakSelf.longPressBlock == nil ? : weakSelf.longPressBlock(NO);
+            
         }];
     }else {
         [self.buttonLayer removeFromSuperlayer];
         self.buttonLayer = nil;
         self.transform = CGAffineTransformMakeScale(1.0, 1.0);
         self.takeView.transform = CGAffineTransformMakeScale(1.0, 1.0);
-        self.longPressBlock == nil ? : self.longPressBlock(NO);
     }
+    self.longPressBlock == nil ? : self.longPressBlock(NO);
 }
 
 #pragma mark - CAAnimationDelegate

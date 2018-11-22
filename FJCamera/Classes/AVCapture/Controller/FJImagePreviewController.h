@@ -13,4 +13,6 @@
 
 - (instancetype)initWithMedia:(FJMediaObject *)media callback:(void(^)(BOOL saved, FJMediaObject *media))callback;
 
+- (void)dismissToRoot;
+
 @end

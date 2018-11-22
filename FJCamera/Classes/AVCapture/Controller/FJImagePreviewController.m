@@ -19,7 +19,8 @@
 
 @property (nonatomic, strong) FJMediaObject *mediaObject;
 @property (nonatomic, copy) void(^callback)(BOOL saved, FJMediaObject *media);
-@property (nonatomic,strong) MPMoviePlayerController *player;
+@property (nonatomic, strong) MPMoviePlayerController *player;
+@property (nonatomic, assign) BOOL dismissRoot;
 
 @end
 
@@ -53,6 +54,11 @@
 -(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     
     return [self initWithMedia:nil callback:nil];
+}
+
+- (void)dismissToRoot {
+    
+    _dismissRoot = YES;
 }
 
 - (void)viewDidLoad {
@@ -133,7 +139,13 @@
             }
             weakSelf.mediaObject.videoURL = mediaURL;
             weakSelf.callback == nil ? : weakSelf.callback(YES, weakSelf.mediaObject);
-            [weakSelf fj_dismiss];
+            if (weakSelf.dismissRoot) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:YES];
+                });
+            }else {
+                [weakSelf fj_dismiss];
+            }
         }];
     }else {
         // 保存图片
@@ -145,7 +157,13 @@
             weakSelf.mediaObject.image = image;
             weakSelf.mediaObject.imageURL = imageURL;
             weakSelf.callback == nil ? : weakSelf.callback(YES, weakSelf.mediaObject);
-            [weakSelf fj_dismiss];
+            if (weakSelf.dismissRoot) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popToRootViewControllerAnimated:YES];
+                });
+            }else {
+                [weakSelf fj_dismiss];
+            }
         }];
     }
 }

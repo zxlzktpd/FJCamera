@@ -18,6 +18,7 @@
 #import "FJMovieManager.h"
 #import "FJSaveMedia.h"
 #import "NSURL+PreviewImage.h"
+#import "FJAllMediaPreviewViewController.h"
 #import "FJAVCatpureCommonHeader.h"
 
 @interface FJAVCaptureViewController () <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, FJCameraViewDelegate>
@@ -63,11 +64,9 @@
     
     self = [super init];
     if (self) {
-        _movieManager  = [[FJMovieManager alloc] init];
+        _movieManager  = [[FJMovieManager alloc] initWithAVFileType:FJAVFileTypeMP4];
         _motionManager = [[FJMotionManager alloc] init];
         _cameraManager = [[FJCameraManager alloc] init];
-        _enableConfirmPreview = YES;
-        _enablePreviewAll = YES;
     }
     return self;
 }
@@ -75,7 +74,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.cameraView = [[FJCameraView alloc] initWithFrame:self.view.bounds config:self.cameraViewConfig];
+    self.cameraView = [[FJCameraView alloc] initWithFrame:self.view.bounds config:self.config];
     self.cameraView.delegate = self;
     [self.view addSubview:self.cameraView];
     
@@ -99,6 +98,12 @@
     
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self.cameraView updateMedias:self.medias];
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -321,13 +326,13 @@
         }
         __block NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         __block UIImage *image = [[UIImage alloc] initWithData:imageData];
-        if (weakSelf.enableConfirmPreview) {
+        if (weakSelf.config.enableConfirmPreview) {
             FJMediaObject *media = [FJMediaObject new];
             media.image = image;
             media.imageData = imageData;
             FJImagePreviewController *previewVC = [[FJImagePreviewController alloc] initWithMedia:media callback:^(BOOL saved, FJMediaObject *media) {
                 
-                if (weakSelf.enablePreviewAll) {
+                if (weakSelf.config.enablePreviewAll) {
                     if (saved) {
                         [weakSelf.medias addObject:media];
                         [weakSelf.cameraView updateMedias:weakSelf.medias];
@@ -336,6 +341,9 @@
                     weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
                 }
             }];
+            if (weakSelf.config.enablePreviewAll == NO) {
+                [previewVC dismissToRoot];
+            }
             [weakSelf.navigationController pushViewController:previewVC animated:YES];
         }else {
             
@@ -348,10 +356,12 @@
                 FJMediaObject *media = [FJMediaObject new];
                 media.image = image;
                 media.imageURL = imageURL;
-                if (weakSelf.enablePreviewAll) {
+                if (weakSelf.config.enablePreviewAll) {
                     [weakSelf.medias addObject:media];
+                    [weakSelf.cameraView updateMedias:weakSelf.medias];
                 }else {
                     weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                    [weakSelf fj_dismiss];
                 }
             }];
         }
@@ -361,7 +371,7 @@
 // 取消拍照
 - (void)cancelAction:(FJCameraView *)cameraView {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self fj_dismiss];
 }
 
 #pragma mark - -录制视频
@@ -386,13 +396,13 @@
         if (error) {
             [weakSelf.view showError:error];
         } else {
-            if (weakSelf.enableConfirmPreview) {
+            if (weakSelf.config.enableConfirmPreview) {
                 FJMediaObject *media = [FJMediaObject new];
                 media.isVideo = YES;
                 media.videoURL = url;
                 FJImagePreviewController *previewVC = [[FJImagePreviewController alloc] initWithMedia:media callback:^(BOOL saved, FJMediaObject *media) {
 
-                    if (weakSelf.enablePreviewAll) {
+                    if (weakSelf.config.enablePreviewAll) {
                         if (saved) {
                             [weakSelf.medias addObject:media];
                             [weakSelf.cameraView updateMedias:weakSelf.medias];
@@ -401,6 +411,9 @@
                         weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
                     }
                 }];
+                if (weakSelf.config.enablePreviewAll == NO) {
+                    [previewVC dismissToRoot];
+                }
                 [weakSelf.navigationController pushViewController:previewVC animated:YES];
             }else {
                 
@@ -410,12 +423,15 @@
                         return;
                     }
                     FJMediaObject *media = [FJMediaObject new];
-                    media.imageURL = mediaURL;
+                    media.videoURL = mediaURL;
                     media.image = [mediaURL previewImage];
-                    if (weakSelf.enablePreviewAll) {
+                    media.isVideo = YES;
+                    if (weakSelf.config.enablePreviewAll) {
                         [weakSelf.medias addObject:media];
+                        [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }else {
                         weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                        [weakSelf fj_dismiss];
                     }
                 }];
             }
@@ -429,6 +445,16 @@
     if (self.medias == nil || self.medias.count == 0) {
         return;
     }
+    FJAllMediaPreviewViewController *allMediaPreviewVC = [[FJAllMediaPreviewViewController alloc] init];
+    allMediaPreviewVC.medias = self.medias;
+    [self.navigationController pushViewController:allMediaPreviewVC animated:YES];
+}
+
+// 完成预览
+- (void)doneAction:(FJCameraView *)cameraView {
+    
+    self.allMediasTakenBlock == nil ? : self.allMediasTakenBlock(self.medias);
+    [self fj_dismiss];
 }
 
 #pragma mark - -输出代理

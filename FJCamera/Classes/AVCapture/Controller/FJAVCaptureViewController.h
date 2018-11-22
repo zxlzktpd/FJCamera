@@ -9,21 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "FJCameraView.h"
 #import "FJMediaObject.h"
+#import "FJCaptureConfig.h"
 
 @interface FJAVCaptureViewController : UIViewController
 
 @property (nonatomic, strong, readonly) NSMutableArray *medias;
 
-// FJCameraViewConfig参数
-@property (nonatomic, strong) FJCameraViewConfig *cameraViewConfig;
-
-// 每次拍照、录像完成确认界面
-@property (nonatomic, assign) BOOL enableConfirmPreview;
-
-// 支持浏览和编辑所有照片、录像
-@property (nonatomic, assign) BOOL enablePreviewAll;
+// FJCaptureConfig参数
+@property (nonatomic, strong) FJCaptureConfig *config;
 
 // 单张图片/单个视频的回调
 @property (nonatomic, copy) void(^oneMediaTakenBlock)(FJMediaObject *media);
+
+// 多张图片/多个视频的回调
+@property (nonatomic, copy) void(^allMediasTakenBlock)(NSArray *medias);
 
 @end
