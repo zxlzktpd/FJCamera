@@ -28,10 +28,9 @@
             _motionManager = nil;
             return self;
         }
-        @weakify(self)
+        MF_WEAK_SELF
         [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue] withHandler: ^(CMDeviceMotion *motion, NSError *error){
-            @strongify(self)
-            [self performSelectorOnMainThread:@selector(handleDeviceMotion:) withObject:motion waitUntilDone:YES];
+            [weakSelf performSelectorOnMainThread:@selector(handleDeviceMotion:) withObject:motion waitUntilDone:YES];
         }];
     }
     return self;

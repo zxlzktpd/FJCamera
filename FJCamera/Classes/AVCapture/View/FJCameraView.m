@@ -10,6 +10,7 @@
 #import "FJAVCatpureCommonHeader.h"
 #import "UIView+FJHUD.h"
 #import "FJTakePhotoView.h"
+#import "FJMediaObject.h"
 
 @implementation FJCameraViewConfig
 
@@ -17,6 +18,8 @@
 {
     self = [super init];
     if (self) {
+        // 默认最大拍摄Media数量
+        self.maxMediaCount = 9;
         // 支持前后置摄像头切换
         self.enableSwitch = YES;
         // 支持补光
@@ -76,9 +79,10 @@
         // 控件使用图标 Bottom Button
         self.widgetUsingImageBottomView = NO;
         // Take View Size
-        self.takeViewSize = CGSizeMake(90.0, 90.0);
+        CGFloat w = 0.25 * UIScreen.mainScreen.bounds.size.width;
+        self.takeViewSize = CGSizeMake(w, w);
         // Take Button Size
-        self.takeButtonSize = CGSizeMake(70.0, 70.0);
+        self.takeButtonSize = CGSizeMake(w - 20.0, w - 20.0);
         // Take Button Stroke Color
         self.takeButtonStrokeColor = @"#00D76E".fj_color;
         // Take Button Stroke Width
@@ -98,24 +102,26 @@
 @interface FJCameraView()
 
 // 1：拍照 2：视频
-@property(nonatomic, assign) FJCaptureType captureType;
-@property(nonatomic, strong) FJVideoPreview *previewView;
-@property(nonatomic, strong) UIView *topView;      // 上面的bar
-@property(nonatomic, strong) UIView *bottomView;   // 下面的bar
-@property(nonatomic, strong) UIView *focusView;    // 聚焦动画view
-@property(nonatomic, strong) UIView *exposureView; // 曝光动画view
+@property (nonatomic, assign) FJCaptureType captureType;
+@property (nonatomic, strong) FJVideoPreview *previewView;
+@property (nonatomic, strong) UIView *topView;      // 上面的bar
+@property (nonatomic, strong) UIView *bottomView;   // 下面的bar
+@property (nonatomic, strong) UIView *focusView;    // 聚焦动画view
+@property (nonatomic, strong) UIView *exposureView; // 曝光动画view
 
-@property(nonatomic, strong) UISlider *slider;
-@property(nonatomic, strong) UIButton *torchBtn;
-@property(nonatomic, strong) UIButton *flashBtn;
-@property(nonatomic, strong) UIButton *photoBtn;
+@property (nonatomic, strong) UISlider *slider;
+@property (nonatomic, strong) UIButton *torchBtn;
+@property (nonatomic, strong) UIButton *flashBtn;
+@property (nonatomic, strong) UIButton *photoBtn;
+@property (nonatomic, strong) UIImageView *previewImageView;
+@property (nonatomic, strong) UILabel *mediaCountLabel;
 
 @end
 
 @implementation FJCameraView
 
-- (instancetype)init
-{
+- (instancetype)init {
+    
     self = [super init];
     if (self) {
         NSAssert(NO, @"FJCameraView Init 异常");
@@ -123,8 +129,7 @@
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         NSAssert(NO, @"FJCameraView Init 异常");
@@ -132,7 +137,7 @@
     return self;
 }
 
--(instancetype)initWithFrame:(CGRect)frame config:(FJCameraViewConfig *)config {
+- (instancetype)initWithFrame:(CGRect)frame config:(FJCameraViewConfig *)config {
     
     // NSAssert(frame.size.height > 164 || frame.size.width > 374, @"相机视图的高不小于164，宽不小于375");
     self = [super initWithFrame:frame];
@@ -143,7 +148,7 @@
     return self;
 }
 
--(UIView *)topView {
+- (UIView *)topView {
     
     if (_topView == nil) {
         _topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.config.topBarHeight)];
@@ -152,7 +157,7 @@
     return _topView;
 }
 
--(UIView *)bottomView {
+- (UIView *)bottomView {
     
     if (_bottomView == nil) {
         _bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - self.config.bottomBarHeight, self.width, self.config.bottomBarHeight)];
@@ -161,7 +166,7 @@
     return _bottomView;
 }
 
--(UIView *)focusView {
+- (UIView *)focusView {
     
     if (_focusView == nil) {
         _focusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.config.focusSideLength, self.config.focusSideLength)];
@@ -173,7 +178,7 @@
     return _focusView;
 }
 
--(UIView *)exposureView {
+- (UIView *)exposureView {
     
     if (_exposureView == nil) {
         _exposureView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.config.exposureSideLength, self.config.exposureSideLength)];
@@ -185,7 +190,7 @@
     return _exposureView;
 }
 
--(UISlider *)slider {
+- (UISlider *)slider {
     
     if (_slider == nil) {
         _slider = [[UISlider alloc] init];
@@ -200,18 +205,38 @@
 }
 
 #pragma mark - Public
--(void)changeTorch:(BOOL)on {
+- (void)changeTorch:(BOOL)on {
     
     _torchBtn.selected = on;
 }
 
--(void)changeFlash:(BOOL)on {
+- (void)changeFlash:(BOOL)on {
     
     _flashBtn.selected = on;
 }
 
+- (void)updateMedias:(NSMutableArray *)medias {
+    
+    __block UIImage *image = nil;
+    __block NSString *text = nil;
+    if (medias.count > 0) {
+        FJMediaObject *media = [medias lastObject];
+        if (media.image) {
+            image = media.image;
+        }else if (media.imageData) {
+            image = [UIImage imageWithData:media.imageData];
+        }
+        text = [NSString stringWithFormat:@"(%d/%d)", (int)medias.count, (int)self.config.maxMediaCount];
+    }
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.previewImageView.image = image;
+        weakSelf.mediaCountLabel.text = text;
+    });
+}
+
 #pragma mark - Private
--(void)_buildUI:(FJCameraViewConfig *)config {
+- (void)_buildUI:(FJCameraViewConfig *)config {
     
     __weak typeof(self) weakSelf = self;
     if (config == nil) {
@@ -280,22 +305,21 @@
         labelHint.font = [UIFont systemFontOfSize:14.0];
         [self.bottomView addSubview:labelHint];
        
-        
         FJTakePhotoView *takeView = [FJTakePhotoView create:CGRectMake((self.bottomView.size.width - self.config.takeViewSize.width) / 2.0, (self.bottomView.size.height - self.config.takeViewSize.height) / 2.0, self.config.takeViewSize.width, self.config.takeViewSize.height) takeButtonSize:self.config.takeButtonSize strokeColor:self.config.takeButtonStrokeColor strokeWidth:self.config.takeButtonStrokeWidth longTapPressDuration:self.config.takeButtonLongTapPressDuration circleDuration:self.config.takeButtonCircleDuration type:type tapBlock:^{
             // 拍照
             if ([weakSelf.delegate respondsToSelector:@selector(takePhotoAction:)]) {
-                [weakSelf.delegate takePhotoAction:self];
+                [weakSelf.delegate takePhotoAction:weakSelf];
             }
             
         } longPressBlock:^(BOOL begin) {
             // 拍摄
             if (begin) {
                 if ([weakSelf.delegate respondsToSelector:@selector(startRecordVideoAction:)]) {
-                    [weakSelf.delegate startRecordVideoAction:self];
+                    [weakSelf.delegate startRecordVideoAction:weakSelf];
                 }
             }else {
                 if ([weakSelf.delegate respondsToSelector:@selector(stopRecordVideoAction:)]) {
-                    [weakSelf.delegate stopRecordVideoAction:self];
+                    [weakSelf.delegate stopRecordVideoAction:weakSelf];
                 }
             }
         }];
@@ -322,6 +346,19 @@
         typeButton.frame = CGRectMake(self.bottomView.bounds.size.width - 100.0, self.bottomView.bounds.size.height / 2.0 - 20.0, 80.0, 40.0);
         [self.bottomView addSubview:typeButton];
     }
+    
+    self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0, self.bottomView.bounds.size.height / 2.0 - 30.0, 60.0, 60.0)];
+    self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.previewImageView.layer.masksToBounds = YES;
+    [self.bottomView addSubview:self.previewImageView];
+    self.mediaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x + self.previewImageView.frame.size.width, self.bottomView.bounds.size.height / 2.0 - 10.0, 40.0, 20.0)];
+    self.mediaCountLabel.font = [UIFont systemFontOfSize:14.0];
+    self.mediaCountLabel.textColor = [UIColor whiteColor];
+    self.mediaCountLabel.textAlignment = NSTextAlignmentCenter;
+    [self.bottomView addSubview:self.mediaCountLabel];
+    UIButton *previewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x, self.previewImageView.frame.origin.y, self.previewImageView.bounds.size.width + self.self.mediaCountLabel.bounds.size.width, self.previewImageView.bounds.size.height)];
+    [self.bottomView addSubview:previewButton];
+    [previewButton addTarget:self action:@selector(_tapPreview) forControlEvents:UIControlEventTouchUpInside];
     
     // Top Bar
     int w = 0;
@@ -439,74 +476,76 @@
     }
 }
 
--(void)_pinchAction:(UIPinchGestureRecognizer *)pinch {
+- (void)_tapPreview {
     
-    @weakify(self)
+    if ([_delegate respondsToSelector:@selector(previewAction:)]) {
+        [_delegate previewAction:self];
+    }
+}
+
+- (void)_pinchAction:(UIPinchGestureRecognizer *)pinch {
+    
+    MF_WEAK_SELF
     if ([_delegate respondsToSelector:@selector(zoomAction:factor:)]) {
         if (pinch.state == UIGestureRecognizerStateBegan) {
             [UIView animateWithDuration:0.1 animations:^{
-                @strongify(self)
-                self.slider.alpha = 1;
+                weakSelf.slider.alpha = 1;
             }];
         } else if (pinch.state == UIGestureRecognizerStateChanged) {
             if (pinch.velocity > 0) {
-                _slider.value += pinch.velocity/100;
+                weakSelf.slider.value += pinch.velocity / 100;
             } else {
-                _slider.value += pinch.velocity/20;
+                weakSelf.slider.value += pinch.velocity / 20;
             }
-            [_delegate zoomAction:self factor: powf(5, _slider.value)];
+            [weakSelf.delegate zoomAction:weakSelf factor:powf(5, weakSelf.slider.value)];
         } else {
             [UIView animateWithDuration:0.1 animations:^{
-                @strongify(self)
-                self.slider.alpha = 0.0;
+                weakSelf.slider.alpha = 0.0;
             }];
         }
     }
 }
 
 // 聚焦
--(void)_tapAction:(UIGestureRecognizer *)tap {
+- (void)_tapAction:(UIGestureRecognizer *)tap {
     
     if ([_delegate respondsToSelector:@selector(focusAction:point:handle:)]) {
         CGPoint point = [tap locationInView:self.previewView];
         [self _runFocusAnimation:self.focusView point:point];
-        @weakify(self)
+        MF_WEAK_SELF
         [_delegate focusAction:self point:[self.previewView captureDevicePointForPoint:point] handle:^(NSError *error) {
-            @strongify(self)
-            if (error) [self showError:error];
+            if (error) [weakSelf showError:error];
         }];
     }
 }
 
 // 曝光
--(void)_doubleTapAction:(UIGestureRecognizer *)tap {
+- (void)_doubleTapAction:(UIGestureRecognizer *)tap {
     
     if ([_delegate respondsToSelector:@selector(exposAction:point:handle:)]) {
         CGPoint point = [tap locationInView:self.previewView];
         [self _runFocusAnimation:self.exposureView point:point];
-        @weakify(self)
+        MF_WEAK_SELF
         [_delegate exposAction:self point:[self.previewView captureDevicePointForPoint:point] handle:^(NSError *error) {
-            @strongify(self)
-            if (error) [self showError:error];
+            if (error) [weakSelf showError:error];
         }];
     }
 }
 
 // 自动聚焦和曝光
--(void)_focusAndExposureClick:(UIButton *)button {
+- (void)_focusAndExposureClick:(UIButton *)button {
     
     if ([_delegate respondsToSelector:@selector(autoFocusAndExposureAction:handle:)]) {
         [self _runResetAnimation];
-        @weakify(self)
+        MF_WEAK_SELF
         [_delegate autoFocusAndExposureAction:self handle:^(NSError *error) {
-            @strongify(self)
-            if (error) [self showError:error];
+            if (error) [weakSelf showError:error];
         }];
     }
 }
 
 // 拍照、视频
--(void)_takePicture:(UIButton *)btn {
+- (void)_takePicture:(UIButton *)btn {
     
     if (self.captureType == FJCaptureTypePhoto) {
         if ([_delegate respondsToSelector:@selector(takePhotoAction:)]) {
@@ -532,7 +571,7 @@
 }
 
 // 取消
--(void)_cancel:(UIButton *)btn {
+- (void)_cancel:(UIButton *)btn {
     
     if ([_delegate respondsToSelector:@selector(cancelAction:)]) {
         [_delegate cancelAction:self];
@@ -540,7 +579,7 @@
 }
 
 // 转换拍摄类型
--(void)_changeType:(UIButton *)btn {
+- (void)_changeType:(UIButton *)btn {
     
     btn.selected = !btn.selected;
     if (self.captureType == FJCaptureTypePhoto) {
@@ -553,44 +592,43 @@
 }
 
 // 转换摄像头
--(void)_switchCameraClick:(UIButton *)btn {
+- (void)_switchCameraClick:(UIButton *)btn {
     
     if ([_delegate respondsToSelector:@selector(swicthCameraAction:handle:)]) {
+        MF_WEAK_SELF
         [_delegate swicthCameraAction:self handle:^(NSError *error) {
-            if (error) [self showError:error];
+            if (error) [weakSelf showError:error];
         }];
     }
 }
 
 // 手电筒
--(void)_torchClick:(UIButton *)btn {
+- (void)_torchClick:(UIButton *)btn {
     
-    @weakify(self)
     if ([_delegate respondsToSelector:@selector(torchLightAction:handle:)]) {
+        MF_WEAK_SELF
         [_delegate torchLightAction:self handle:^(NSError *error) {
-            @strongify(self)
             if (error) {
-                [self showError:error];
+                [weakSelf showError:error];
             } else {
-                self.flashBtn.selected = NO;
-                self.torchBtn.selected = !self.torchBtn.selected;
+                weakSelf.flashBtn.selected = NO;
+                weakSelf.torchBtn.selected = !weakSelf.torchBtn.selected;
             }
         }];
     }
 }
 
 // 闪光灯
--(void)_flashClick:(UIButton *)btn {
+- (void)_flashClick:(UIButton *)btn {
     
-    @weakify(self)
     if ([_delegate respondsToSelector:@selector(flashLightAction:handle:)]) {
+        MF_WEAK_SELF
         [_delegate flashLightAction:self handle:^(NSError *error) {
-            @strongify(self)
             if (error) {
-                [self showError:error];
+                [weakSelf showError:error];
             } else {
-                self.flashBtn.selected = !self.flashBtn.selected;
-                self.torchBtn.selected = NO;
+                weakSelf.flashBtn.selected = !weakSelf.flashBtn.selected;
+                weakSelf.torchBtn.selected = NO;
             }
         }];
     }
@@ -598,7 +636,7 @@
 
 #pragma mark - Private methods
 // 聚焦、曝光动画
--(void)_runFocusAnimation:(UIView *)view point:(CGPoint)point {
+- (void)_runFocusAnimation:(UIView *)view point:(CGPoint)point {
     
     view.center = point;
     view.hidden = NO;
@@ -617,8 +655,8 @@
 // 自动聚焦、曝光动画
 - (void)_runResetAnimation {
     
-    self.focusView.center = CGPointMake(self.previewView.width/2, self.previewView.height/2);
-    self.exposureView.center = CGPointMake(self.previewView.width/2, self.previewView.height/2);;
+    self.focusView.center = CGPointMake(self.previewView.width / 2, self.previewView.height / 2);
+    self.exposureView.center = CGPointMake(self.previewView.width / 2, self.previewView.height / 2);;
     self.exposureView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
     self.focusView.hidden = NO;
     self.focusView.hidden = NO;

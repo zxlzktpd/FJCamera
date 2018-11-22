@@ -126,7 +126,7 @@
     __weak typeof(self) weakSelf = self;
     __block CGRect frame = self.bounds;
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
-        weakSelf.transform = CGAffineTransformMakeScale(1.4, 1.4);
+        weakSelf.transform = CGAffineTransformMakeScale(1.3, 1.3);
         weakSelf.takeView.transform = CGAffineTransformMakeScale(0.8, 0.8);
     } completion:^(BOOL finished) {
         UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(frame.size.width / 2.0, frame.size.height / 2.0) radius:frame.size.width / 2.0 startAngle:3 * M_PI / 2.0 endAngle: 3 * M_PI / 2.0 + 2 * M_PI clockwise:true];

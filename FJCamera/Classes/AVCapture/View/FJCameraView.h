@@ -21,42 +21,47 @@ typedef NS_ENUM(NSInteger, FJCaptureType) {
 @optional;
 
 /// 闪光灯
--(void)flashLightAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
+- (void)flashLightAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
 
 /// 补光
--(void)torchLightAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
+- (void)torchLightAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
 
 /// 转换摄像头
--(void)swicthCameraAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
+- (void)swicthCameraAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
 
 /// 自动聚焦曝光
--(void)autoFocusAndExposureAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
+- (void)autoFocusAndExposureAction:(FJCameraView *)cameraView handle:(void(^)(NSError *error))handle;
 
 /// 聚焦
--(void)focusAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void(^)(NSError *error))handle;
+- (void)focusAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void(^)(NSError *error))handle;
 
 /// 曝光
--(void)exposAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void(^)(NSError *error))handle;
+- (void)exposAction:(FJCameraView *)cameraView point:(CGPoint)point handle:(void(^)(NSError *error))handle;
 
 /// 缩放
--(void)zoomAction:(FJCameraView *)cameraView factor:(CGFloat)factor;
+- (void)zoomAction:(FJCameraView *)cameraView factor:(CGFloat)factor;
 
 /// 取消
--(void)cancelAction:(FJCameraView *)cameraView;
+- (void)cancelAction:(FJCameraView *)cameraView;
 
 /// 拍照
--(void)takePhotoAction:(FJCameraView *)cameraView;
+- (void)takePhotoAction:(FJCameraView *)cameraView;
 
 /// 停止录制视频
--(void)stopRecordVideoAction:(FJCameraView *)cameraView;
+- (void)stopRecordVideoAction:(FJCameraView *)cameraView;
 
 /// 开始录制视频
--(void)startRecordVideoAction:(FJCameraView *)cameraView;
+- (void)startRecordVideoAction:(FJCameraView *)cameraView;
+
+/// 点击预览和编辑
+- (void)previewAction:(FJCameraView *)cameraView;
 
 @end
 
 @interface FJCameraViewConfig : NSObject
 
+// 默认最大拍摄Media数量
+@property (nonatomic, assign) NSUInteger maxMediaCount;
 // 支持前后置摄像头切换
 @property (nonatomic, assign) BOOL enableSwitch;
 // 支持补光
@@ -142,10 +147,12 @@ typedef NS_ENUM(NSInteger, FJCaptureType) {
 
 @property (nonatomic, strong) FJCameraViewConfig *config;
 
--(instancetype)initWithFrame:(CGRect)frame config:(FJCameraViewConfig *)config;
+- (instancetype)initWithFrame:(CGRect)frame config:(FJCameraViewConfig *)config;
 
--(void)changeTorch:(BOOL)on;
+- (void)changeTorch:(BOOL)on;
 
--(void)changeFlash:(BOOL)on;
+- (void)changeFlash:(BOOL)on;
+
+- (void)updateMedias:(NSMutableArray *)medias;
 
 @end

@@ -17,6 +17,7 @@
 #import "FJMotionManager.h"
 #import "FJMovieManager.h"
 #import "FJSaveMedia.h"
+#import "NSURL+PreviewImage.h"
 #import "FJAVCatpureCommonHeader.h"
 
 @interface FJAVCaptureViewController () <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, FJCameraViewDelegate>
@@ -158,7 +159,7 @@
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:error];
     if (videoInput) {
-        if ([_session canAddInput:videoInput]){
+        if ([_session canAddInput:videoInput]) {
             [_session addInput:videoInput];
         }
     }
@@ -167,7 +168,7 @@
     // 音频输入
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     AVCaptureDeviceInput *audioIn = [[AVCaptureDeviceInput alloc] initWithDevice:audioDevice error:error];
-    if ([_session canAddInput:audioIn]){
+    if ([_session canAddInput:audioIn]) {
         [_session addInput:audioIn];
     }
 }
@@ -312,45 +313,45 @@
     if (connection.isVideoOrientationSupported) {
         connection.videoOrientation = [self currentVideoOrientation];
     }
-    @weakify(self)
+    MF_WEAK_SELF
     [_imageOutput captureStillImageAsynchronouslyFromConnection:connection completionHandler:^(CMSampleBufferRef _Nullable imageDataSampleBuffer, NSError * _Nullable error) {
-        @strongify(self)
         if (error) {
-            [self.view showError:error];
+            [weakSelf.view showError:error];
             return;
         }
-        NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        UIImage *image = [[UIImage alloc] initWithData:imageData];
-        if (self.enableConfirmPreview) {
+        __block NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        __block UIImage *image = [[UIImage alloc] initWithData:imageData];
+        if (weakSelf.enableConfirmPreview) {
             FJMediaObject *media = [FJMediaObject new];
             media.image = image;
             media.imageData = imageData;
             FJImagePreviewController *previewVC = [[FJImagePreviewController alloc] initWithMedia:media callback:^(BOOL saved, FJMediaObject *media) {
                 
-                if (self.enablePreviewAll) {
+                if (weakSelf.enablePreviewAll) {
                     if (saved) {
-                        [self.medias addObject:media];
+                        [weakSelf.medias addObject:media];
+                        [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }
                 }else {
-                    self.oneMediaTakenBlock == nil ? : self.oneMediaTakenBlock(media);
+                    weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
                 }
             }];
-            [self.navigationController pushViewController:previewVC animated:YES];
+            [weakSelf.navigationController pushViewController:previewVC animated:YES];
         }else {
             
             [FJSaveMedia savePhotoToPhotoLibrary:image completionBlock:^(UIImage *image, NSURL *imageURL, NSError *error) {
                 
+                if (error) {
+                    [weakSelf.view showError:error];
+                    return;
+                }
                 FJMediaObject *media = [FJMediaObject new];
-                if (self.enablePreviewAll) {
-                    if (error) {
-                        [self.view showError:error];
-                        return;
-                    }
-                    media.image = image;
-                    media.imageURL = imageURL;
-                    [self.medias addObject:media];
+                media.image = image;
+                media.imageURL = imageURL;
+                if (weakSelf.enablePreviewAll) {
+                    [weakSelf.medias addObject:media];
                 }else {
-                    self.oneMediaTakenBlock == nil ? : self.oneMediaTakenBlock(media);
+                    weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
                 }
             }];
         }
@@ -370,10 +371,9 @@
     _recording = YES;
     _movieManager.currentDevice = [self activeCamera];
     _movieManager.currentOrientation = [self currentVideoOrientation];
-    @weakify(self)
+    MF_WEAK_SELF
     [_movieManager start:^(NSError * _Nonnull error) {
-        @strongify(self)
-        if (error) [self.view showError:error];
+        if (error) [weakSelf.view showError:error];
     }];
 }
 
@@ -381,17 +381,54 @@
 - (void)stopRecordVideoAction:(FJCameraView *)cameraView {
     
     _recording = NO;
-    @weakify(self)
+    MF_WEAK_SELF
     [_movieManager stop:^(NSURL * _Nonnull url, NSError * _Nonnull error) {
-        @strongify(self)
         if (error) {
-            [self.view showError:error];
+            [weakSelf.view showError:error];
         } else {
-            if (self.enableConfirmPreview) {
+            if (weakSelf.enableConfirmPreview) {
+                FJMediaObject *media = [FJMediaObject new];
+                media.isVideo = YES;
+                media.videoURL = url;
+                FJImagePreviewController *previewVC = [[FJImagePreviewController alloc] initWithMedia:media callback:^(BOOL saved, FJMediaObject *media) {
+
+                    if (weakSelf.enablePreviewAll) {
+                        if (saved) {
+                            [weakSelf.medias addObject:media];
+                            [weakSelf.cameraView updateMedias:weakSelf.medias];
+                        }
+                    }else {
+                        weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                    }
+                }];
+                [weakSelf.navigationController pushViewController:previewVC animated:YES];
+            }else {
                 
+                [FJSaveMedia saveMovieToCameraRoll:url completionBlock:^(NSURL *mediaURL, NSError *error) {
+                    if (error) {
+                        [weakSelf.view showError:error];
+                        return;
+                    }
+                    FJMediaObject *media = [FJMediaObject new];
+                    media.imageURL = mediaURL;
+                    media.image = [mediaURL previewImage];
+                    if (weakSelf.enablePreviewAll) {
+                        [weakSelf.medias addObject:media];
+                    }else {
+                        weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                    }
+                }];
             }
         }
     }];
+}
+
+// Preview 预览
+- (void)previewAction:(FJCameraView *)cameraView {
+    
+    if (self.medias == nil || self.medias.count == 0) {
+        return;
+    }
 }
 
 #pragma mark - -输出代理

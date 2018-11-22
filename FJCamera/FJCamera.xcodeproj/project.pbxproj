@@ -15,6 +15,7 @@
 		E73A26BF219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */; };
 		E73A26D3219AA618001799BA /* FJCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26D2219AA618001799BA /* FJCropperView.m */; };
 		E73A26D5219AA630001799BA /* FJCropperView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E73A26D4219AA630001799BA /* FJCropperView.xib */; };
+		E74A5BC021A65CEC009E547C /* NSURL+PreviewImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E74A5BBF21A65CEC009E547C /* NSURL+PreviewImage.m */; };
 		E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */; };
 		E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060E2188393300836ABD /* FJPhotoEditTitleScrollView.m */; };
 		E75C06112188395700836ABD /* FJPhotoEditTitleScrollView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E75C06102188395700836ABD /* FJPhotoEditTitleScrollView.xib */; };
@@ -161,6 +162,8 @@
 		E73A26D1219AA618001799BA /* FJCropperView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCropperView.h; sourceTree = "<group>"; };
 		E73A26D2219AA618001799BA /* FJCropperView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJCropperView.m; sourceTree = "<group>"; };
 		E73A26D4219AA630001799BA /* FJCropperView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJCropperView.xib; sourceTree = "<group>"; };
+		E74A5BBE21A65CEC009E547C /* NSURL+PreviewImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURL+PreviewImage.h"; sourceTree = "<group>"; };
+		E74A5BBF21A65CEC009E547C /* NSURL+PreviewImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURL+PreviewImage.m"; sourceTree = "<group>"; };
 		E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditViewController.h; sourceTree = "<group>"; };
 		E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoEditViewController.m; sourceTree = "<group>"; };
 		E75C060D2188393300836ABD /* FJPhotoEditTitleScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditTitleScrollView.h; sourceTree = "<group>"; };
@@ -416,6 +419,8 @@
 				E7DA209921A3F29500FB41C9 /* UIView+FJHUD.m */,
 				E7DC94F921A55AC6002EC6BB /* FJSaveMedia.h */,
 				E7DC94FA21A55AC6002EC6BB /* FJSaveMedia.m */,
+				E74A5BBE21A65CEC009E547C /* NSURL+PreviewImage.h */,
+				E74A5BBF21A65CEC009E547C /* NSURL+PreviewImage.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -977,6 +982,7 @@
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
 				E7B5D74E21897EAF00961662 /* FJTuningObject.m in Sources */,
 				E7B5D7462189742000961662 /* FJPhotoEditTuningValueView.m in Sources */,
+				E74A5BC021A65CEC009E547C /* NSURL+PreviewImage.m in Sources */,
 				E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */,
 				E7B6000021943DE4000AC768 /* FJPhotoEditFilterGenreView.m in Sources */,
 				E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */,

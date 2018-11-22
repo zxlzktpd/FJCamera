@@ -10,6 +10,7 @@
 #import <FJKit_OC/FJStorage.h>
 #import "FJSaveMedia.h"
 #import "FJAVCatpureCommonHeader.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface FJImagePreviewController ()
 {
@@ -18,6 +19,7 @@
 
 @property (nonatomic, strong) FJMediaObject *mediaObject;
 @property (nonatomic, copy) void(^callback)(BOOL saved, FJMediaObject *media);
+@property (nonatomic,strong) MPMoviePlayerController *player;
 
 @end
 
@@ -80,10 +82,19 @@
 - (void)_buildUI {
     if (_mediaObject.isVideo) {
         // 视频
-        
+        MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:_mediaObject.videoURL];
+        player.view.frame = self.view.bounds;
+        [self.view addSubview:player.view];
+        player.controlStyle = MPMovieControlStyleNone;
+        player.shouldAutoplay = YES;
+        player.movieSourceType = MPMovieSourceTypeFile;
+        [player play];
+        self.player = player;
+        UIImage *image = [player thumbnailImageAtTime:0.1 timeOption:MPMovieTimeOptionNearestKeyFrame];
+        _mediaObject.image = image;
     }else {
         // 图片
-        UIImageView *imageView = [[UIImageView alloc]initWithImage:_mediaObject.image];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:_mediaObject.image];
         imageView.layer.masksToBounds = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.frame = CGRectMake(0, 0, _frame.size.width, _frame.size.height);
