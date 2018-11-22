@@ -44,8 +44,8 @@
     config.enableAutoFocusAndExposure = YES;
     config.widgetUsingImageTopView = YES;
     config.widgetUsingImageBottomView = YES;
-    config.enablePreviewAll = NO;
-    config.enableConfirmPreview = YES;
+    config.enablePreviewAll = YES;
+    config.enableConfirmPreview = NO;
     config.captureType = FJCaptureTypeAll;
     avCaptureVC.config = config;
     

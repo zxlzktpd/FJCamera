@@ -27,13 +27,19 @@
                 PHAssetCreationRequest *videoRequest = [PHAssetCreationRequest creationRequestForAsset];
                 [videoRequest addResourceWithType:PHAssetResourceTypeVideo fileURL:url options:nil];
             } completionHandler:^( BOOL success, NSError * _Nullable error ) {
-                completionBlock == nil ? : completionBlock( success ? url : nil, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock == nil ? : completionBlock( success ? url : nil, error);
+                });
             }];
         }];
     }else {
         
         ALAssetsLibrary *lab = [[ALAssetsLibrary alloc] init];
-        [lab writeVideoAtPathToSavedPhotosAlbum:url completionBlock:completionBlock];
+        [lab writeVideoAtPathToSavedPhotosAlbum:url completionBlock:^(NSURL *assetURL, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock == nil ? : completionBlock( assetURL, error);
+            });
+        }];
     }
 }
 
@@ -48,14 +54,18 @@
             [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                 [PHAssetChangeRequest creationRequestForAssetFromImage:image];
             } completionHandler:^( BOOL success, NSError * _Nullable error ) {
-                completionBlock == nil ? : completionBlock( success ? image : nil, nil, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock == nil ? : completionBlock( success ? image : nil, nil, error);
+                });
             }];
         }];
     }else {
         
         ALAssetsLibrary *lab = [[ALAssetsLibrary alloc] init];
         [lab writeImageToSavedPhotosAlbum:image.CGImage metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
-            completionBlock == nil ? : completionBlock( nil, assetURL, error);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock == nil ? : completionBlock( nil, assetURL, error);
+            });
         }];
     }
 }

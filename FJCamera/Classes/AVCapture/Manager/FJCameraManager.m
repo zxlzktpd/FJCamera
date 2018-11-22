@@ -12,6 +12,7 @@
 
 #pragma mark - -转换摄像头
 - (AVCaptureDeviceInput *)switchCamera:(AVCaptureSession *)session old:(AVCaptureDeviceInput *)oldinput new:(AVCaptureDeviceInput *)newinput {
+    
     [session beginConfiguration];
     [session removeInput:oldinput];
     if ([session canAddInput:newinput]) {
@@ -39,7 +40,8 @@
 }
 
 #pragma mark - -聚焦
-- (id)focus:(AVCaptureDevice *)device point:(CGPoint)point{
+- (id)focus:(AVCaptureDevice *)device point:(CGPoint)point {
+    
     BOOL supported = [device isFocusPointOfInterestSupported] &&
                      [device isFocusModeSupported:AVCaptureFocusModeAutoFocus];
     if (supported){
@@ -56,7 +58,8 @@
 
 #pragma mark - -曝光
 static const NSString *CameraAdjustingExposureContext;
-- (id)expose:(AVCaptureDevice *)device point:(CGPoint)point{
+- (id)expose:(AVCaptureDevice *)device point:(CGPoint)point {
+    
     BOOL supported = [device isExposurePointOfInterestSupported] &&
                      [device isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure];
     if (supported) {
@@ -74,7 +77,8 @@ static const NSString *CameraAdjustingExposureContext;
     return [self error:@"设备不支持曝光" code:2002];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
     if (context == &CameraAdjustingExposureContext) {
         AVCaptureDevice *device = (AVCaptureDevice *)object;
         if (!device.isAdjustingExposure && [device isExposureModeSupported:AVCaptureExposureModeLocked]) {
@@ -96,6 +100,7 @@ static const NSString *CameraAdjustingExposureContext;
 
 #pragma mark - -自动聚焦、曝光
 - (id)resetFocusAndExposure:(AVCaptureDevice *)device {
+    
     AVCaptureFocusMode focusMode = AVCaptureFocusModeContinuousAutoFocus;
     AVCaptureExposureMode exposureMode = AVCaptureExposureModeContinuousAutoExposure;
     BOOL canResetFocus = [device isFocusPointOfInterestSupported] &&
@@ -119,11 +124,13 @@ static const NSString *CameraAdjustingExposureContext;
 }
 
 #pragma mark - -闪光灯
-- (AVCaptureFlashMode)flashMode:(AVCaptureDevice *)device{
+- (AVCaptureFlashMode)flashMode:(AVCaptureDevice *)device {
+    
     return [device flashMode];
 }
 
-- (id)changeFlash:(AVCaptureDevice *)device mode:(AVCaptureFlashMode)mode{
+- (id)changeFlash:(AVCaptureDevice *)device mode:(AVCaptureFlashMode)mode {
+    
     if (![device hasFlash]) {
         return [self error:@"不支持闪光灯" code:2003];
     }
@@ -134,6 +141,7 @@ static const NSString *CameraAdjustingExposureContext;
 }
 
 - (id)setFlash:(AVCaptureDevice *)device mode:(AVCaptureFlashMode)mode {
+    
     if ([device isFlashModeSupported:mode]) {
         NSError *error;
         if ([device lockForConfiguration:&error]) {
@@ -147,10 +155,12 @@ static const NSString *CameraAdjustingExposureContext;
 
 #pragma mark - -手电筒
 - (AVCaptureTorchMode)torchMode:(AVCaptureDevice *)device {
+    
     return [device torchMode];
 }
 
-- (id)changeTorch:(AVCaptureDevice *)device model:(AVCaptureTorchMode)mode{
+- (id)changeTorch:(AVCaptureDevice *)device model:(AVCaptureTorchMode)mode {
+    
     if (![device hasTorch]) {
         return [self error:@"不支持手电筒" code:2004];
     }
@@ -161,6 +171,7 @@ static const NSString *CameraAdjustingExposureContext;
 }
 
 - (id)setTorch:(AVCaptureDevice *)device model:(AVCaptureTorchMode)mode {
+    
     if ([device isTorchModeSupported:mode]) {
         NSError *error;
         if ([device lockForConfiguration:&error]) {
@@ -173,7 +184,8 @@ static const NSString *CameraAdjustingExposureContext;
 }
 
 #pragma mark -
-- (NSError *)error:(NSString *)text code:(NSInteger)code  {
+- (NSError *)error:(NSString *)text code:(NSInteger)code {
+    
     NSDictionary *desc = @{NSLocalizedDescriptionKey: text};
     NSError *error = [NSError errorWithDomain:@"com.fj.camera" code:code userInfo:desc];
     return error;

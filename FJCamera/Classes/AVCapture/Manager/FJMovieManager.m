@@ -14,7 +14,6 @@
     BOOL                _readyToRecordAudio;
     dispatch_queue_t    _movieWritingQueue;
 
-    NSURL              *_movieURL;
     AVAssetWriter      *_movieWriter;
     AVAssetWriterInput *_movieAudioInput;
     AVAssetWriterInput *_movieVideoInput;
@@ -22,9 +21,33 @@
     FJAVFileType       _exportAVFileType;
 }
 
+@property (nonatomic, strong) NSURL *movieURL;
+
 @end
 
 @implementation FJMovieManager
+
+- (NSURL *)movieURL {
+
+    long long date = [[NSDate date] timeIntervalSince1970];
+    NSString *extension = nil;
+    switch (_exportAVFileType) {
+        case FJAVFileTypeMOV:
+        {
+            extension = @".mov";
+            break;
+        }
+        case FJAVFileTypeMP4:
+        {
+            extension = @".mp4";
+            break;
+        }
+        default:
+            break;
+    }
+    _movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@movie_%lld%@", NSTemporaryDirectory(), date, extension]];
+    return _movieURL;
+}
 
 - (instancetype)init {
     
@@ -37,30 +60,15 @@
     if (self) {
         _exportAVFileType = type;
         _movieWritingQueue = dispatch_queue_create("Movie.Writing.Queue", DISPATCH_QUEUE_SERIAL);
-        long long date = [[NSDate date] timeIntervalSince1970];
-        NSString *extension = nil;
-        switch (type) {
-            case FJAVFileTypeMOV:
-            {
-                extension = @".mov";
-                break;
-            }
-            case FJAVFileTypeMP4:
-            {
-                extension = @".mp4";
-                break;
-            }
-            default:
-                break;
-        }
-        _movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@movie_%lld%@", NSTemporaryDirectory(), date, extension]];
         _referenceOrientation = AVCaptureVideoOrientationPortrait;
     }
     return self;
 }
 
-- (void)start:(void(^)(NSError *error))handle{
-    [self removeFile:_movieURL];
+- (void)start:(void(^)(NSError *error))handle {
+    
+    // [self removeFile:self.movieURL];
+    __weak typeof(self) weakSelf = self;
     dispatch_async(_movieWritingQueue, ^{
         NSError *error;
         if (!self->_movieWriter) {
@@ -79,13 +87,14 @@
                 default:
                     break;
             }
-            self->_movieWriter = [[AVAssetWriter alloc] initWithURL:self->_movieURL fileType:exportAVFileType error:&error];
+            self->_movieWriter = [[AVAssetWriter alloc] initWithURL:weakSelf.movieURL fileType:exportAVFileType error:&error];
         }
         handle(error);
     });
 }
 
-- (void)stop:(void(^)(NSURL *url, NSError *error))handle{
+- (void)stop:(void(^)(NSURL *url, NSError *error))handle {
+    
     _readyToRecordVideo = NO;
     _readyToRecordAudio = NO;
     dispatch_async(_movieWritingQueue, ^{
@@ -103,6 +112,7 @@
 }
 
 - (void)writeData:(AVCaptureConnection *)connection video:(AVCaptureConnection*)video audio:(AVCaptureConnection *)audio buffer:(CMSampleBufferRef)buffer {
+    
     CFRetain(buffer);
     dispatch_async(_movieWritingQueue, ^{
         if (connection == video){
@@ -124,7 +134,8 @@
     });
 }
 
-- (void)writeSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(NSString *)mediaType{
+- (void)writeSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(NSString *)mediaType {
+    
     if (_movieWriter.status == AVAssetWriterStatusUnknown){
         if ([_movieWriter startWriting]){
             [_movieWriter startSessionAtSourceTime:CMSampleBufferGetPresentationTimeStamp(sampleBuffer)];
@@ -151,12 +162,14 @@
     }
 }
 
-- (BOOL)inputsReadyToRecord{
+- (BOOL)inputsReadyToRecord {
+    
     return _readyToRecordVideo && _readyToRecordAudio;
 }
 
 /// 音频源数据写入配置
 - (NSError *)setupAssetWriterAudioInput:(CMFormatDescriptionRef)currentFormatDescription {
+    
     size_t aclSize = 0;
     const AudioStreamBasicDescription *currentASBD = CMAudioFormatDescriptionGetStreamBasicDescription(currentFormatDescription);
     const AudioChannelLayout *channelLayout = CMAudioFormatDescriptionGetChannelLayout(currentFormatDescription,&aclSize);
@@ -183,6 +196,7 @@
 
 /// 视频源数据写入配置
 - (NSError *)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription {
+    
     CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(currentFormatDescription);
     NSUInteger numPixels = dimensions.width * dimensions.height;
     CGFloat bitsPerPixel = numPixels < (640 * 480) ? 4.05 : 11.0;
@@ -209,7 +223,8 @@
 }
 
 // 获取视频旋转矩阵
-- (CGAffineTransform)transformFromCurrentVideoOrientationToOrientation:(AVCaptureVideoOrientation)orientation{
+- (CGAffineTransform)transformFromCurrentVideoOrientationToOrientation:(AVCaptureVideoOrientation)orientation {
+    
     CGFloat orientationAngleOffset = [self angleOffsetFromPortraitOrientationToOrientation:orientation];
     CGFloat videoOrientationAngleOffset = [self angleOffsetFromPortraitOrientationToOrientation:self.currentOrientation];
     CGFloat angleOffset;
@@ -223,7 +238,8 @@
 }
 
 // 获取视频旋转角度
-- (CGFloat)angleOffsetFromPortraitOrientationToOrientation:(AVCaptureVideoOrientation)orientation{
+- (CGFloat)angleOffsetFromPortraitOrientationToOrientation:(AVCaptureVideoOrientation)orientation {
+    
     CGFloat angle = 0.0;
     switch (orientation){
         case AVCaptureVideoOrientationPortrait:
@@ -243,7 +259,8 @@
 }
 
 // 移除文件
-- (void)removeFile:(NSURL *)fileURL{
+- (void)removeFile:(NSURL *)fileURL {
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *filePath = fileURL.path;
     if ([fileManager fileExistsAtPath:filePath]){

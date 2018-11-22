@@ -14,27 +14,46 @@
 @interface FJMediaView : UIView
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *mediaTypeImageView;
+@property (nonatomic, copy) void(^tapBlock)(void);
 
 @end
 
 @implementation FJMediaView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame isVideo:(BOOL)isVideo tapBlock:(void(^)(void))tapBlock {
     self = [super initWithFrame:frame];
     if (self) {
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:self.imageView];
+        
+        self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake((frame.size.width - 64.0) / 2.0, (frame.size.height - 64.0) / 2.0, 64.0, 64.0)];
+        self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFit;
+        if (isVideo) {
+            self.mediaTypeImageView.image = [FJStorage podImage:@"ic_video_logo" class:[self class]];
+            self.tapBlock = tapBlock;
+        }
+        [self addSubview:self.mediaTypeImageView];
+        UIButton *button = [[UIButton alloc] initWithFrame:self.mediaTypeImageView.frame];
+        [self addSubview:button];
+        [button addTarget:self action:@selector(_tap) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
+}
+
+- (void)_tap {
+    
+    if (self.mediaTypeImageView.image && self.tapBlock) {
+        self.tapBlock();
+    }
 }
 
 @end
 
 @interface FJAllMediaPreviewViewController () <UIScrollViewDelegate>
 
-@property (nonatomic,strong) MPMoviePlayerController *player;
+@property (nonatomic, strong) MPMoviePlayerController *player;
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UILabel *countLabel;
@@ -43,6 +62,19 @@
 @end
 
 @implementation FJAllMediaPreviewViewController
+
+- (MPMoviePlayerController *)player {
+    
+    if (_player == nil) {
+        _player = [[MPMoviePlayerController alloc] init];
+        _player.view.frame = self.view.bounds;
+        _player.view.backgroundColor = [UIColor clearColor];
+        _player.shouldAutoplay = YES;
+        _player.controlStyle = MPMovieControlStyleFullscreen;
+        _player.movieSourceType = MPMovieSourceTypeFile;
+    }
+    return _player;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -69,6 +101,7 @@
 
 - (void)_buildUI {
     
+    MF_WEAK_SELF
     // UIScrollView
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:scrollView];
@@ -99,19 +132,35 @@
     [topView addSubview:deleteButton];
     [topView addSubview:self.countLabel];
     self.topView = topView;
+    
+    // Player
+    if (_player == nil) {
+        [self.view addSubview:self.player.view];
+        self.player.view.hidden = YES;
+        [self fj_addNotification:MPMoviePlayerPlaybackDidFinishNotification notifyParameterBlock:^(NSDictionary *userInfo) {
+            weakSelf.player.view.hidden = YES;
+        }];
+    }
+    
     [self _refresh];
 }
 
 - (void)_refresh {
     
+    MF_WEAK_SELF
     for (FJMediaView *mediaView in self.scrollView.subviews) {
         if ([mediaView isKindOfClass:[FJMediaView class]]) {
             [mediaView removeFromSuperview];
         }
     }
     for (int i = 0; i < self.medias.count; i++) {
-        FJMediaObject *media = [self.medias objectAtIndex:i];
-        FJMediaView *mediaView = [[FJMediaView alloc] initWithFrame:CGRectMake(i * self.scrollView.bounds.size.width, 0, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height)];
+        __block FJMediaObject *media = [self.medias objectAtIndex:i];
+        FJMediaView *mediaView = [[FJMediaView alloc] initWithFrame:CGRectMake(i * self.scrollView.bounds.size.width, 0, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height) isVideo:media.isVideo tapBlock:^{
+            weakSelf.player.contentURL = media.videoURL;
+            weakSelf.player.view.hidden = NO;
+            [weakSelf.view bringSubviewToFront:weakSelf.player.view];
+            [weakSelf.player play];
+        }];
         mediaView.imageView.image = media.image;
         mediaView.tag = 1000 + i;
         [self.scrollView addSubview:mediaView];
@@ -119,8 +168,7 @@
     self.scrollView.contentSize = CGSizeMake(self.scrollView.bounds.size.width * self.medias.count, self.scrollView.bounds.size.height);
     self.page = self.scrollView.contentOffset.x / self.scrollView.bounds.size.width;
     self.countLabel.text = [NSString stringWithFormat:@"%d/%d", (int)self.page + 1, (int)self.medias.count];
-    
-    [self _autoPlayVideo];
+    [self _checkVideo];
 }
 
 - (void)_tapBack {
@@ -138,38 +186,20 @@
     }
 }
 
-- (void)_autoPlayVideo {
+- (void)_checkVideo {
     
+    /*
     FJMediaObject *media = [self.medias fj_safeObjectAtIndex:self.page];
     if (media == nil) {
         return;
     }
+    // FJMediaView *mediaView = (FJMediaView *)[self.scrollView viewWithTag:(1000 + self.page)];
     if (media.isVideo) {
-        if (self.player == nil) {
-            MPMoviePlayerController *player = [[MPMoviePlayerController alloc] init];
-            self.player = player;
-            player.view.frame = self.view.bounds;
-            player.view.tag = 2000;
-            player.controlStyle = MPMovieControlStyleNone;
-            player.shouldAutoplay = YES;
-            player.movieSourceType = MPMovieSourceTypeFile;
-            MF_WEAK_SELF
-            [self fj_addNotification:MPMoviePlayerPlaybackDidFinishNotification notifyParameterBlock:^(NSDictionary *userInfo) {
-                FJMediaView *mediaView = (FJMediaView *)[weakSelf.scrollView viewWithTag:(1000 + weakSelf.page)];
-                    UIView *playerView = [mediaView viewWithTag:2000];
-                    playerView.hidden = YES;
-                }
-            ];
-        }
-        FJMediaView *mediaView = (FJMediaView *)[self.scrollView viewWithTag:(1000 + self.page)];
-        [mediaView addSubview:self.player.view];
-        self.player.contentURL = media.videoURL;
-        self.player.view.hidden = NO;
-        [self.player play];
+        
     }else {
-        [self.player stop];
-        self.player.view.hidden = YES;
+        
     }
+    */
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -180,8 +210,11 @@
     }
     self.page = scrollView.contentOffset.x / scrollView.bounds.size.width;
     self.countLabel.text = [NSString stringWithFormat:@"%d/%d", (int)self.page + 1, (int)self.medias.count];
-    
-    [self _autoPlayVideo];
+    if (self.player.playbackState != MPMoviePlaybackStateStopped) {
+        [self.player stop];
+        self.player.view.hidden = YES;
+    }
+    [self _checkVideo];
 }
 
 /*

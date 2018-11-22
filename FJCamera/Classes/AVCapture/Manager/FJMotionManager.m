@@ -36,7 +36,8 @@
     return self;
 }
 
-- (void)handleDeviceMotion:(CMDeviceMotion *)deviceMotion{
+- (void)handleDeviceMotion:(CMDeviceMotion *)deviceMotion {
+    
     double x = deviceMotion.gravity.x;
     double y = deviceMotion.gravity.y;
     if (fabs(y) >= fabs(x)) {
@@ -58,7 +59,8 @@
     }
 }
 
--(void)dealloc{
+-(void)dealloc {
+    
     NSLog(@"陀螺仪对象销毁了");
     [_motionManager stopDeviceMotionUpdates];
 }

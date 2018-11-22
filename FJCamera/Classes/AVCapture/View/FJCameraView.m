@@ -146,14 +146,17 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         weakSelf.previewImageView.image = image;
         weakSelf.mediaCountLabel.text = text;
-        
-        // Check
-        if (medias.count == self.config.maxMediaCount) {
-            [weakSelf.takeView setUserInteractionEnabled:NO];
-        }else {
-            [weakSelf.takeView setUserInteractionEnabled:YES];
-        }
     });
+    
+    if (medias.count >= self.config.maxMediaCount) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.takeView setUserInteractionEnabled:NO];
+        });
+    }else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.takeView setUserInteractionEnabled:YES];
+        });
+    }
 }
 
 #pragma mark - Private
@@ -273,12 +276,12 @@
         self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
         self.previewImageView.layer.masksToBounds = YES;
         [self.bottomView addSubview:self.previewImageView];
-        self.mediaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x + self.previewImageView.frame.size.width, self.bottomView.bounds.size.height / 2.0 - 10.0, 40.0, 20.0)];
+        self.mediaCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x + self.previewImageView.frame.size.width, self.bottomView.bounds.size.height / 2.0 - 10.0, 48.0, 20.0)];
         self.mediaCountLabel.font = [UIFont systemFontOfSize:14.0];
         self.mediaCountLabel.textColor = [UIColor whiteColor];
         self.mediaCountLabel.textAlignment = NSTextAlignmentCenter;
         [self.bottomView addSubview:self.mediaCountLabel];
-        UIButton *previewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x, self.previewImageView.frame.origin.y, self.previewImageView.bounds.size.width + self.self.mediaCountLabel.bounds.size.width, self.previewImageView.bounds.size.height)];
+        UIButton *previewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.previewImageView.frame.origin.x - 10.0, self.previewImageView.frame.origin.y - 10.0, self.previewImageView.bounds.size.width + self.self.mediaCountLabel.bounds.size.width + 20.0, self.previewImageView.bounds.size.height + 20.0)];
         [self.bottomView addSubview:previewButton];
         [previewButton addTarget:self action:@selector(_tapPreview) forControlEvents:UIControlEventTouchUpInside];
         
