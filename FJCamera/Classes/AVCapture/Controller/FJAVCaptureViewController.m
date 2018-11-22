@@ -74,6 +74,10 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    
+    // 清除所有临时的视频文件
+    [_movieManager removeAllTemporaryVideoFiles];
+    
     self.cameraView = [[FJCameraView alloc] initWithFrame:self.view.bounds config:self.config];
     self.cameraView.delegate = self;
     [self.view addSubview:self.cameraView];

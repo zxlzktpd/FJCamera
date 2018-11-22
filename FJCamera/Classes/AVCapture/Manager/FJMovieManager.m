@@ -7,6 +7,7 @@
 //
 
 #import "FJMovieManager.h"
+#import <FJKit_OC/FJStorage.h>
 
 @interface FJMovieManager()
 {
@@ -109,6 +110,21 @@
             self->_movieWriter = nil;
         }];
     });
+}
+
+- (void)removeAllTemporaryVideoFiles {
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *contents = [fileManager contentsOfDirectoryAtPath:[FJStorage temporaryDirectory] error:NULL];
+    NSEnumerator *e = [contents objectEnumerator];
+    NSString *filename;
+    while ((filename = [e nextObject])) {
+        
+        if ([[[filename pathExtension] lowercaseString] isEqualToString:@"mp4"] ||
+            [[[filename pathExtension] lowercaseString] isEqualToString:@"mov"]) {
+            [fileManager removeItemAtPath:[[FJStorage temporaryDirectory] stringByAppendingPathComponent:filename] error:NULL];
+        }
+    }
 }
 
 - (void)writeData:(AVCaptureConnection *)connection video:(AVCaptureConnection*)video audio:(AVCaptureConnection *)audio buffer:(CMSampleBufferRef)buffer {

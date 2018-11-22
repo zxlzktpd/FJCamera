@@ -30,6 +30,8 @@ typedef NS_ENUM(NSInteger, FJAVFileType) {
 
 - (void)stop:(void(^)(NSURL *url, NSError *error))handle;
 
+- (void)removeAllTemporaryVideoFiles;
+
 - (void)writeData:(AVCaptureConnection *)connection
             video:(AVCaptureConnection*)video
             audio:(AVCaptureConnection *)audio
