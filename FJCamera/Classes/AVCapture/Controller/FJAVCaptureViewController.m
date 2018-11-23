@@ -342,7 +342,7 @@
                         [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }
                 }else {
-                    weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
                 }
             }];
             if (weakSelf.config.enablePreviewAll == NO) {
@@ -364,7 +364,7 @@
                     [weakSelf.medias addObject:media];
                     [weakSelf.cameraView updateMedias:weakSelf.medias];
                 }else {
-                    weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
                     [weakSelf fj_dismiss];
                 }
             }];
@@ -412,7 +412,7 @@
                             [weakSelf.cameraView updateMedias:weakSelf.medias];
                         }
                     }else {
-                        weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
                     }
                 }];
                 if (weakSelf.config.enablePreviewAll == NO) {
@@ -434,7 +434,7 @@
                         [weakSelf.medias addObject:media];
                         [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }else {
-                        weakSelf.oneMediaTakenBlock == nil ? : weakSelf.oneMediaTakenBlock(media);
+                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
                         [weakSelf fj_dismiss];
                     }
                 }];
@@ -457,7 +457,7 @@
 // 完成预览
 - (void)doneAction:(FJCameraView *)cameraView {
     
-    self.allMediasTakenBlock == nil ? : self.allMediasTakenBlock(self.medias);
+    self.mediasTakenBlock == nil ? : self.mediasTakenBlock(self.medias);
     [self fj_dismiss];
 }
 

@@ -18,10 +18,7 @@
 // FJCaptureConfig参数
 @property (nonatomic, strong) FJCaptureConfig *config;
 
-// 单张图片/单个视频的回调
-@property (nonatomic, copy) void(^oneMediaTakenBlock)(FJMediaObject *media);
-
-// 多张图片/多个视频的回调
-@property (nonatomic, copy) void(^allMediasTakenBlock)(NSArray *medias);
+// 图片/视频拍摄完成的回调
+@property (nonatomic, copy) void(^mediasTakenBlock)(NSArray *medias);
 
 @end

@@ -49,14 +49,8 @@
     config.enableConfirmPreview = NO;
     config.captureType = FJCaptureTypeAll;
     avCaptureVC.config = config;
-    
-    avCaptureVC.oneMediaTakenBlock = ^(FJMediaObject *media) {
-        NSLog(@"oneMediaTakenBlock callback");
-        NSLog(@"%@", media);
-    };
-    
-    avCaptureVC.allMediasTakenBlock = ^(NSArray *medias) {
-        NSLog(@"allMediasTakenBlock callback");
+    avCaptureVC.mediasTakenBlock = ^(NSArray *medias) {
+        NSLog(@"mediasTakenBlock callback");
         NSLog(@"%@", medias);
     };
     [self.navigationController pushViewController:avCaptureVC animated:YES];
