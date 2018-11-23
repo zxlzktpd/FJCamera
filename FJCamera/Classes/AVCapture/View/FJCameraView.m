@@ -30,6 +30,8 @@
 @property (nonatomic, strong) UIImageView *previewImageView;
 @property (nonatomic, strong) UILabel *mediaCountLabel;
 
+@property (nonatomic, assign) NSUInteger currentMediaCount;
+
 @end
 
 @implementation FJCameraView
@@ -131,6 +133,8 @@
 
 - (void)updateMedias:(NSMutableArray *)medias {
     
+    self.currentMediaCount = medias.count;
+    
     __block UIImage *image = nil;
     __block NSString *text = nil;
     if (medias.count > 0) {
@@ -148,6 +152,7 @@
         weakSelf.mediaCountLabel.text = text;
     });
     
+    /*
     if (medias.count >= self.config.maxMediaCount) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.takeView setUserInteractionEnabled:NO];
@@ -156,7 +161,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.takeView setUserInteractionEnabled:YES];
         });
-    }
+    }*/
 }
 
 #pragma mark - Private
@@ -230,12 +235,26 @@
         [self.bottomView addSubview:labelHint];
        
         FJTakePhotoView *takeView = [FJTakePhotoView create:CGRectMake((self.bottomView.size.width - self.config.takeViewSize.width) / 2.0, (self.bottomView.size.height - self.config.takeViewSize.height) / 2.0, self.config.takeViewSize.width, self.config.takeViewSize.height) takeButtonSize:self.config.takeButtonSize strokeColor:self.config.takeButtonStrokeColor strokeWidth:self.config.takeButtonStrokeWidth longTapPressDuration:self.config.takeButtonLongTapPressDuration circleDuration:self.config.takeButtonCircleDuration type:type tapBlock:^{
+            if (weakSelf.currentMediaCount >= weakSelf.config.maxMediaCount) {
+                if (weakSelf.config.enableWarningOverMaxMediaCount) {
+                    [weakSelf fj_toast:FJToastImageTypeWarning message:@"已超过图片最大数量"];
+                }
+                return;
+            }
             // 拍照
             if ([weakSelf.delegate respondsToSelector:@selector(takePhotoAction:)]) {
                 [weakSelf.delegate takePhotoAction:weakSelf];
             }
             
         } longPressBlock:^(BOOL begin) {
+            if (weakSelf.currentMediaCount >= weakSelf.config.maxMediaCount) {
+                if (weakSelf.config.enableWarningOverMaxMediaCount) {
+                    if (begin) {
+                        [weakSelf fj_toast:FJToastImageTypeWarning message:@"已超过视频最大数量"];
+                    }
+                }
+                return;
+            }
             // 拍摄
             if (begin) {
                 if ([weakSelf.delegate respondsToSelector:@selector(startRecordVideoAction:)]) {

@@ -76,7 +76,11 @@
 - (void)viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
-    self.navigationController.navigationBarHidden = NO;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning {

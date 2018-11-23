@@ -24,6 +24,8 @@ typedef NS_ENUM(NSInteger, FJCaptureType) {
 @property (nonatomic, assign) BOOL enablePreviewAll;
 // 默认最大拍摄Media数量
 @property (nonatomic, assign) NSUInteger maxMediaCount;
+// 超过最大数量是否提示
+@property (nonatomic, assign) BOOL enableWarningOverMaxMediaCount;
 // 支持前后置摄像头切换
 @property (nonatomic, assign) BOOL enableSwitch;
 // 支持补光

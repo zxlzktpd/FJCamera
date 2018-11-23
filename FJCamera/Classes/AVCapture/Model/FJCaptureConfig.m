@@ -21,6 +21,8 @@
         self.enablePreviewAll = YES;
         // 默认最大拍摄Media数量
         self.maxMediaCount = 9;
+        // 超过最大数量是否提示
+        self.enableWarningOverMaxMediaCount = YES;
         // 支持前后置摄像头切换
         self.enableSwitch = YES;
         // 支持补光
