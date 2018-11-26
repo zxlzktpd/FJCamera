@@ -80,7 +80,7 @@
 
 + (NSArray *)filterTitles {
     
-    return @[@"原图",@"Chrome",@"Fade",@"Instant",@"Mono",@"Noir",@"Process",@"Tonal",@"Transfer"];
+    return @[@"原图",@"铬黄",@"褪色",@"怀旧",@"单色",@"黑白",@"冲印",@"色调",@"岁月"];
 }
 
 @end
