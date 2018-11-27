@@ -14,6 +14,7 @@
 		E705B40E219C1A8000E99880 /* ic_photo_compress@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40A219C1A8000E99880 /* ic_photo_compress@3x.png */; };
 		E705B40F219C1A8000E99880 /* ic_photo_expand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40B219C1A8000E99880 /* ic_photo_expand@3x.png */; };
 		E705B410219C1A8000E99880 /* ic_photo_expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E705B40C219C1A8000E99880 /* ic_photo_expand@2x.png */; };
+		E72F5C0921AD286300039CB9 /* FJCamera.podspec in Resources */ = {isa = PBXBuildFile; fileRef = E72F5C0821AD286300039CB9 /* FJCamera.podspec */; };
 		E73A26BF219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */; };
 		E73A26D3219AA618001799BA /* FJCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26D2219AA618001799BA /* FJCropperView.m */; };
 		E73A26D5219AA630001799BA /* FJCropperView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E73A26D4219AA630001799BA /* FJCropperView.xib */; };
@@ -183,6 +184,7 @@
 		E705B40A219C1A8000E99880 /* ic_photo_compress@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_compress@3x.png"; sourceTree = "<group>"; };
 		E705B40B219C1A8000E99880 /* ic_photo_expand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_expand@3x.png"; sourceTree = "<group>"; };
 		E705B40C219C1A8000E99880 /* ic_photo_expand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_expand@2x.png"; sourceTree = "<group>"; };
+		E72F5C0821AD286300039CB9 /* FJCamera.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FJCamera.podspec; path = ../FJCamera.podspec; sourceTree = "<group>"; };
 		E73A26BD219A6DC7001799BA /* FJPhotoLibraryCropperViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryCropperViewController.h; sourceTree = "<group>"; };
 		E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryCropperViewController.m; sourceTree = "<group>"; };
 		E73A26D1219AA618001799BA /* FJCropperView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCropperView.h; sourceTree = "<group>"; };
@@ -562,6 +564,7 @@
 		E7DFF9E42182B3EA0059CE32 = {
 			isa = PBXGroup;
 			children = (
+				E72F5C0821AD286300039CB9 /* FJCamera.podspec */,
 				E7DFFA062182B4160059CE32 /* Classes */,
 				E7DFF9EF2182B3EA0059CE32 /* FJCamera */,
 				E7DFF9EE2182B3EA0059CE32 /* Products */,
@@ -907,6 +910,7 @@
 				E74A5BEA21A6A2A0009E547C /* ic_torch_off_2@3x.png in Resources */,
 				E792D2EB21916145004465A1 /* FJPhotoTagAlertView.xib in Resources */,
 				E74A5BEB21A6A2A0009E547C /* ic_torch_on_2@3x.png in Resources */,
+				E72F5C0921AD286300039CB9 /* FJCamera.podspec in Resources */,
 				E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */,
 				E7BA9DF4219044FA009DAD96 /* FJPhotoImageTagView.xib in Resources */,
 				E75C066E21887E0900836ABD /* ic_edit_light@3x.png in Resources */,
@@ -1006,10 +1010,6 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-FJCamera/Pods-FJCamera-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/BlocksKit/BlocksKit.framework",
-				"${BUILT_PRODUCTS_DIR}/CHTCollectionViewWaterfallLayout/CHTCollectionViewWaterfallLayout.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaSecurity/CocoaSecurity.framework",
-				"${BUILT_PRODUCTS_DIR}/DDCollectionViewFlowLayout/DDCollectionViewFlowLayout.framework",
-				"${BUILT_PRODUCTS_DIR}/EllipsePageControl/EllipsePageControl.framework",
 				"${BUILT_PRODUCTS_DIR}/FJKit-OC/FJKit_OC.framework",
 				"${BUILT_PRODUCTS_DIR}/JSONModel/JSONModel.framework",
 				"${BUILT_PRODUCTS_DIR}/LBXPermission/LBXPermission.framework",
@@ -1018,20 +1018,13 @@
 				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SMPageControl/SMPageControl.framework",
-				"${BUILT_PRODUCTS_DIR}/SwipeView/SwipeView.framework",
-				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
 				"${BUILT_PRODUCTS_DIR}/Typeset/Typeset.framework",
-				"${BUILT_PRODUCTS_DIR}/WMPlayer/WMPlayer.framework",
 				"${BUILT_PRODUCTS_DIR}/YYModel/YYModel.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BlocksKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHTCollectionViewWaterfallLayout.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaSecurity.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DDCollectionViewFlowLayout.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EllipsePageControl.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FJKit_OC.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSONModel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LBXPermission.framework",
@@ -1040,10 +1033,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SMPageControl.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Typeset.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WMPlayer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YYModel.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

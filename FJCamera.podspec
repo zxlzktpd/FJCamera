@@ -15,7 +15,8 @@ Pod::Spec.new do |s|
     s.frameworks   = 'SystemConfiguration'
     s.frameworks   = 'CoreImage'
     s.dependency     'FJKit-OC'
+    s.dependency     'Masonry',       '~> 1.1.0'
+    s.dependency     'BlocksKit',     '~> 2.2.5'
     s.dependency     'SMPageControl', '~> 1.2'
     s.dependency     'LBXPermission', '~> 1.0.5'
-    
 end
