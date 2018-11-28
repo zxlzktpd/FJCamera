@@ -341,7 +341,7 @@
                         [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }
                 }else {
-                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
+                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(MF_WRAP_ARRAY(media));
                 }
             }];
             if (weakSelf.config.enablePreviewAll == NO) {
@@ -363,7 +363,7 @@
                     [weakSelf.medias addObject:media];
                     [weakSelf.cameraView updateMedias:weakSelf.medias];
                 }else {
-                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
+                    weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(MF_WRAP_ARRAY(media));
                     [weakSelf fj_dismiss];
                 }
             }];
@@ -411,7 +411,7 @@
                             [weakSelf.cameraView updateMedias:weakSelf.medias];
                         }
                     }else {
-                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
+                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(MF_WRAP_ARRAY(media));
                     }
                 }];
                 if (weakSelf.config.enablePreviewAll == NO) {
@@ -433,7 +433,7 @@
                         [weakSelf.medias addObject:media];
                         [weakSelf.cameraView updateMedias:weakSelf.medias];
                     }else {
-                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(@[media]);
+                        weakSelf.mediasTakenBlock == nil ? : weakSelf.mediasTakenBlock(MF_WRAP_ARRAY(media));
                         [weakSelf fj_dismiss];
                     }
                 }];
