@@ -47,7 +47,7 @@
     for (int i = 0; i < self.scrollView.subviews.count; i++) {
         FJPhotoEditFilterGenreView *genreView = [self.scrollView.subviews objectAtIndex:i];
         if ([genreView isKindOfClass:[FJPhotoEditFilterGenreView class]]) {
-            [genreView updateFilterImage:[filterImages fj_safeObjectAtIndex:i]];
+            [genreView updateFilterImage:[filterImages fj_arrayObjectAtIndex:i]];
         }
     }
 }

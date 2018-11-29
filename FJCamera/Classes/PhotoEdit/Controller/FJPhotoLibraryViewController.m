@@ -253,7 +253,7 @@
                             // 选择
                             ds.isSelected = YES;
                             FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
-                            [weakSelf.selectedPhotos fj_safeAddObject:model];
+                            [weakSelf.selectedPhotos fj_arrayAddObject:model];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -412,14 +412,14 @@
         if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumMyPhotoStream || collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumCloudShared) {
             // 屏蔽 iCloud 照片流
         }else {
-            [self.photoAssetCollections fj_safeAddObject:collection];
+            [self.photoAssetCollections fj_arrayAddObject:collection];
         }
     }
     
     // 自定义相册
     PHFetchResult<PHAssetCollection *> *customCollections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     for (PHAssetCollection *collection in customCollections) {
-        [self.photoAssetCollections fj_safeAddObject:collection];
+        [self.photoAssetCollections fj_arrayAddObject:collection];
     }
     
     // 去除相册集数量为0的对象
@@ -445,7 +445,7 @@
     // 相机Placeholder
     FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];
     placeholer.isCameraPlaceholer = YES;
-    [self.collectionView.fj_dataSource fj_safeAddObject:placeholer];
+    [self.collectionView.fj_dataSource fj_arrayAddObject:placeholer];
     
     // 当前选中相册的照片流
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
@@ -461,7 +461,7 @@
         PHAsset *firstAsset = [assets firstObject];
         i = 1;
         FJPhotoModel *model = [[FJPhotoManager shared] add:firstAsset];
-        [self.selectedPhotos fj_safeAddObject:model];
+        [self.selectedPhotos fj_arrayAddObject:model];
         
         FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;

@@ -268,7 +268,7 @@ static bool isFirstAccess = YES;
     dispatch_async(queue, ^{
         
         // 去重
-        NSArray *uniqueArray = [filters fj_uniqueObjects];
+        NSArray *uniqueArray = [filters fj_arrayRemoveDuplicateObjects];
         
         // 合成Filter
         // 第一个Filter必须有CIImage输入源
@@ -291,7 +291,7 @@ static bool isFirstAccess = YES;
 - (UIImage *)getImageCombine:(NSArray<CIFilter *> *)filters {
     
     // 去重
-    NSArray *uniqueArray = [filters fj_uniqueObjects];
+    NSArray *uniqueArray = [filters fj_arrayRemoveDuplicateObjects];
     
     // 合成Filter
     // 第一个Filter必须有CIImage输入源
