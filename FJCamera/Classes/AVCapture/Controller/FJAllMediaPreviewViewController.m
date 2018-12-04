@@ -188,7 +188,7 @@
 - (void)_checkVideo {
     
     /*
-    FJMediaObject *media = [self.medias fj_safeObjectAtIndex:self.page];
+    FJMediaObject *media = [self.medias fj_arrayObjectAtIndex:self.page];
     if (media == nil) {
         return;
     }
