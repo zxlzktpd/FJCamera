@@ -31,7 +31,7 @@
 @property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *selectedPhotos;
 
 // Edit Controller Block
-@property (nonatomic, copy) __kindof FJPhotoUserTagBaseViewController * (^editController)(FJPhotoEditViewController *controller);
+@property (nonatomic, copy) __kindof FJPhotoUserTagBaseViewController * (^editController)(__kindof __weak FJPhotoEditViewController *controller);
 
 // First Picture Auto Selected (拍照后刷新自动选择)
 @property (nonatomic, assign) BOOL firstPhotoAutoSelected;
@@ -81,6 +81,10 @@
     return _selectedPhotos;
 }
 
+- (void)dealloc {
+    
+}
+
 - (instancetype)init {
     
     self = [super init];
@@ -91,11 +95,12 @@
     return self;
 }
 
-- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController {
+- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof __weak FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController {
     
     self = [self init];
     if (self) {
         self.mode = mode;
+        self.editController = nil;
         self.editController = editController;
     }
     return self;
@@ -142,7 +147,6 @@
                 //用户拒绝当前APP访问相册
                 if (oldStatus != PHAuthorizationStatusNotDetermined) {
                     //提醒用户打开开关
-                    MF_WEAK_SELF
                     FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"前往设置" action:^{
                         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                         if ([[UIApplication sharedApplication] canOpenURL:url]) {
@@ -233,7 +237,7 @@
                             // 移除
                             ds.isSelected = NO;
                             [[FJPhotoManager shared] remove:ds.photoAsset];
-                            for (int i = (int)self.selectedPhotos.count - 1; i >= 0; i--) {
+                            for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
                                 FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
                                 if ([photoModel.asset isEqual:ds.photoAsset]) {
                                     [weakSelf.selectedPhotos removeObjectAtIndex:i];

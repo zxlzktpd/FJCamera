@@ -46,6 +46,6 @@
 @property (nonatomic, copy) void(^userEditNextBlock)(void);
 
 // 初始化
-- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
+- (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof __weak FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
 
 @end
