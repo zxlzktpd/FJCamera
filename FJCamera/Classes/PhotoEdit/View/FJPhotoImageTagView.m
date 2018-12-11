@@ -48,7 +48,7 @@
     } else {
         w = [model.name fj_width:[UIFont systemFontOfSize:14.0] enableCeil:YES] + 0.2 * model.name.length;
     }
-    view.frame = CGRectMake(point.x, point.y, w + 12.0 + 12.0, view.bounds.size.height);
+    view.frame = CGRectMake(point.x, point.y, w + 12.0 + 12.0, FJPhotoImageTagViewHeight);
     [view.tagBackgroundView fj_cornerRadius:2.0];
     if (canmove) {
         [view addGestureRecognizer:view.panGesture];
