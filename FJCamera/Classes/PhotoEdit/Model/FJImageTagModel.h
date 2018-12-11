@@ -13,6 +13,8 @@
 
 @interface FJImageTagModel : NSObject
 
+// Tag的ID
+@property (nonatomic, copy) NSString *tagId;
 // Tag的名称
 @property (nonatomic, copy) NSString *name;
 // 图片上的x偏移比例

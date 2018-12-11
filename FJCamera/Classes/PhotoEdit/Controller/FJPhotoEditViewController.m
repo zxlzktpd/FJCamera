@@ -504,7 +504,12 @@
             }];
             [imageView addSubview:weakSelf.alertView];
         }else {
-            weakSelf.alertView.frame = frame;
+            if (CGRectEqualToRect(weakSelf.alertView.frame, frame)) {
+                [weakSelf.alertView removeFromSuperview];
+                weakSelf.alertView = nil;
+            }else {
+                weakSelf.alertView.frame = frame;
+            }
         }
     } movingBlock:^{
         if (weakSelf.alertView != nil) {

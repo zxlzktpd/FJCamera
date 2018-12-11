@@ -10,6 +10,7 @@
 #import <FJKit_OC/Macro.h>
 #import <FJKit_OC/UIView+Utility_FJ.h>
 #import <BlocksKit/UIView+BlocksKit.h>
+#import "FJPhotoImageTagPointView.h"
 
 @interface FJPhotoImageTagView ()
 
@@ -17,6 +18,8 @@
 @property (nonatomic, weak) IBOutlet UILabel *textLabel;
 @property (nonatomic, weak) IBOutlet UIImageView *triangleUpImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *triangleDownImageView;
+@property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointUpView;
+@property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointDownView;
 
 @property (nonatomic, strong) FJImageTagModel *model;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
@@ -58,6 +61,9 @@
         view.triangleUpImageView.hidden = YES;
         view.triangleDownImageView.hidden = NO;
     }
+    view.tagPointUpView.hidden = NO;
+    view.tagPointDownView.hidden = YES;
+    [view.tagPointUpView startAnimation];
     return view;
 }
 
@@ -117,10 +123,18 @@
         self.model.direction = 1;
         self.triangleUpImageView.hidden = YES;
         self.triangleDownImageView.hidden = NO;
+        [self.tagPointUpView stopAnimation];
+        self.tagPointUpView.hidden = YES;
+        self.tagPointDownView.hidden = NO;
+        [self.tagPointDownView startAnimation];
     }else if (self.model.direction == 1) {
         self.model.direction = 0;
         self.triangleUpImageView.hidden = NO;
         self.triangleDownImageView.hidden = YES;
+        [self.tagPointDownView stopAnimation];
+        self.tagPointDownView.hidden = YES;
+        self.tagPointUpView.hidden = NO;
+        [self.tagPointUpView startAnimation];
     }
 }
 
