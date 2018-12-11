@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "FJImageTagModel.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface FJPhotoImageTagView : UIView
 
 + (FJPhotoImageTagView *)create:(CGPoint)point model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock;
@@ -20,5 +18,3 @@ NS_ASSUME_NONNULL_BEGIN
 - (FJImageTagModel *)getTagModel;
 
 @end
-
-NS_ASSUME_NONNULL_END

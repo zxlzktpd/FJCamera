@@ -61,9 +61,17 @@
         view.triangleUpImageView.hidden = YES;
         view.triangleDownImageView.hidden = NO;
     }
-    view.tagPointUpView.hidden = NO;
-    view.tagPointDownView.hidden = YES;
-    [view.tagPointUpView startAnimation];
+    if (model.direction == 0) {
+        [view.tagPointDownView stopAnimation];
+        view.tagPointDownView.hidden = YES;
+        view.tagPointUpView.hidden = NO;
+        [view.tagPointUpView startAnimation];
+    }else {
+        [view.tagPointUpView stopAnimation];
+        view.tagPointUpView.hidden = YES;
+        view.tagPointDownView.hidden = NO;
+        [view.tagPointDownView startAnimation];
+    }
     return view;
 }
 
