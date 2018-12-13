@@ -13,7 +13,7 @@
 
 @interface FJPhotoImageTagView : UIView
 
-+ (FJPhotoImageTagView *)create:(CGPoint)point model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock;
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock;
 
 - (void)reverseDirection;
 

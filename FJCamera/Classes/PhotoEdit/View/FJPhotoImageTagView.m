@@ -35,7 +35,7 @@
     
 }
 
-+ (FJPhotoImageTagView *)create:(CGPoint)point model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock {
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock {
     
     FJPhotoImageTagView *view = MF_LOAD_NIB(@"FJPhotoImageTagView");
     view.model = model;
@@ -71,6 +71,14 @@
         view.tagPointUpView.hidden = YES;
         view.tagPointDownView.hidden = NO;
         [view.tagPointDownView startAnimation];
+    }
+    // 修正view使得view在ContainerSize内
+    if (view.frame.origin.x + view.bounds.size.width > containerSize.width && view.frame.origin.y + view.bounds.size.height > containerSize.height) {
+        view.frame = CGRectMake(containerSize.width - view.bounds.size.width, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
+    }else if (view.frame.origin.x + view.bounds.size.width > containerSize.width) {
+        view.frame = CGRectMake(containerSize.width - view.bounds.size.width, view.frame.origin.y, view.bounds.size.width, view.bounds.size.height);
+    }else if (view.frame.origin.y + view.bounds.size.height > containerSize.height) {
+        view.frame = CGRectMake(view.frame.origin.x, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
     }
     return view;
 }

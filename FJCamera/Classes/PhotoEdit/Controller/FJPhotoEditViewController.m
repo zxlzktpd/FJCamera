@@ -453,10 +453,12 @@
     MF_WEAK_SELF
     [_alertView removeFromSuperview];
     _alertView = nil;
+    
+    // 修正point
     tag.createdTime = [[NSDate date] timeIntervalSince1970];
     tag.xPercent = point.x / imageView.bounds.size.width;
     tag.yPercent = point.y / imageView.bounds.size.height;
-    FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
+    FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point containerSize:imageView.bounds.size model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
         // 114.0 32.0 4.0
         CGRect frame = CGRectZero;
         if (photoImageTagView.frame.size.width > 114.0) {
