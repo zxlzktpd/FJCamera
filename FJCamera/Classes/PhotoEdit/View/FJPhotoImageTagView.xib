@@ -80,7 +80,7 @@
                 <constraint firstAttribute="trailing" secondItem="jYq-sc-fnw" secondAttribute="trailing" constant="6" id="edF-VW-mJr"/>
                 <constraint firstItem="odE-Gg-E8j" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="gDk-Px-a34"/>
                 <constraint firstItem="5NS-Do-Zfl" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="meW-f7-V9s"/>
-                <constraint firstItem="HUE-Vs-Cb6" firstAttribute="top" secondItem="jYq-sc-fnw" secondAttribute="bottom" constant="-0.5" id="pXb-lu-NA4"/>
+                <constraint firstItem="HUE-Vs-Cb6" firstAttribute="top" secondItem="jYq-sc-fnw" secondAttribute="bottom" id="pXb-lu-NA4"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
