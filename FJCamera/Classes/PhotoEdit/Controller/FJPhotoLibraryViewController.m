@@ -47,7 +47,7 @@
         _imagePickerController.delegate = self;
         _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
         _imagePickerController.modalPresentationStyle = UIModalTransitionStyleCrossDissolve;
-        _imagePickerController.allowsEditing = YES;
+        _imagePickerController.allowsEditing = NO;
     }
     return _imagePickerController;
 }
@@ -119,7 +119,6 @@
     }];
     
     // 获取权限
-    // 加载相册
     PHAuthorizationStatus oldStatus = [PHPhotoLibrary authorizationStatus];
     if (oldStatus == PHAuthorizationStatusDenied || oldStatus == PHAuthorizationStatusRestricted) {
         if (self.userNoPhotoLibraryPermissionBlock != nil) {
@@ -157,12 +156,15 @@
                         [weakSelf fj_dismiss];
                     }];
                     [weakSelf fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+                }else {
+                    [weakSelf fj_dismiss];
                 }
             }else if (status == PHAuthorizationStatusRestricted) {
                 // (系统原因)无法访问相册
                 [weakSelf fj_dismiss];
             }else if (status == PHAuthorizationStatusAuthorized) {
                 // 用户允许当前APP访问相册
+                // 加载相册
                 [weakSelf _buildUI];
                 [weakSelf _reloadPhotoAssetCollections];
             }
@@ -457,6 +459,9 @@
     
     [self.customTitleView updateAlbumTitle:self.currentPhotoAssetColletion.localizedTitle];
     [self _render];
+    
+    // 检查下一步的有效性
+    [self _checkNextState];
 }
 
 - (void)_render {
@@ -512,7 +517,13 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
-        UIImage *image = info[@"UIImagePickerControllerEditedImage"];
+        UIImage *image = info[UIImagePickerControllerEditedImage];
+        if (image == nil) {
+            image = info[UIImagePickerControllerOriginalImage];
+            if (image == nil) {
+                return;
+            }
+        }
         void *contextInfo = NULL;
         UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), contextInfo);
     }
