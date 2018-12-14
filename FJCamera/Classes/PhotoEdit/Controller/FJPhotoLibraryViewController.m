@@ -125,7 +125,7 @@
         if (self.userNoPhotoLibraryPermissionBlock != nil) {
             self.userNoPhotoLibraryPermissionBlock();
         }else {
-            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去开启" action:^{
                 if (@available(iOS 10.0, *)) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
                 } else {
@@ -135,7 +135,7 @@
             FJAlertModel *cancel = [FJAlertModel alertModel:@"取消" action:^{
                 [weakSelf fj_dismiss];
             }];
-            [weakSelf fj_alertView:nil message:@"未获得相册权限" cancel:NO item:alert,cancel, nil];
+            [self fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:alert,cancel, nil];
         }
         return;
     }
@@ -147,7 +147,7 @@
                 //用户拒绝当前APP访问相册
                 if (oldStatus != PHAuthorizationStatusNotDetermined) {
                     //提醒用户打开开关
-                    FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"前往设置" action:^{
+                    FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"去开启" action:^{
                         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                         if ([[UIApplication sharedApplication] canOpenURL:url]) {
                             [[UIApplication sharedApplication] openURL:url];
@@ -156,7 +156,7 @@
                     FJAlertModel *cancelAlertModel = [FJAlertModel alertModelDefaultCancel:^{
                         [weakSelf fj_dismiss];
                     }];
-                    [weakSelf fj_alertView:nil message:@"系统设置禁止App访问相册" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+                    [weakSelf fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
                 }
             }else if (status == PHAuthorizationStatusRestricted) {
                 // (系统原因)无法访问相册
@@ -168,7 +168,6 @@
             }
         });
     }];
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         weakSelf.userInitBlock == nil ? : weakSelf.userInitBlock();
     });
@@ -371,27 +370,45 @@
 
 - (void)_openCamera {
     
-    if ([self _cameraPermission] == NO) {
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
         if (self.userNoCameraPermissionBlock != nil) {
             self.userNoCameraPermissionBlock();
         }else {
-            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去开启" action:^{
                 if (@available(iOS 10.0, *)) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
                 } else {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
                 }
             }];
-            [self fj_alertView:nil message:@"未获得相机权限" cancel:YES item:alert, nil];
+            [self fj_alertView:@"打开相机权限" message:@"打开相机权限后，才能拍照哦" cancel:YES item:alert, nil];
         }
         return;
-    }else {
-        
-        [self.navigationController presentViewController:self.imagePickerController animated:YES completion:nil];
     }
+    MF_WEAK_SELF
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            [weakSelf.navigationController presentViewController:weakSelf.imagePickerController animated:YES completion:nil];
+        }else {
+            //提醒用户打开开关
+            FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"去开启" action:^{
+                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+            }];
+            FJAlertModel *cancelAlertModel = [FJAlertModel alertModelDefaultCancel:^{
+                [weakSelf fj_dismiss];
+            }];
+            [weakSelf fj_alertView:@"打开相机权限" message:@"打开相机权限后，才能拍照哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+        }
+    }];
+    
 }
 
 - (void)_openEditingController:(UIImage *)image {
+    // TODO
     
 }
 
@@ -489,24 +506,6 @@
         [self.collectionView.fj_dataSource addObject:ds];
     }
     [self.collectionView fj_refresh];
-}
-
-- (BOOL)_cameraPermission {
-    
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
-        return NO;
-    }
-    return YES;
-}
-
-- (BOOL)_photoLibraryPermission {
-    
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status == PHAuthorizationStatusDenied || status == PHAuthorizationStatusRestricted) {
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - UIImagePickerViewController Delegate
