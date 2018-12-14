@@ -15,83 +15,79 @@
             <rect key="frame" x="0.0" y="0.0" width="114" height="66"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jYq-sc-fnw">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fq9-mb-R5G">
                     <rect key="frame" x="6" y="21" width="102" height="24"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MNa-PF-6k5">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="poG-wL-TWH">
                             <rect key="frame" x="0.0" y="0.0" width="102" height="24"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
-                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.40121588908450706" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="MNa-PF-6k5" secondAttribute="bottom" id="1UW-iE-LJa"/>
-                        <constraint firstAttribute="height" constant="24" id="Gwa-PY-Et8"/>
-                        <constraint firstItem="MNa-PF-6k5" firstAttribute="leading" secondItem="jYq-sc-fnw" secondAttribute="leading" id="HIL-IL-3fX"/>
-                        <constraint firstAttribute="trailing" secondItem="MNa-PF-6k5" secondAttribute="trailing" id="U8R-rH-G6G"/>
-                        <constraint firstItem="MNa-PF-6k5" firstAttribute="top" secondItem="jYq-sc-fnw" secondAttribute="top" id="XzM-ok-DpO"/>
+                        <constraint firstItem="poG-wL-TWH" firstAttribute="leading" secondItem="fq9-mb-R5G" secondAttribute="leading" id="1Vv-HD-WNF"/>
+                        <constraint firstAttribute="bottom" secondItem="poG-wL-TWH" secondAttribute="bottom" id="2kv-3V-mdh"/>
+                        <constraint firstAttribute="trailing" secondItem="poG-wL-TWH" secondAttribute="trailing" id="TPd-Yq-rnK"/>
+                        <constraint firstItem="poG-wL-TWH" firstAttribute="top" secondItem="fq9-mb-R5G" secondAttribute="top" id="qiv-83-1g7"/>
+                        <constraint firstAttribute="height" constant="24" id="ycj-G4-eNi"/>
                     </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="" value="YES"/>
-                    </userDefinedRuntimeAttributes>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_tag_triangle_up.png" translatesAutoresizingMaskIntoConstraints="NO" id="6To-IZ-ua3">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_tag_triangle_up.png" translatesAutoresizingMaskIntoConstraints="NO" id="AMB-b6-86D">
                     <rect key="frame" x="51" y="16" width="12" height="5"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="5" id="FWb-7D-ezP"/>
-                        <constraint firstAttribute="width" constant="12" id="NIx-8t-WSF"/>
+                        <constraint firstAttribute="width" constant="12" id="bg9-LP-HuM"/>
+                        <constraint firstAttribute="height" constant="5" id="nYt-A5-PP2"/>
                     </constraints>
                 </imageView>
-                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_tag_triangle_down.png" translatesAutoresizingMaskIntoConstraints="NO" id="HUE-Vs-Cb6">
-                    <rect key="frame" x="51" y="44.5" width="12" height="5"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_tag_triangle_down.png" translatesAutoresizingMaskIntoConstraints="NO" id="dgP-tn-Fcp">
+                    <rect key="frame" x="51" y="45" width="12" height="5"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="12" id="2fX-DA-jCy"/>
-                        <constraint firstAttribute="height" constant="5" id="thm-7m-r1r"/>
+                        <constraint firstAttribute="width" constant="12" id="9ld-pm-rLP"/>
+                        <constraint firstAttribute="height" constant="5" id="mNX-fs-KEv"/>
                     </constraints>
                 </imageView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="odE-Gg-E8j" customClass="FJPhotoImageTagPointView">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yf8-r1-X4O" customClass="FJPhotoImageTagPointView">
                     <rect key="frame" x="53" y="0.0" width="8" height="8"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="8" id="Lw0-nX-hIU"/>
-                        <constraint firstAttribute="height" constant="8" id="M5u-bg-w3t"/>
+                        <constraint firstAttribute="height" constant="8" id="7pM-sg-sT9"/>
+                        <constraint firstAttribute="width" constant="8" id="Y0O-yT-QJQ"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5NS-Do-Zfl" customClass="FJPhotoImageTagPointView">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="14U-7Z-1P0" customClass="FJPhotoImageTagPointView">
                     <rect key="frame" x="53" y="58" width="8" height="8"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="8" id="VuB-62-JUo"/>
-                        <constraint firstAttribute="height" constant="8" id="qu4-7y-9BS"/>
+                        <constraint firstAttribute="width" constant="8" id="0vW-K9-Hif"/>
+                        <constraint firstAttribute="height" constant="8" id="5ad-eM-5ds"/>
                     </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="1" green="0.72156862749999995" blue="0.1137254902" alpha="0.0" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="6To-IZ-ua3" firstAttribute="centerX" secondItem="jYq-sc-fnw" secondAttribute="centerX" id="7sZ-3T-erT"/>
-                <constraint firstItem="jYq-sc-fnw" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="BIE-Vz-hby"/>
-                <constraint firstItem="HUE-Vs-Cb6" firstAttribute="centerX" secondItem="jYq-sc-fnw" secondAttribute="centerX" id="Fhy-fS-7fX"/>
-                <constraint firstItem="jYq-sc-fnw" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="6" id="HPk-HM-etf"/>
-                <constraint firstAttribute="bottom" secondItem="5NS-Do-Zfl" secondAttribute="bottom" id="IE3-ld-2AO"/>
-                <constraint firstItem="jYq-sc-fnw" firstAttribute="top" secondItem="6To-IZ-ua3" secondAttribute="bottom" id="XXc-bf-Mha"/>
-                <constraint firstItem="odE-Gg-E8j" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="e2N-m6-UIU"/>
-                <constraint firstAttribute="trailing" secondItem="jYq-sc-fnw" secondAttribute="trailing" constant="6" id="edF-VW-mJr"/>
-                <constraint firstItem="odE-Gg-E8j" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="gDk-Px-a34"/>
-                <constraint firstItem="5NS-Do-Zfl" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="meW-f7-V9s"/>
-                <constraint firstItem="HUE-Vs-Cb6" firstAttribute="top" secondItem="jYq-sc-fnw" secondAttribute="bottom" id="pXb-lu-NA4"/>
+                <constraint firstItem="14U-7Z-1P0" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="JI4-8j-FwG"/>
+                <constraint firstItem="dgP-tn-Fcp" firstAttribute="top" secondItem="fq9-mb-R5G" secondAttribute="bottom" id="drV-86-pNB"/>
+                <constraint firstItem="yf8-r1-X4O" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="f2g-oI-VdZ"/>
+                <constraint firstItem="AMB-b6-86D" firstAttribute="centerX" secondItem="fq9-mb-R5G" secondAttribute="centerX" id="fh2-Tc-l0g"/>
+                <constraint firstItem="fq9-mb-R5G" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="j0U-LF-OWK"/>
+                <constraint firstAttribute="bottom" secondItem="14U-7Z-1P0" secondAttribute="bottom" id="jch-Hp-abs"/>
+                <constraint firstItem="fq9-mb-R5G" firstAttribute="top" secondItem="AMB-b6-86D" secondAttribute="bottom" id="kJO-Hi-wJ1"/>
+                <constraint firstItem="dgP-tn-Fcp" firstAttribute="centerX" secondItem="fq9-mb-R5G" secondAttribute="centerX" id="lgG-eQ-w1g"/>
+                <constraint firstAttribute="trailing" secondItem="fq9-mb-R5G" secondAttribute="trailing" constant="6" id="plc-cI-GMm"/>
+                <constraint firstItem="yf8-r1-X4O" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="r6m-1b-Ig2"/>
+                <constraint firstItem="fq9-mb-R5G" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="6" id="z7J-ZQ-p5K"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="tagBackgroundView" destination="jYq-sc-fnw" id="Di4-R3-LFJ"/>
-                <outlet property="tagPointDownView" destination="5NS-Do-Zfl" id="RBT-qU-7e4"/>
-                <outlet property="tagPointUpView" destination="odE-Gg-E8j" id="zAz-cR-Myc"/>
-                <outlet property="textLabel" destination="MNa-PF-6k5" id="hr9-8r-yCw"/>
-                <outlet property="triangleDownImageView" destination="HUE-Vs-Cb6" id="7J2-Ex-Gtw"/>
-                <outlet property="triangleUpImageView" destination="6To-IZ-ua3" id="lGR-3b-Gar"/>
+                <outlet property="tagBackgroundView" destination="fq9-mb-R5G" id="TmW-ut-vor"/>
+                <outlet property="tagPointDownView" destination="14U-7Z-1P0" id="hQ2-yQ-Kh1"/>
+                <outlet property="tagPointUpView" destination="yf8-r1-X4O" id="XrN-I6-NhG"/>
+                <outlet property="textLabel" destination="poG-wL-TWH" id="ZdE-bn-Y4V"/>
+                <outlet property="triangleDownImageView" destination="dgP-tn-Fcp" id="DZT-Rt-Igt"/>
+                <outlet property="triangleUpImageView" destination="AMB-b6-86D" id="MYx-lm-h66"/>
             </connections>
-            <point key="canvasLocation" x="132" y="154"/>
         </view>
     </objects>
     <resources>
