@@ -28,28 +28,28 @@
 
 - (void)setFilter:(CIFilter *)filter inputImage:(CIImage *)ciImage;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage brightness:(float)brightness;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage brightness:(float)brightness;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage contrast:(float)contrast;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage contrast:(float)contrast;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage saturation:(float)saturation;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage saturation:(float)saturation;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage temperature:(float)temperature;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage temperature:(float)temperature;
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage vignette:(float)vignette;
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage vignette:(float)vignette;
 
-- (UIImage *)getImage:(UIImage *)image filterType:(FJFilterType)filterType;
+- ( UIImage * _Nonnull )getImage:(UIImage *)image filterType:(FJFilterType)filterType;
 
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result;
 
-- (UIImage *)getImageCombine:(NSArray<CIFilter *> *)filters;
+- ( UIImage * _Nonnull )getImageCombine:(NSArray<CIFilter *> *)filters;
 
-- (UIImage *)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
+- ( UIImage * _Nonnull )getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
 
-- (UIImage *)getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
+- ( UIImage * _Nonnull )getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType;
 
-- (CIFilter *)filterBy:(FJFilterType)type;
+- ( CIFilter * _Nonnull )filterBy:(FJFilterType)type;
 
 @end

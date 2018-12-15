@@ -10,6 +10,7 @@
 #import <FJKit_OC/NSMutableArray+Utility_FJ.h>
 #import <FJKit_OC/NSArray+Utility_FJ.h>
 #import "PHAsset+Utility.h"
+#import <FJKit_OC/FJStorage.h>
 
 @interface FJFilterManager ()
 
@@ -78,11 +79,15 @@ static bool isFirstAccess = YES;
         [self doesNotRecognizeSelector:_cmd];
     }
     self = [super init];
-    // 初始化工作
+    return self;
+}
+
+- (CIContext *)context {
+    
     if (_context == nil) {
         _context = [CIContext contextWithOptions:nil];
     }
-    return self;
+    return _context;
 }
 
 #pragma mark - Filter
@@ -189,7 +194,7 @@ static bool isFirstAccess = YES;
     [filter setValue:ciImage forKey:kCIInputImageKey];
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage brightness:(float)brightness contrast:(float)contrast saturation:(float)saturation {
     
     if (ciImage != nil) {
         [self.colorControlFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -200,7 +205,7 @@ static bool isFirstAccess = YES;
     return self.colorControlFilter;
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage brightness:(float)brightness {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage brightness:(float)brightness {
     
     if (ciImage != nil) {
         [self.colorControlFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -209,7 +214,7 @@ static bool isFirstAccess = YES;
     return self.colorControlFilter;
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage contrast:(float)contrast {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage contrast:(float)contrast {
     
     if (ciImage != nil) {
         [self.colorControlFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -218,7 +223,7 @@ static bool isFirstAccess = YES;
     return self.colorControlFilter;
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage saturation:(float)saturation {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage saturation:(float)saturation {
     
     if (ciImage != nil) {
         [self.colorControlFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -227,7 +232,7 @@ static bool isFirstAccess = YES;
     return self.colorControlFilter;
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage temperature:(float)temperature {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage temperature:(float)temperature {
 
     if (ciImage != nil) {
         [self.temperatureFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -236,7 +241,7 @@ static bool isFirstAccess = YES;
     return self.temperatureFilter;
 }
 
-- (CIFilter *)filterApplyTo:(CIImage *)ciImage vignette:(float)vignette {
+- ( CIFilter * _Nonnull )filterApplyTo:(CIImage *)ciImage vignette:(float)vignette {
     
     if (ciImage != nil) {
         [self.vignetteFilter setValue:ciImage forKey:kCIInputImageKey];
@@ -246,7 +251,7 @@ static bool isFirstAccess = YES;
     return self.vignetteFilter;
 }
 
-- (UIImage *)getImage:(UIImage *)image filterType:(FJFilterType)filterType {
+- ( UIImage * _Nonnull )getImage:(UIImage *)image filterType:(FJFilterType)filterType {
     
     CIFilter *filter = [self filterBy:filterType];
     if (filter == nil) {
@@ -264,31 +269,15 @@ static bool isFirstAccess = YES;
 - (void)getImageCombine:(NSArray<CIFilter *> *)filters result:(void(^)(UIImage *image))result {
     
     __weak typeof(self) weakSelf = self;
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-    dispatch_async(queue, ^{
-        
-        // 去重
-        NSArray *uniqueArray = [filters fj_arrayRemoveDuplicateObjects];
-        
-        // 合成Filter
-        // 第一个Filter必须有CIImage输入源
-        for (int i = 1; i < uniqueArray.count; i++) {
-            CIFilter *filter = [uniqueArray objectAtIndex:i];
-            CIFilter *preFilter = [uniqueArray objectAtIndex:i-1];
-            [filter setValue:preFilter.outputImage forKey:kCIInputImageKey];
-        }
-        CIFilter *lastFilter = [uniqueArray lastObject];
-        CGImageRef ref = [weakSelf.context createCGImage:lastFilter.outputImage fromRect:lastFilter.outputImage.extent];
-        __block UIImage *filterImage = [UIImage imageWithCGImage:ref];
-        //释放
-        CGImageRelease(ref);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        __block UIImage *filterImage = [weakSelf getImageCombine:filters];
         dispatch_async(dispatch_get_main_queue(), ^{
             result == nil ? : result(filterImage);
         });
     });
 }
 
-- (UIImage *)getImageCombine:(NSArray<CIFilter *> *)filters {
+- ( UIImage * _Nonnull )getImageCombine:(NSArray<CIFilter *> *)filters {
     
     // 去重
     NSArray *uniqueArray = [filters fj_arrayRemoveDuplicateObjects];
@@ -298,6 +287,11 @@ static bool isFirstAccess = YES;
     for (int i = 1; i < uniqueArray.count; i++) {
         CIFilter *filter = [uniqueArray objectAtIndex:i];
         CIFilter *preFilter = [uniqueArray objectAtIndex:i-1];
+        if (preFilter.outputImage == nil) {
+            NSString *debugStr = [NSString stringWithFormat:@"Context:%@\nprefilter:%@\nfilterinputKeys:%@",_context,preFilter,preFilter];
+            [FJStorage saveAnyObject:debugStr key:@"DebugStr_FJCamera_getImageCombine:"];
+        }
+        NSAssert(preFilter.outputImage != nil, @"前序滤镜outputImage输出不能为nil");
         [filter setValue:preFilter.outputImage forKey:kCIInputImageKey];
     }
     CIFilter *lastFilter = [uniqueArray lastObject];
@@ -305,10 +299,14 @@ static bool isFirstAccess = YES;
     UIImage *filterImage = [UIImage imageWithCGImage:ref];
     //释放
     CGImageRelease(ref);
+    if (filterImage == nil) {
+        NSString *debugStr = [NSString stringWithFormat:@"Context:%@\nfilters:%@\nCGImageRef:%@",_context,filters,ref];
+        [FJStorage saveAnyObject:debugStr key:@"DebugStr_FJCamera_getImageCombine:"];
+    }
     return filterImage;
 }
 
-- (UIImage *)getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
+- ( UIImage * _Nonnull )getImage:(UIImage *)image tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
     
     if (image == nil || ![image isKindOfClass:[UIImage class]]) {
         return nil;
@@ -319,19 +317,27 @@ static bool isFirstAccess = YES;
     CIFilter *filter2 = [[FJFilterManager shared] filterApplyTo:nil temperature:tuningObject.temperatureValue];
     CIFilter *filter3 = [[FJFilterManager shared] filterApplyTo:nil vignette:tuningObject.vignetteValue];
     CIFilter *filter4 = [self filterBy:filterType];
+    UIImage *retImage = nil;
     if (filter4 != nil) {
-        return [self getImageCombine:@[filter1, filter2, filter3, filter4]];
+        retImage = [self getImageCombine:@[filter1, filter2, filter3, filter4]];
+    }else {
+        retImage = [self getImageCombine:@[filter1, filter2, filter3]];
     }
-    return [self getImageCombine:@[filter1, filter2, filter3]];
+    if (retImage == nil) {
+        NSString *debugStr = [NSString stringWithFormat:@"Context:%@\nfilter1:%@\nfilter2:%@\nfilter3:%@\nfilter4:%@\n",_context,filter1,filter2,filter3,filter4];
+        [FJStorage saveAnyObject:debugStr key:@"DebugStr_FJCamera_getImage:tuningObject:appendFilterType"];
+        retImage = image;
+    }
+    return retImage;
 }
 
-- (UIImage *)getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
+- ( UIImage * _Nonnull )getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
     
     UIImage *image = [asset getStaticTargetImage];
     return [self getImage:image tuningObject:tuningObject appendFilterType:filterType];
 }
 
-- (CIFilter *)filterBy:(FJFilterType)type {
+- ( CIFilter * _Nonnull )filterBy:(FJFilterType)type {
     
     switch (type) {
         case FJFilterTypePhotoEffectChrome:

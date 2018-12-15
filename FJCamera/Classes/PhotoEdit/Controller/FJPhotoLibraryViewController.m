@@ -82,7 +82,7 @@
 }
 
 - (void)dealloc {
-    
+    NSLog(@"FJPhotoLibraryViewController dealloc");
 }
 
 - (instancetype)init {
