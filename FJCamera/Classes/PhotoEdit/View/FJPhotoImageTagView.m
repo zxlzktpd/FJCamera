@@ -75,10 +75,14 @@
     // 修正view使得view在ContainerSize内
     if (view.frame.origin.x + view.bounds.size.width > containerSize.width && view.frame.origin.y + view.bounds.size.height > containerSize.height) {
         view.frame = CGRectMake(containerSize.width - view.bounds.size.width, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
+        model.xPercent = view.frame.origin.x / containerSize.width;
+        model.yPercent = view.frame.origin.y / containerSize.height;
     }else if (view.frame.origin.x + view.bounds.size.width > containerSize.width) {
         view.frame = CGRectMake(containerSize.width - view.bounds.size.width, view.frame.origin.y, view.bounds.size.width, view.bounds.size.height);
+        model.xPercent = view.frame.origin.x / containerSize.width;
     }else if (view.frame.origin.y + view.bounds.size.height > containerSize.height) {
         view.frame = CGRectMake(view.frame.origin.x, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
+        model.yPercent = view.frame.origin.y / containerSize.height;
     }
     return view;
 }

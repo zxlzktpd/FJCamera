@@ -456,7 +456,6 @@
     [_alertView removeFromSuperview];
     _alertView = nil;
     
-    // 修正point
     tag.createdTime = [[NSDate date] timeIntervalSince1970];
     tag.xPercent = point.x / imageView.bounds.size.width;
     tag.yPercent = point.y / imageView.bounds.size.height;
