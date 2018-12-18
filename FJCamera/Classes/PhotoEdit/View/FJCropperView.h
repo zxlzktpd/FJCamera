@@ -12,12 +12,15 @@
 
 @interface FJCropperView : UIView
 
-+ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
++ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio ins:(BOOL)ins debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model;
+- (void)updateModel:(FJPhotoModel *)model needCrop:(BOOL)needCrop;
 
 // 更新留白和充满状态
 - (void)updateCompressed:(BOOL)compressed;
+
+// 是否在裁切图片
+- (BOOL)inCroppingImage;
 
 @end

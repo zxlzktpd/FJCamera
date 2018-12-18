@@ -205,64 +205,63 @@
     }
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
-        if (type == FJClActionBlockTypeTapped) {
-            if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
-                __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
-                if (ds.isCameraPlaceholer) {
-                    // 打开相机
-                    [weakSelf _openCamera];
-                }else {
-                    // 选择照片
-                    if (weakSelf.singleSelection) {
-                        // 单图
-                        PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-                        //option.synchronous = YES;
-                        //option.resizeMode = PHImageRequestOptionsResizeModeExact;
-                        option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                            
-                            [[PHImageManager defaultManager] requestImageForAsset:ds.photoAsset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                
-                                BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
-                                if (downloadFinined) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        [weakSelf _openEditingController:result];
-                                    });
-                                }
-                            }];
-                        });
-                    }else {
-                        // 多图
+        
+        if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
+            __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
+            if (ds.isCameraPlaceholer) {
+                // 打开相机
+                [weakSelf _openCamera];
+            }else {
+                // 选择照片
+                if (weakSelf.singleSelection) {
+                    // 单图
+                    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+                    //option.synchronous = YES;
+                    //option.resizeMode = PHImageRequestOptionsResizeModeExact;
+                    option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
                         
-                        if (ds.isSelected) {
-                            // 移除
-                            ds.isSelected = NO;
-                            [[FJPhotoManager shared] remove:ds.photoAsset];
-                            for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
-                                FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
-                                if ([photoModel.asset isEqual:ds.photoAsset]) {
-                                    [weakSelf.selectedPhotos removeObjectAtIndex:i];
-                                    break;
-                                }
+                        [[PHImageManager defaultManager] requestImageForAsset:ds.photoAsset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                            
+                            BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
+                            if (downloadFinined) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [weakSelf _openEditingController:result];
+                                });
                             }
-                        }else {
-                            // 判断是否超出最大选择数量
-                            if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
-                                if (weakSelf.userOverLimitationBlock != nil) {
-                                    weakSelf.userOverLimitationBlock();
-                                }else {
-                                    [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
-                                }
-                                return;
+                        }];
+                    });
+                }else {
+                    // 多图
+                    
+                    if (ds.isSelected) {
+                        // 移除
+                        ds.isSelected = NO;
+                        [[FJPhotoManager shared] remove:ds.photoAsset];
+                        for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
+                            FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
+                            if ([photoModel.asset isEqual:ds.photoAsset]) {
+                                [weakSelf.selectedPhotos removeObjectAtIndex:i];
+                                break;
                             }
-                            // 选择
-                            ds.isSelected = YES;
-                            FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
-                            [weakSelf.selectedPhotos fj_arrayAddObject:model];
                         }
-                        [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
-                        [weakSelf _checkNextState];
+                    }else {
+                        // 判断是否超出最大选择数量
+                        if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
+                            if (weakSelf.userOverLimitationBlock != nil) {
+                                weakSelf.userOverLimitationBlock();
+                            }else {
+                                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                            }
+                            return;
+                        }
+                        // 选择
+                        ds.isSelected = YES;
+                        FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
+                        [weakSelf.selectedPhotos fj_arrayAddObject:model];
                     }
+                    [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
+                    [weakSelf _checkNextState];
                 }
             }
         }
@@ -542,13 +541,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

@@ -31,6 +31,12 @@
 
 - (IBAction)tapPhotoLibrary:(id)sender {
     
+    FJPhotoLibraryViewController *photoLibVC = [[FJPhotoLibraryViewController alloc] init];
+    [self.navigationController pushViewController:photoLibVC animated:YES];
+}
+
+- (IBAction)tapINSPhotoLibrary:(id)sender {
+    
     FJPhotoLibraryCropperViewController *photoLibVC = [[FJPhotoLibraryCropperViewController alloc] init];
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }

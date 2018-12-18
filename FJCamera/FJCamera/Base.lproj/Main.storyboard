@@ -22,10 +22,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="axa-fI-BVy">
-                                <rect key="frame" x="67.5" y="96" width="240" height="40"/>
+                                <rect key="frame" x="32" y="80" width="311" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="7a6-IZ-KHu"/>
-                                    <constraint firstAttribute="width" constant="240" id="g7i-CE-2jb"/>
+                                    <constraint firstAttribute="height" constant="40" id="K6P-TH-gIT"/>
                                 </constraints>
                                 <state key="normal" title="相册 图片 选择 编辑 滤镜 裁切 效果"/>
                                 <connections>
@@ -33,30 +32,46 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0wK-Pz-6aH">
-                                <rect key="frame" x="67.5" y="168" width="240" height="40"/>
+                                <rect key="frame" x="32" y="192" width="311" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="gHN-k7-qOj"/>
-                                    <constraint firstAttribute="width" constant="240" id="hNP-J6-yVe"/>
+                                    <constraint firstAttribute="height" constant="40" id="8o0-dP-ejW"/>
                                 </constraints>
                                 <state key="normal" title="相机 视频 图片"/>
                                 <connections>
                                     <action selector="tapAVCapture:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yzm-5y-kBe"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="Ibw-82-LwJ">
-                                <rect key="frame" x="0.0" y="218" width="375" height="449"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="Ibw-82-LwJ">
+                                <rect key="frame" x="0.0" y="292" width="375" height="375"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Ibw-82-LwJ" secondAttribute="height" multiplier="1:1" id="9Ha-vp-hE4"/>
+                                </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5wT-yb-GSj">
+                                <rect key="frame" x="32" y="136" width="311" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="HBM-Mi-SQV"/>
+                                </constraints>
+                                <state key="normal" title="INS"/>
+                                <connections>
+                                    <action selector="tapINSPhotoLibrary:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oEr-tv-O4j"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="69z-ug-Tw2"/>
-                            <constraint firstAttribute="trailing" secondItem="Ibw-82-LwJ" secondAttribute="trailing" id="9Jk-MX-JiT"/>
-                            <constraint firstAttribute="bottom" secondItem="Ibw-82-LwJ" secondAttribute="bottom" id="YTj-Kz-WGo"/>
-                            <constraint firstItem="axa-fI-BVy" firstAttribute="top" secondItem="JNe-2F-Szt" secondAttribute="bottom" constant="32" id="afh-kq-HlW"/>
-                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="top" secondItem="axa-fI-BVy" secondAttribute="bottom" constant="32" id="o7r-cd-RdW"/>
-                            <constraint firstItem="Ibw-82-LwJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pqb-TP-2WT"/>
-                            <constraint firstItem="Ibw-82-LwJ" firstAttribute="top" secondItem="0wK-Pz-6aH" secondAttribute="bottom" constant="10" id="vzK-6E-tf0"/>
-                            <constraint firstItem="axa-fI-BVy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ydU-pC-H5O"/>
+                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="16" id="A44-ZQ-NwK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0wK-Pz-6aH" secondAttribute="trailing" constant="16" id="Bc5-vZ-KCd"/>
+                            <constraint firstItem="5wT-yb-GSj" firstAttribute="top" secondItem="axa-fI-BVy" secondAttribute="bottom" constant="16" id="Csd-q3-zvZ"/>
+                            <constraint firstAttribute="trailing" secondItem="Ibw-82-LwJ" secondAttribute="trailing" id="FqN-vp-U66"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="axa-fI-BVy" secondAttribute="trailing" constant="16" id="ICQ-Nv-yK1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5wT-yb-GSj" secondAttribute="trailing" constant="16" id="MX1-pd-6lI"/>
+                            <constraint firstItem="5wT-yb-GSj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="16" id="TWJ-t8-s35"/>
+                            <constraint firstItem="axa-fI-BVy" firstAttribute="top" secondItem="JNe-2F-Szt" secondAttribute="bottom" constant="16" id="WBH-0b-a8E"/>
+                            <constraint firstItem="Ibw-82-LwJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ZBQ-wo-jvQ"/>
+                            <constraint firstItem="0wK-Pz-6aH" firstAttribute="top" secondItem="5wT-yb-GSj" secondAttribute="bottom" constant="16" id="k4u-Ar-kHd"/>
+                            <constraint firstItem="axa-fI-BVy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="16" id="mYr-tj-qeD"/>
+                            <constraint firstItem="n3D-s5-JRh" firstAttribute="top" secondItem="Ibw-82-LwJ" secondAttribute="bottom" id="wsF-js-1CC"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gA4-7M-bkW"/>

@@ -201,10 +201,9 @@
     }
     
     if (_cropperView == nil) {
-        _cropperView = [FJCropperView create:^(FJPhotoModel *photoModel, CGRect frame) {
+        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 ins:YES debug:YES croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
             
         } updownBlock:^(BOOL up) {
-            
             CGRect frame = CGRectZero;
             if (up) {
                 frame = CGRectMake(0,  -(UI_SCREEN_WIDTH - 80.0), weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
@@ -307,9 +306,20 @@
             }else if (type == FJClActionBlockTypeTapped) {
                 
                 FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
-                
                 // 更新CropperView
                 [weakSelf.cropperView updateModel:model];
+            }
+        }
+    };
+    self.collectionView.fj_scrollBlock = ^(UIScrollView *scrollView, FJClScrollBlockType type, CGFloat height, BOOL willDecelerate) {
+        
+        if (scrollView.contentOffset.y < 0) {
+            if (weakSelf.cropperView.frame.origin.y <= 0) {
+                weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                if (weakSelf.cropperView.frame.origin.y > 0) {
+                    weakSelf.cropperView.frame = CGRectMake(0, 0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                }
+                weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
             }
         }
     };
