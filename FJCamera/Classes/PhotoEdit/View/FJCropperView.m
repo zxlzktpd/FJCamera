@@ -28,6 +28,7 @@
 @property (nonatomic, strong) FJPhotoModel *photoModel;
 
 @property (nonatomic, copy) void(^croppedBlock)(FJPhotoModel *photoModel, CGRect frame);
+@property (nonatomic, copy) void(^updownBlock)(BOOL up);
 
 @end
 
@@ -43,11 +44,12 @@
     [self updateCompressed:!_compressed];
 }
 
-+ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock {
++ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
     
     FJCropperView *view = MF_LOAD_NIB(@"FJCropperView");
     view.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
     view.croppedBlock = croppedBlock;
+    view.updownBlock = updownBlock;
     // Setup UI
     [view.expandView fj_cornerRadius:6.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     // ScrollView
@@ -61,6 +63,16 @@
     view.scrollView.bounces = YES;
     view.scrollView.layer.masksToBounds = YES;
     return view;
+}
+
+- (IBAction)_tapUpdown:(UIButton *)sender {
+    
+    if (sender.tag == 0) {
+        sender.tag = 1;
+    }else {
+        sender.tag = 0;
+    }
+    self.updownBlock == nil ? : self.updownBlock(sender.tag == 1);
 }
 
 // 更新图片

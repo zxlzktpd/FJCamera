@@ -165,6 +165,11 @@
                 // 用户允许当前APP访问相册
                 [weakSelf _buildUI];
                 [weakSelf _reloadPhotoAssetCollections];
+                
+                FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
+                FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
+                // 更新CropperView
+                [weakSelf.cropperView updateModel:model];
             }
         });
     }];
@@ -198,6 +203,30 @@
     if (_cropperView == nil) {
         _cropperView = [FJCropperView create:^(FJPhotoModel *photoModel, CGRect frame) {
             
+        } updownBlock:^(BOOL up) {
+            
+            CGRect frame = CGRectZero;
+            if (up) {
+                frame = CGRectMake(0,  -(UI_SCREEN_WIDTH - 80.0), weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
+            }else {
+                frame = CGRectMake(0,  0, weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
+            }
+            static BOOL inAnimation = NO;
+            if (inAnimation) {
+                return;
+            }
+            inAnimation = YES;
+            [UIView animateWithDuration:0.2 animations:^{
+                weakSelf.cropperView.frame = frame;
+                if (up) {
+                    weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+                }else {
+                    weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, weakSelf.collectionView.bounds.size.height);
+                }
+            } completion:^(BOOL finished) {
+                inAnimation = NO;
+                weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+            }];
         }];
         _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
         [self.view addSubview:_cropperView];
@@ -212,9 +241,11 @@
     }
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
-        if (type == FJClActionBlockTypeTapped) {
-            if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
-                __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
+        if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
+            __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
+            if (type == FJClActionBlockTypeCustomizedTapped) {
+                
+                
                 if (ds.isCameraPlaceholer) {
                     // 打开相机
                     [weakSelf _openCamera];
@@ -240,7 +271,6 @@
                         });
                     }else {
                         // 多图
-                        
                         if (ds.isSelected) {
                             // 移除
                             ds.isSelected = NO;
@@ -274,6 +304,12 @@
                         [weakSelf _checkNextState];
                     }
                 }
+            }else if (type == FJClActionBlockTypeTapped) {
+                
+                FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
+                
+                // 更新CropperView
+                [weakSelf.cropperView updateModel:model];
             }
         }
     };

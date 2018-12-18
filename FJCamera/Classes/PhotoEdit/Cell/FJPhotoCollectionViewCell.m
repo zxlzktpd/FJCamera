@@ -33,6 +33,7 @@
 
 - (void)fj_setData:(__kindof FJClCellDataSource *)data {
     
+    [super fj_setData:data];
     FJPhotoCollectionViewCellDataSource *ds = data;
     self.iv_camera.hidden = !ds.isCameraPlaceholer;
     self.v_content.hidden = ds.isCameraPlaceholer;
@@ -60,6 +61,11 @@
     }else {
         [self.iv_select setImage:[FJStorage podImage:@"ic_photo_unselected" class:[self class]]];
     }
+}
+
+- (IBAction)_tapSelect:(id)sender {
+    
+    [self fj_tapCell:self.fj_data];
 }
 
 @end

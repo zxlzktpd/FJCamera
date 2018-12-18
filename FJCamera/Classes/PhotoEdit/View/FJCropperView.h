@@ -12,7 +12,7 @@
 
 @interface FJCropperView : UIView
 
-+ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock;
++ (FJCropperView *)create:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片
 - (void)updateModel:(FJPhotoModel *)model;
