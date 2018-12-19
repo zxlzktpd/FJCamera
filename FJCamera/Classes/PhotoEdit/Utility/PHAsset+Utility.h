@@ -8,18 +8,26 @@
 #import <Photos/Photos.h>
 #import <FJKit_OC/Macro.h>
 
-#define FJCAMERA_IMAGE_WIDTH  (UI_SCREEN_WIDTH)
-#define FJCAMERA_IMAGE_HEIGHT (UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0)
-
 @interface PHAsset (Utility)
 
-// 同步获取固定小尺寸的图片
-- (UIImage *)getStaticSmallTargetImage;
+/**
+ * 同步获取固定尺寸的图片
+ */
+- (UIImage *)fj_imageSyncTargetSize:(CGSize)size fast:(BOOL)fast;
 
-// 同步获取固定尺寸的图片
-- (UIImage *)getStaticTargetImage;
+/**
+ * 异步获取固定尺寸的图片
+ */
+- (void)fj_imageAsyncTargetSize:(CGSize)size fast:(BOOL)fast result:(void(^)(UIImage * image))result;
 
-// 获取固定尺寸的图片
-- (void)getStaticTargetImage:(void(^)(UIImage * image))result;
+/**
+ * 同步获取固定倍数尺寸的图片
+ */
+- (UIImage *)fj_imageSyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast;
+
+/**
+ * 异步获取固定倍数尺寸的图片
+ */
+- (void)fj_imageSyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast result:(void(^)(UIImage * image))result;
 
 @end

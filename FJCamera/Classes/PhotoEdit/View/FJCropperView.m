@@ -7,7 +7,9 @@
 //
 
 #import "FJCropperView.h"
-#import "PHAsset+Utility.h"
+#import "PHAsset+QuickEdit.h"
+#import <FJKit_OC/Macro.h>
+#import <FJKit_OC/UIImage+Utility_FJ.h>
 
 @interface FJCropperView () <UIScrollViewDelegate>
 
@@ -31,6 +33,7 @@
 // 1：扁长（超比例）  2：扁长（范围内） 3：窄长（超比例） 4：窄长（范围内）
 @property (nonatomic, assign) int type;
 @property (nonatomic, assign) CGFloat base;
+@property (nonatomic, assign) BOOL inCrop;
 
 @property (nonatomic, copy) void(^croppedBlock)(FJPhotoModel *photoModel, CGRect frame);
 @property (nonatomic, copy) void(^updownBlock)(BOOL up);
@@ -42,11 +45,6 @@
 - (void)awakeFromNib {
     
     [super awakeFromNib];
-}
-
-- (IBAction)_tapCompress:(id)sender {
-    
-    [self updateCompressed:!_compressed];
 }
 
 + (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio ins:(BOOL)ins debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
@@ -86,27 +84,25 @@
     return view;
 }
 
-- (IBAction)_tapUpdown:(UIButton *)sender {
-    
-    if (sender.tag == 0) {
-        sender.tag = 1;
-    }else {
-        sender.tag = 0;
-    }
-    self.updownBlock == nil ? : self.updownBlock(sender.tag == 1);
-}
-
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model {
+- (void)updateModel:(FJPhotoModel *)model needCrop:(BOOL)needCrop {
+    
+    if ([model.asset isEqual:self.photoModel.asset]) {
+        if (needCrop) {
+            [self _cropImage];
+        }
+        return;
+    }
     
     self.photoModel = model;
+    self.needCrop = needCrop;
     if (_imageView == nil) {
         _imageView = [[UIImageView alloc] init];
         _imageView.tag = 100;
         [self.scrollView addSubview:_imageView];
     }
-    _imageView.image = [model.asset getStaticTargetImage];
-    [self updateCompressed:self.compressed];
+    _imageView.image = [model.asset getGeneralTargetImage];
+    [self updateCompressed:self.compressed ];
 }
 
 // 更新留白和充满状态
@@ -268,6 +264,47 @@
     
     CGRect frame = [self.scrollView convertRect:self.imageView.frame toView:self];
     frame = CGRectMake(self.scrollView.frame.origin.x - frame.origin.x, self.scrollView.frame.origin.y - frame.origin.y, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    
+    if (self.needCrop) {
+        self.photoModel.croppedImage = [self _cropImage];
+    }
+}
+
+// 是否在裁切图片
+- (BOOL)inCroppingImage {
+    
+    return self.inCrop;
+}
+
+- (UIImage *)_cropImage {
+    
+    UIImage *cropImage = nil;
+    UIImageView *imageView = [MF_KEY_WINDOW viewWithTag:1000];
+    if (imageView == nil) {
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(60, 0, 164.0, 164.0)];
+        imageView.backgroundColor = [UIColor redColor];
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+    [MF_KEY_WINDOW addSubview:imageView];
+    UIImage *image = [self.photoModel.asset fj_imageSyncTargetSize:CGSizeMake(UI_SCREEN_WIDTH , UI_SCREEN_WIDTH) multiples:3.0 fast:YES];
+    image = [image fj_imageCropRect:CGRectMake(0, 0, 1200, 200)];
+    imageView.image = image;
+    return cropImage;
+}
+
+- (IBAction)_tapCompress:(id)sender {
+    
+    [self updateCompressed:!_compressed];
+}
+
+- (IBAction)_tapUpdown:(UIButton *)sender {
+    
+    if (sender.tag == 0) {
+        sender.tag = 1;
+    }else {
+        sender.tag = 0;
+    }
+    self.updownBlock == nil ? : self.updownBlock(sender.tag == 1);
 }
 
 #pragma mark - UISCrollView Delegate
@@ -275,7 +312,6 @@
     
     return [self.scrollView viewWithTag:100];
 }
-
 
 // called before the scroll view begins zooming its content缩放开始的时候调用
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view {
@@ -314,13 +350,15 @@
 // 移动图像
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    NSLog(@"+++++++++++++++")
-    NSLog(@"%f %f %f %f ", self.imageView.frame.origin.x, self.imageView.frame.origin.y, self.imageView.frame.size.width, self.imageView.frame.size.height);
-    NSLog(@"%f %f %f %f ", self.scrollView.frame.origin.x, self.scrollView.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+    self.inCrop = YES;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
+    self.inCrop = NO;
+    if (self.needCrop) {
+        self.photoModel.croppedImage = [self _cropImage];
+    }
 }
 
 /*

@@ -9,7 +9,7 @@
 #import "FJFilterManager.h"
 #import <FJKit_OC/NSMutableArray+Utility_FJ.h>
 #import <FJKit_OC/NSArray+Utility_FJ.h>
-#import "PHAsset+Utility.h"
+#import "PHAsset+QuickEdit.h"
 #import <FJKit_OC/FJStorage.h>
 
 @interface FJFilterManager ()
@@ -333,7 +333,7 @@ static bool isFirstAccess = YES;
 
 - ( UIImage * _Nonnull )getImageAsset:(PHAsset *)asset tuningObject:(FJTuningObject *)tuningObject appendFilterType:(FJFilterType)filterType {
     
-    UIImage *image = [asset getStaticTargetImage];
+    UIImage *image = [asset getGeneralTargetImage];
     return [self getImage:image tuningObject:tuningObject appendFilterType:filterType];
 }
 

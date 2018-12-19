@@ -7,7 +7,7 @@
 //
 
 #import "FJPhotoManager.h"
-#import "PHAsset+Utility.h"
+#import "PHAsset+QuickEdit.h"
 #import "FJFilterManager.h"
 
 @implementation FJPhotoModel
@@ -31,7 +31,7 @@
 - (UIImage *)originalImage {
     
     if (_originalImage == nil) {
-        _originalImage = [self.asset getStaticTargetImage];
+        _originalImage = [self.asset getGeneralTargetImage];
     }
     return _originalImage;
 }
@@ -39,7 +39,7 @@
 - (UIImage *)smallOriginalImage {
     
     if (_smallOriginalImage == nil) {
-        _smallOriginalImage = [self.asset getStaticSmallTargetImage];
+        _smallOriginalImage = [self.asset getSmallTargetImage];
     }
     return _smallOriginalImage;
 }

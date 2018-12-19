@@ -169,7 +169,7 @@
                 FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
                 FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
                 // 更新CropperView
-                [weakSelf.cropperView updateModel:model];
+                [weakSelf.cropperView updateModel:model needCrop:NO];
             }
         });
     }];
@@ -297,7 +297,7 @@
                             [weakSelf.selectedPhotos fj_arrayAddObject:model];
                             
                             // 更新CropperView
-                            [weakSelf.cropperView updateModel:model];
+                            [weakSelf.cropperView updateModel:model needCrop:YES];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -307,7 +307,7 @@
                 
                 FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
                 // 更新CropperView
-                [weakSelf.cropperView updateModel:model];
+                [weakSelf.cropperView updateModel:model needCrop:NO];
             }
         }
     };

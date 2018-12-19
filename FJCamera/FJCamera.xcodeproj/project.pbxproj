@@ -99,6 +99,7 @@
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */; };
+		E7916F8521C9E9EF0015640B /* PHAsset+QuickEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = E7916F8421C9E9EF0015640B /* PHAsset+QuickEdit.m */; };
 		E792D2E12191438E004465A1 /* ic_photo_tag_triangle_up@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2DF2191438D004465A1 /* ic_photo_tag_triangle_up@2x.png */; };
 		E792D2E22191438E004465A1 /* ic_photo_tag_triangle_up@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */; };
 		E792D2E521914413004465A1 /* ic_photo_tag_triangle_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */; };
@@ -285,6 +286,8 @@
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
 		E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoUserTagBaseViewController.h; sourceTree = "<group>"; };
 		E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoUserTagBaseViewController.m; sourceTree = "<group>"; };
+		E7916F8321C9E9EF0015640B /* PHAsset+QuickEdit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PHAsset+QuickEdit.h"; sourceTree = "<group>"; };
+		E7916F8421C9E9EF0015640B /* PHAsset+QuickEdit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PHAsset+QuickEdit.m"; sourceTree = "<group>"; };
 		E792D2DF2191438D004465A1 /* ic_photo_tag_triangle_up@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_up@2x.png"; sourceTree = "<group>"; };
 		E792D2E02191438D004465A1 /* ic_photo_tag_triangle_up@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_up@3x.png"; sourceTree = "<group>"; };
 		E792D2E321914412004465A1 /* ic_photo_tag_triangle_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photo_tag_triangle_down@2x.png"; sourceTree = "<group>"; };
@@ -716,6 +719,8 @@
 			children = (
 				E7EBF46D2192B51200CA35B7 /* PHAsset+Utility.h */,
 				E7EBF46E2192B51300CA35B7 /* PHAsset+Utility.m */,
+				E7916F8321C9E9EF0015640B /* PHAsset+QuickEdit.h */,
+				E7916F8421C9E9EF0015640B /* PHAsset+QuickEdit.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -1054,6 +1059,7 @@
 				E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */,
 				E7DFF9F52182B3EA0059CE32 /* ViewController.m in Sources */,
 				E75C061C2188592500836ABD /* FJPhotoEditToolbarView.m in Sources */,
+				E7916F8521C9E9EF0015640B /* PHAsset+QuickEdit.m in Sources */,
 				E7DA209521A3EF1200FB41C9 /* FJMotionManager.m in Sources */,
 				E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */,
 				E7DFFA9B218305290059CE32 /* FJPhotoLibraryAlbumSelectionView.m in Sources */,
