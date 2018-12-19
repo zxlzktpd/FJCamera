@@ -15,7 +15,7 @@
 + (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio ins:(BOOL)ins debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model needCrop:(BOOL)needCrop;
+- (void)updateModel:(FJPhotoModel *)model;
 
 // 更新留白和充满状态
 - (void)updateCompressed:(BOOL)compressed;

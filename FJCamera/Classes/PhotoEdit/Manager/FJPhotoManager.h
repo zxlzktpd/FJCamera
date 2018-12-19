@@ -22,6 +22,9 @@
 @property (nonatomic, strong) NSMutableArray<FJImageTagModel *> *imageTags;
 @property (nonatomic, strong) NSMutableArray<UIImage *> *filterThumbImages;
 
+// Extra
+@property (nonatomic, assign) BOOL needCrop;
+
 - (instancetype)initWithAsset:(PHAsset *)asset;
 
 + (NSArray *)filterTitles;

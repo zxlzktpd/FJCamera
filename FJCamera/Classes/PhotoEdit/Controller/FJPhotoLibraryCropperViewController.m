@@ -169,7 +169,8 @@
                 FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
                 FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
                 // 更新CropperView
-                [weakSelf.cropperView updateModel:model needCrop:NO];
+                model.needCrop = NO;
+                [weakSelf.cropperView updateModel:model];
             }
         });
     }];
@@ -244,6 +245,9 @@
             __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
             if (type == FJClActionBlockTypeCustomizedTapped) {
                 
+                if ([weakSelf.cropperView inCroppingImage]) {
+                    return;
+                }
                 
                 if (ds.isCameraPlaceholer) {
                     // 打开相机
@@ -297,7 +301,8 @@
                             [weakSelf.selectedPhotos fj_arrayAddObject:model];
                             
                             // 更新CropperView
-                            [weakSelf.cropperView updateModel:model needCrop:YES];
+                            model.needCrop = YES;
+                            [weakSelf.cropperView updateModel:model];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -305,9 +310,14 @@
                 }
             }else if (type == FJClActionBlockTypeTapped) {
                 
+                if ([weakSelf.cropperView inCroppingImage]) {
+                    return;
+                }
+                
                 FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
                 // 更新CropperView
-                [weakSelf.cropperView updateModel:model needCrop:NO];
+                model.needCrop = ds.isSelected;
+                [weakSelf.cropperView updateModel:model];
             }
         }
     };
