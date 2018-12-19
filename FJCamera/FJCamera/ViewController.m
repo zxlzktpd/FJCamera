@@ -31,13 +31,17 @@
 
 - (IBAction)tapPhotoLibrary:(id)sender {
     
-    FJPhotoLibraryViewController *photoLibVC = [[FJPhotoLibraryViewController alloc] init];
+    FJPhotoLibraryViewController *photoLibVC = [[FJPhotoLibraryViewController alloc] initWithMode:FJPhotoEditModeAll editController:^__kindof FJPhotoUserTagBaseViewController *(FJPhotoEditViewController *controller) {
+        return nil;
+    }];
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }
 
 - (IBAction)tapINSPhotoLibrary:(id)sender {
     
-    FJPhotoLibraryCropperViewController *photoLibVC = [[FJPhotoLibraryCropperViewController alloc] init];
+    FJPhotoLibraryCropperViewController *photoLibVC = [[FJPhotoLibraryCropperViewController alloc] initWithMode:FJPhotoEditModeFilter | FJPhotoEditModeTag editController:^__kindof FJPhotoUserTagBaseViewController *(FJPhotoEditViewController *controller) {
+        return nil;
+    }];
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }
 

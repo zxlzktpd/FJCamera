@@ -24,6 +24,10 @@
 
 // Extra
 @property (nonatomic, assign) BOOL needCrop;
+// TODO
+@property (nonatomic, assign) BOOL compressed;
+@property (nonatomic, assign) CGPoint beginCropPoint;
+@property (nonatomic, assign) CGPoint endCropPoint;
 
 - (instancetype)initWithAsset:(PHAsset *)asset;
 
@@ -39,8 +43,14 @@
 
 + (FJPhotoManager *)shared;
 
+// 获取
+- (FJPhotoModel *)get:(PHAsset *)asset;
+
 // 新增
 - (FJPhotoModel *)add:(PHAsset *)asset;
+
+// 新增，Distinct
+- (FJPhotoModel *)addDistint:(PHAsset *)asset;
 
 // 删除
 - (void)remove:(PHAsset *)asset;

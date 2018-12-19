@@ -98,9 +98,7 @@
     
     self = [self init];
     if (self) {
-        if (mode != FJPhotoEditModeNotSet) {
-            self.mode = mode;
-        }
+        self.mode = mode;
         if (editController != nil) {
             self.editController = editController;
             __kindof FJPhotoUserTagBaseViewController *userTagAddVC = self.editController(self);
@@ -158,7 +156,7 @@
     if (_toolbar == nil) {
         static NSString *_ratio = nil;
         static BOOL _confirm = NO;
-        _toolbar = [FJPhotoEditToolbarView create:FJPhotoEditModeAll editingBlock:^(BOOL inEditing) {
+        _toolbar = [FJPhotoEditToolbarView create:self.mode editingBlock:^(BOOL inEditing) {
 
             if (inEditing) {
                 weakSelf.scrollView.hidden = YES;

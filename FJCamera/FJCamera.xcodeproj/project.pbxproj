@@ -702,10 +702,10 @@
 		E7DFFA702182B67F0059CE32 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */,
-				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
 				E73A26BD219A6DC7001799BA /* FJPhotoLibraryCropperViewController.h */,
 				E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */,
+				E7DFFA712182B8CE0059CE32 /* FJPhotoLibraryViewController.h */,
+				E7DFFA722182B8CE0059CE32 /* FJPhotoLibraryViewController.m */,
 				E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */,
 				E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */,
 				E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */,

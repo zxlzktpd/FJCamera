@@ -9,6 +9,7 @@
 #import "FJPhotoManager.h"
 #import "PHAsset+QuickEdit.h"
 #import "FJFilterManager.h"
+#import <FJKit_OC/UIImage+Utility_FJ.h>
 
 @implementation FJPhotoModel
 
@@ -17,6 +18,8 @@
     if (self) {
         self.tuningObject = [[FJTuningObject alloc] init];
         self.imageTags = (NSMutableArray<FJImageTagModel *> *)[[NSMutableArray alloc] init];
+        self.beginCropPoint = CGPointZero;
+        self.endCropPoint = CGPointZero;
     }
     return self;
 }
@@ -38,8 +41,17 @@
 
 - (UIImage *)smallOriginalImage {
     
-    if (_smallOriginalImage == nil) {
-        _smallOriginalImage = [self.asset getSmallTargetImage];
+    
+    if (self.needCrop == NO) {
+        if (_smallOriginalImage == nil) {
+            _smallOriginalImage = [self.asset getSmallTargetImage];
+        }
+    }else {
+        static CGPoint lastBeginPoint;
+        if (_smallOriginalImage == nil || !CGPointEqualToPoint(lastBeginPoint, self.beginCropPoint)) {
+            _smallOriginalImage = [[self.asset getSmallTargetImage] fj_imageCropBeginPointRatio:self.beginCropPoint endPointRatio:self.endCropPoint];
+        }
+        lastBeginPoint = self.beginCropPoint;
     }
     return _smallOriginalImage;
 }
@@ -138,10 +150,37 @@ static bool isFirstAccess = YES;
     return _allPhotos;
 }
 
+// 获取
+- (FJPhotoModel *)get:(PHAsset *)asset {
+    
+    for (FJPhotoModel *model in self.allPhotos) {
+        if ([model.asset isEqual:asset]) {
+            return model;
+        }
+    }
+    return [[FJPhotoModel alloc] initWithAsset:asset];
+}
+
 // 新增
 - (FJPhotoModel *)add:(PHAsset *)asset {
     
     if (asset != nil) {
+        FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
+        [self.allPhotos addObject:model];
+        return model;
+    }
+    return nil;
+}
+
+// 新增，Distinct
+- (FJPhotoModel *)addDistint:(PHAsset *)asset {
+    
+    if (asset != nil) {
+        for (FJPhotoModel *model in self.allPhotos) {
+            if ([model.asset isEqual:asset]) {
+                return model;
+            }
+        }
         FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
         [self.allPhotos addObject:model];
         return model;

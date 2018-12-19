@@ -314,7 +314,7 @@
                     return;
                 }
                 
-                FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
+                FJPhotoModel *model = [[FJPhotoManager shared] get:ds.photoAsset];
                 // 更新CropperView
                 model.needCrop = ds.isSelected;
                 [weakSelf.cropperView updateModel:model];

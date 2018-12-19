@@ -26,6 +26,10 @@
 @property (nonatomic, weak) IBOutlet UILabel *cropperLabel;
 @property (nonatomic, weak) IBOutlet UILabel *tuningLabel;
 @property (nonatomic, weak) IBOutlet UILabel *tagLabel;
+@property (nonatomic, weak) IBOutlet UIButton *filterButton;
+@property (nonatomic, weak) IBOutlet UIButton *cropperButton;
+@property (nonatomic, weak) IBOutlet UIButton *tuningButton;
+@property (nonatomic, weak) IBOutlet UIButton *tagButton;
 
 @property (nonatomic, strong) FJPhotoEditFilterView *editFilterView;
 
@@ -80,14 +84,78 @@
 
 - (void)_buildUI:(FJPhotoEditMode)mode {
     
-    BOOL visible = mode & FJPhotoEditModeFilter;
-    self.filterView.hidden = !visible;
-    visible = mode & FJPhotoEditModeCropprer;
-    self.cropperView.hidden = !visible;
-    visible = mode & FJPhotoEditModeTuning;
-    self.tuningView.hidden = !visible;
-    visible = mode & FJPhotoEditModeTag;
-    self.tagView.hidden = !visible;
+    
+    int count = 0;
+    if (mode & FJPhotoEditModeFilter) {
+        count++;
+    }
+    if (mode & FJPhotoEditModeCropprer) {
+        count++;
+    }
+    if (mode & FJPhotoEditModeTuning) {
+        count++;
+    }
+    if (mode & FJPhotoEditModeTag) {
+        count++;
+    }
+    CGFloat w = UI_SCREEN_WIDTH / (CGFloat)count;
+    if (mode & FJPhotoEditModeFilter) {
+        self.filterView.hidden = NO;
+        self.filterView.frame = CGRectMake(0, 0, w, 48.0);
+        self.filterImageView.frame = CGRectMake(w / 2.0 - 12.0, 4.0, 24.0, 24.0);
+        self.filterLabel.frame = CGRectMake(0, 31.0, w, 12.0);
+        self.filterButton.frame = self.filterView.bounds;
+    }else {
+        self.filterView.hidden = YES;
+    }
+    if (mode & FJPhotoEditModeCropprer) {
+        self.cropperView.hidden = NO;
+        if (mode & FJPhotoEditModeFilter) {
+            self.cropperView.frame = CGRectMake(w, 0, w, 48.0);
+        }else {
+            self.cropperView.frame = CGRectMake(0, 0, w, 48.0);
+        }
+        self.cropperImageView.frame = CGRectMake(w / 2.0 - 12.0, 4.0, 24.0, 24.0);
+        self.cropperLabel.frame = CGRectMake(0, 31.0, w, 12.0);
+        self.cropperButton.frame = self.filterView.bounds;
+    }else {
+        self.cropperView.hidden = YES;
+    }
+    if (mode & FJPhotoEditModeTuning) {
+        self.tuningView.hidden = NO;
+        if ((mode & FJPhotoEditModeFilter) && (mode & FJPhotoEditModeCropprer)) {
+            self.tuningView.frame = CGRectMake(w * 2.0, 0, w, 48.0);
+        }else if ((mode & FJPhotoEditModeFilter) || (mode & FJPhotoEditModeCropprer)) {
+            self.tuningView.frame = CGRectMake(w, 0, w, 48.0);
+        }else {
+            self.tuningView.frame = CGRectMake(0, 0, w, 48.0);
+        }
+        self.tuningImageView.frame = CGRectMake(w / 2.0 - 12.0, 4.0, 24.0, 24.0);
+        self.tuningLabel.frame = CGRectMake(0, 31.0, w, 12.0);
+        self.tuningButton.frame = self.filterView.bounds;
+    }else {
+        self.tuningView.hidden = YES;
+    }
+    if (mode & FJPhotoEditModeTag) {
+        self.tagView.hidden = NO;
+        if ((mode & FJPhotoEditModeFilter) && (mode & FJPhotoEditModeCropprer) && (mode & FJPhotoEditModeTuning)) {
+            self.tagView.frame = CGRectMake(w * 3.0, 0, w, 48.0);
+        }else if (((mode & FJPhotoEditModeFilter) && (mode & FJPhotoEditModeCropprer)) ||
+                  ((mode & FJPhotoEditModeCropprer) && (mode & FJPhotoEditModeTuning)) ||
+                  ((mode & FJPhotoEditModeFilter) && (mode & FJPhotoEditModeTuning))) {
+            self.tagView.frame = CGRectMake(w * 2.0, 0, w, 48.0);
+        }else if ((mode & FJPhotoEditModeFilter) || (mode & FJPhotoEditModeCropprer) || (mode & FJPhotoEditModeTuning)) {
+            self.tagView.frame = CGRectMake(w, 0, w, 48.0);
+        }else {
+            self.tagView.frame = CGRectMake(0, 0, w, 48.0);
+        }
+        self.tagImageView.frame = CGRectMake(w / 2.0 - 12.0, 4.0, 24.0, 24.0);
+        self.tagLabel.frame = CGRectMake(0, 31.0, w, 12.0);
+        self.tagButton.frame = self.filterView.bounds;
+    }else {
+        self.tagView.hidden = YES;
+    }
+    
 }
 
 - (IBAction)_tapFilter:(id)sender {
