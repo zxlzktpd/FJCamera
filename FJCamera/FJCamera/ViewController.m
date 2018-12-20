@@ -16,8 +16,9 @@
 @interface ViewController ()
 
 
-@property (nonatomic, weak) IBOutlet UIImageView *imageView;
-
+@property (nonatomic, weak) IBOutlet UIImageView *leftImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *middleImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *rightImageView;
 @end
 
 @implementation ViewController
@@ -25,6 +26,9 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    self.leftImageView.image = [@"ic_tag_up_left".fj_image stretchableImageWithLeftCapWidth:10.0 topCapHeight:10.0];
+    self.middleImageView.image = @"ic_tag_up_middle".fj_image;
+    self.rightImageView.image = [@"ic_tag_up_right".fj_image stretchableImageWithLeftCapWidth:10.0 topCapHeight:10.0];
 }
 
 

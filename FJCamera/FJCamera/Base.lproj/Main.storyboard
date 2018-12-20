@@ -47,6 +47,10 @@
                                     <constraint firstAttribute="width" secondItem="Ibw-82-LwJ" secondAttribute="height" multiplier="1:1" id="9Ha-vp-hE4"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GC8-W7-0aF">
+                                <rect key="frame" x="103" y="424" width="20" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5wT-yb-GSj">
                                 <rect key="frame" x="32" y="136" width="311" height="40"/>
                                 <constraints>
@@ -57,8 +61,12 @@
                                     <action selector="tapINSPhotoLibrary:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oEr-tv-O4j"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ic_photo_tag_down.png" translatesAutoresizingMaskIntoConstraints="NO" id="TyI-Ab-u8R">
-                                <rect key="frame" x="24" y="373" width="182" height="29"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TyI-Ab-u8R">
+                                <rect key="frame" x="3" y="424" width="100" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w4x-7w-DY1">
+                                <rect key="frame" x="123" y="424" width="100" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -80,7 +88,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="gA4-7M-bkW"/>
                     <connections>
-                        <outlet property="imageView" destination="TyI-Ab-u8R" id="QbV-OD-fhw"/>
+                        <outlet property="leftImageView" destination="TyI-Ab-u8R" id="rfh-Zs-LFz"/>
+                        <outlet property="middleImageView" destination="GC8-W7-0aF" id="jHJ-6u-fch"/>
+                        <outlet property="rightImageView" destination="w4x-7w-DY1" id="c41-C2-PjH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -105,7 +115,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ic_photo_tag_down.png" width="82" height="29"/>
         <image name="test" width="484" height="580"/>
     </resources>
 </document>
