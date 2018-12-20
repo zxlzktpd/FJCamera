@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -16,10 +16,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mwx-Zv-oog">
-                    <rect key="frame" x="0.0" y="119" width="375" height="48"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nxS-Lp-e71">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="0.5"/>
                             <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="0.5" id="gqF-G7-Ku5"/>
@@ -33,13 +33,13 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="裁切" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ED-i2-OIa">
-                            <rect key="frame" x="173" y="16" width="29" height="17"/>
+                            <rect key="frame" x="173" y="15.5" width="29" height="17"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                             <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zTg-we-dd4">
-                            <rect key="frame" x="0.0" y="1" width="80" height="47"/>
+                            <rect key="frame" x="0.0" y="0.5" width="80" height="47.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="80" id="4Ob-9I-pXt"/>
                             </constraints>
@@ -63,13 +63,23 @@
                                 <action selector="_tapOK:" destination="iN0-l3-epB" eventType="touchUpInside" id="kZP-Ek-hAT"/>
                             </connections>
                         </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KNb-Zf-t4p">
+                            <rect key="frame" x="0.0" y="47.5" width="375" height="0.5"/>
+                            <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="VYF-bN-aNC"/>
+                            </constraints>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="zTg-we-dd4" firstAttribute="top" secondItem="nxS-Lp-e71" secondAttribute="bottom" id="484-RP-vtB"/>
+                        <constraint firstItem="KNb-Zf-t4p" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" id="5SC-LJ-Z6r"/>
+                        <constraint firstAttribute="trailing" secondItem="KNb-Zf-t4p" secondAttribute="trailing" id="8va-sI-jmt"/>
                         <constraint firstAttribute="trailing" secondItem="nxS-Lp-e71" secondAttribute="trailing" id="BHE-nq-YGc"/>
                         <constraint firstAttribute="bottom" secondItem="7yY-Oj-lyF" secondAttribute="bottom" id="DLC-0n-NkW"/>
                         <constraint firstItem="7yY-Oj-lyF" firstAttribute="top" secondItem="Mwx-Zv-oog" secondAttribute="top" id="FjZ-90-CVG"/>
+                        <constraint firstAttribute="bottom" secondItem="KNb-Zf-t4p" secondAttribute="bottom" id="Mjx-Wl-chD"/>
                         <constraint firstItem="XN9-3r-lq9" firstAttribute="centerY" secondItem="Mwx-Zv-oog" secondAttribute="centerY" id="Mmm-4q-2TQ"/>
                         <constraint firstItem="nxS-Lp-e71" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" id="OFy-t8-Glc"/>
                         <constraint firstItem="zTg-we-dd4" firstAttribute="leading" secondItem="Mwx-Zv-oog" secondAttribute="leading" id="Rdo-f5-bNo"/>
@@ -85,7 +95,7 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h08-H9-bm1">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="119"/>
+                    <rect key="frame" x="0.0" y="48" width="375" height="119"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faf-GJ-9tm">
                             <rect key="frame" x="0.0" y="0.0" width="75" height="119"/>
@@ -293,11 +303,11 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Mwx-Zv-oog" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="27X-ZM-9hN"/>
-                <constraint firstItem="Mwx-Zv-oog" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="6vz-4z-eOS"/>
-                <constraint firstItem="h08-H9-bm1" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="AzQ-jj-Pmt"/>
-                <constraint firstItem="Mwx-Zv-oog" firstAttribute="top" secondItem="h08-H9-bm1" secondAttribute="bottom" id="HNW-3d-Gqm"/>
+                <constraint firstAttribute="bottom" secondItem="h08-H9-bm1" secondAttribute="bottom" id="87h-YO-l9Y"/>
+                <constraint firstItem="Mwx-Zv-oog" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="9rf-xw-Se1"/>
                 <constraint firstItem="h08-H9-bm1" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="KVv-Ir-DGk"/>
                 <constraint firstItem="h08-H9-bm1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="RwF-uk-Qy5"/>
+                <constraint firstItem="h08-H9-bm1" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="48" id="jAp-iB-rzf"/>
                 <constraint firstItem="Mwx-Zv-oog" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="m02-f3-dRf"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

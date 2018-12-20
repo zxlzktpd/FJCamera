@@ -11,7 +11,7 @@
 @interface FJPhotoEditFilterGenreView ()
 
 @property (nonatomic, strong) UIImageView *filterImageView;
-@property (nonatomic, strong) UIView *filterCoverView;
+// @property (nonatomic, strong) UIView *filterCoverView;
 @property (nonatomic, strong) UIView *filterTextBackgroundView;
 @property (nonatomic, strong) UILabel *filterTextLabel;
 @property (nonatomic, strong) UIButton *button;
@@ -44,11 +44,13 @@
         [self addSubview:_filterImageView];
     }
     
+    /*
     if (_filterCoverView == nil) {
         _filterCoverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
         _filterCoverView.backgroundColor = [@"#FF7725".fj_color colorWithAlphaComponent:0.5];
         [self addSubview:_filterCoverView];
     }
+    */
     
     if (_filterTextBackgroundView == nil) {
         _filterTextBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 80, 80, 20)];
@@ -81,7 +83,7 @@
 - (void)updateSelected:(BOOL)selected {
     
     self.selected = selected;
-    self.filterCoverView.hidden = !selected;
+    // self.filterCoverView.hidden = !selected;
     self.filterTextBackgroundView.hidden = !selected;
     if (selected) {
         self.filterTextLabel.textColor = [UIColor whiteColor];

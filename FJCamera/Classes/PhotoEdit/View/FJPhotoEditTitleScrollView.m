@@ -41,6 +41,11 @@
     
     FJPhotoEditTitleScrollView *view = MF_LOAD_NIB(@"FJPhotoEditTitleScrollView");
     [view updateTitle:@"编辑图片"];
+    if (count < 2) {
+        view.pageControl.hidden = YES;
+    }else {
+        view.pageControl.hidden = NO;
+    }
     view.pageControl.numberOfPages = count;
     return view;
 }
