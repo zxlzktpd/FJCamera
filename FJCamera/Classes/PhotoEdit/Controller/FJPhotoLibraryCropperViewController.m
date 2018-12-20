@@ -13,6 +13,9 @@
 #import "FJCropperView.h"
 #import "PHAsset+Utility.h"
 
+#define PREVIEW_IMAGE_LEAST_HEIGHT (60.0)
+#define UPDOWN_LEAST_HEIGHT (60.0)
+
 @interface FJPhotoLibraryCropperViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 // CropperView
@@ -205,28 +208,7 @@
         _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 ins:YES debug:YES croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
             
         } updownBlock:^(BOOL up) {
-            CGRect frame = CGRectZero;
-            if (up) {
-                frame = CGRectMake(0,  -(UI_SCREEN_WIDTH - 80.0), weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
-            }else {
-                frame = CGRectMake(0,  0, weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
-            }
-            static BOOL inAnimation = NO;
-            if (inAnimation) {
-                return;
-            }
-            inAnimation = YES;
-            [UIView animateWithDuration:0.2 animations:^{
-                weakSelf.cropperView.frame = frame;
-                if (up) {
-                    weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
-                }else {
-                    weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, weakSelf.collectionView.bounds.size.height);
-                }
-            } completion:^(BOOL finished) {
-                inAnimation = NO;
-                weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
-            }];
+            [weakSelf _move:up];
         }];
         _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
         [self.view addSubview:_cropperView];
@@ -238,6 +220,7 @@
         _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
         _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
+        _collectionView.fj_collectionView.contentInset = UIEdgeInsetsMake(0, 0, 48.0, 0);
     }
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
@@ -332,6 +315,13 @@
                 weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
             }
         }
+        if (type == FJClScrollBlockTypeDragDidEnd) {
+            if (weakSelf.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
+                [weakSelf _move:NO];
+            }else {
+                [weakSelf _move:YES];
+            }
+        }
     };
 }
 
@@ -343,6 +333,7 @@
         case UIGestureRecognizerStateBegan:
         {
             y = self.cropperView.frame.origin.y;
+            NSLog(@" === %f", point.y);
             break;
         }
         case UIGestureRecognizerStateChanged:
@@ -350,8 +341,8 @@
             CGRect frame = CGRectMake(0,  y + point.y, self.cropperView.bounds.size.width, self.cropperView.bounds.size.height);
             if (frame.origin.y >= 0) {
                 frame.origin.y = 0;
-            }else if (frame.origin.y <= -(UI_SCREEN_WIDTH - 80.0)) {
-                frame.origin.y = -(UI_SCREEN_WIDTH - 80.0);
+            }else if (frame.origin.y <= -(UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT)) {
+                frame.origin.y = -(UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT);
             }
             self.cropperView.frame = frame;
             self.collectionView.frame = CGRectMake(0, self.cropperView.frame.origin.y + self.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - self.cropperView.frame.origin.y);
@@ -360,11 +351,53 @@
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateEnded:
         {
+            if ([self.cropperView getUp]) {
+                if (self.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
+                    [self _move:NO];
+                }else {
+                    [self _move:YES];
+                }
+            }else {
+                if (self.cropperView.frame.origin.y < - UPDOWN_LEAST_HEIGHT ) {
+                    [self _move:YES];
+                }else {
+                    [self _move:NO];
+                }
+            }
+            
             break;
         }
         default:
             break;
     }
+}
+
+- (void)_move:(BOOL)up {
+    
+    MF_WEAK_SELF
+    CGRect frame = CGRectZero;
+    if (up) {
+        frame = CGRectMake(0,  -(UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT), weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
+    }else {
+        frame = CGRectMake(0,  0, weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
+    }
+    static BOOL inAnimation = NO;
+    if (inAnimation) {
+        return;
+    }
+    inAnimation = YES;
+    [UIView animateWithDuration:0.2 animations:^{
+        weakSelf.cropperView.frame = frame;
+        if (up) {
+            weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+        }else {
+            weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, weakSelf.collectionView.bounds.size.height);
+        }
+    } completion:^(BOOL finished) {
+        inAnimation = NO;
+        weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+        [weakSelf.cropperView updateUp:up];
+    }];
 }
 
 - (void)_setAblumSelectionViewHidden:(BOOL)hidden animation:(BOOL)animation {

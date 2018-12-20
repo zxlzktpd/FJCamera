@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -23,39 +23,10 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rcl-32-Llr">
                     <rect key="frame" x="0.0" y="335" width="375" height="40"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZZ-Td-ZlE">
-                            <rect key="frame" x="16" y="8" width="60" height="24"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_compress.png" highlightedImage="ic_photo_expand.png" translatesAutoresizingMaskIntoConstraints="NO" id="X7p-qY-DBG">
-                                    <rect key="frame" x="12" y="6" width="12" height="12"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="12" id="b0N-F9-v88"/>
-                                        <constraint firstAttribute="width" constant="12" id="mMp-RF-IJ8"/>
-                                    </constraints>
-                                </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="留白" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqH-rb-oop">
-                                    <rect key="frame" x="30" y="0.0" width="22" height="24"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="bottom" secondItem="NqH-rb-oop" secondAttribute="bottom" id="7kg-hn-pTD"/>
-                                <constraint firstAttribute="height" constant="24" id="A4V-fr-kRh"/>
-                                <constraint firstItem="X7p-qY-DBG" firstAttribute="leading" secondItem="FZZ-Td-ZlE" secondAttribute="leading" constant="12" id="KfB-dB-RE3"/>
-                                <constraint firstItem="NqH-rb-oop" firstAttribute="top" secondItem="FZZ-Td-ZlE" secondAttribute="top" id="ept-EZ-jhL"/>
-                                <constraint firstAttribute="width" constant="60" id="jGE-il-qYn"/>
-                                <constraint firstItem="NqH-rb-oop" firstAttribute="leading" secondItem="X7p-qY-DBG" secondAttribute="trailing" constant="6" id="nSv-tv-96z"/>
-                                <constraint firstItem="X7p-qY-DBG" firstAttribute="centerY" secondItem="FZZ-Td-ZlE" secondAttribute="centerY" id="y6o-ym-2Gx"/>
-                                <constraint firstAttribute="trailing" secondItem="NqH-rb-oop" secondAttribute="trailing" constant="8" id="yAY-gd-eik"/>
-                            </constraints>
-                        </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tD9-kg-zqE">
-                            <rect key="frame" x="0.0" y="0.0" width="100" height="40"/>
+                            <rect key="frame" x="0.0" y="0.0" width="60" height="40"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="100" id="1Jl-jO-tqs"/>
+                                <constraint firstAttribute="width" constant="60" id="1Jl-jO-tqs"/>
                             </constraints>
                             <connections>
                                 <action selector="_tapCompress:" destination="iN0-l3-epB" eventType="touchUpInside" id="i6W-N6-eKv"/>
@@ -67,23 +38,38 @@
                                 <constraint firstAttribute="width" constant="60" id="pYK-aA-APr"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <state key="normal" title="向上/向下"/>
                             <connections>
                                 <action selector="_tapUpdown:" destination="iN0-l3-epB" eventType="touchUpInside" id="L3C-fG-9J8"/>
                             </connections>
                         </button>
+                        <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_compress.png" highlightedImage="ic_photolibrary_fullfill.png" translatesAutoresizingMaskIntoConstraints="NO" id="X7p-qY-DBG">
+                            <rect key="frame" x="8" y="0.0" width="32" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="32" id="5bO-d1-iJ9"/>
+                                <constraint firstAttribute="height" constant="32" id="Toy-uA-cdW"/>
+                            </constraints>
+                        </imageView>
+                        <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_up.png" highlightedImage="ic_photolibrary_down.png" translatesAutoresizingMaskIntoConstraints="NO" id="YNO-NO-EuI">
+                            <rect key="frame" x="335" y="0.0" width="32" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="ZxR-wg-RAH"/>
+                                <constraint firstAttribute="width" constant="32" id="yhG-Yv-2Yk"/>
+                            </constraints>
+                        </imageView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="tD9-kg-zqE" firstAttribute="top" secondItem="Rcl-32-Llr" secondAttribute="top" id="1FJ-7h-b1p"/>
-                        <constraint firstItem="FZZ-Td-ZlE" firstAttribute="centerY" secondItem="Rcl-32-Llr" secondAttribute="centerY" id="5GV-M8-2Uh"/>
                         <constraint firstAttribute="bottom" secondItem="tD9-kg-zqE" secondAttribute="bottom" id="ACb-0H-OFI"/>
                         <constraint firstAttribute="trailing" secondItem="sbJ-NB-RdR" secondAttribute="trailing" id="HN2-kp-p1i"/>
                         <constraint firstAttribute="height" constant="40" id="IIX-Q7-WYU"/>
+                        <constraint firstAttribute="trailing" secondItem="YNO-NO-EuI" secondAttribute="trailing" constant="8" id="aC8-5i-sLs"/>
                         <constraint firstAttribute="bottom" secondItem="sbJ-NB-RdR" secondAttribute="bottom" id="by5-Xt-PNB"/>
-                        <constraint firstItem="FZZ-Td-ZlE" firstAttribute="leading" secondItem="Rcl-32-Llr" secondAttribute="leading" constant="16" id="cMJ-nX-8qE"/>
                         <constraint firstItem="sbJ-NB-RdR" firstAttribute="top" secondItem="Rcl-32-Llr" secondAttribute="top" id="eLB-ek-dVL"/>
+                        <constraint firstItem="X7p-qY-DBG" firstAttribute="leading" secondItem="Rcl-32-Llr" secondAttribute="leading" constant="8" id="ec7-Sw-8iC"/>
                         <constraint firstItem="tD9-kg-zqE" firstAttribute="leading" secondItem="Rcl-32-Llr" secondAttribute="leading" id="hwI-tb-nAo"/>
+                        <constraint firstAttribute="bottom" secondItem="YNO-NO-EuI" secondAttribute="bottom" constant="8" id="nYZ-BX-Tda"/>
+                        <constraint firstAttribute="bottom" secondItem="X7p-qY-DBG" secondAttribute="bottom" constant="8" id="zqn-zJ-M6h"/>
                     </constraints>
                 </view>
             </subviews>
@@ -96,14 +82,18 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="expandButton" destination="tD9-kg-zqE" id="nni-Ln-67w"/>
-                <outlet property="expandView" destination="FZZ-Td-ZlE" id="SmG-PZ-TKm"/>
+                <outlet property="expandImageView" destination="X7p-qY-DBG" id="VX2-ef-8kz"/>
                 <outlet property="scrollView" destination="a2a-oV-rBJ" id="bsO-Wt-Gsj"/>
+                <outlet property="updownButton" destination="sbJ-NB-RdR" id="7hw-ZK-12E"/>
+                <outlet property="updownImageView" destination="YNO-NO-EuI" id="7Qz-G3-iHJ"/>
             </connections>
             <point key="canvasLocation" x="23.199999999999999" y="50.824587706146929"/>
         </view>
     </objects>
     <resources>
-        <image name="ic_photo_compress.png" width="24" height="24"/>
-        <image name="ic_photo_expand.png" width="24" height="24"/>
+        <image name="ic_photolibrary_compress.png" width="40" height="40"/>
+        <image name="ic_photolibrary_down.png" width="40" height="40"/>
+        <image name="ic_photolibrary_fullfill.png" width="40" height="40"/>
+        <image name="ic_photolibrary_up.png" width="40" height="40"/>
     </resources>
 </document>

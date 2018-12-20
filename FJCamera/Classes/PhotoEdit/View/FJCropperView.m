@@ -13,9 +13,11 @@
 
 @interface FJCropperView () <UIScrollViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UIView *expandView;
 @property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, weak) IBOutlet UIImageView *expandImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *updownImageView;
 @property (nonatomic, weak) IBOutlet UIButton *expandButton;
+@property (nonatomic, weak) IBOutlet UIButton *updownButton;
 @property (nonatomic, strong) UIImageView *imageView;
 
 // 留白和充满标记
@@ -62,7 +64,6 @@
     view.isFirst = YES;
     view.isDebug = debug;
     // Setup UI
-    [view.expandView fj_cornerRadius:6.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     // ScrollView
     if (ins) {
         view.scrollView.clipsToBounds = NO;
@@ -280,14 +281,10 @@
     });
     
     // Expand View UI
-    UILabel *label = [self.expandView viewWithTag:100];
-    UIImageView *imageView = [self.expandView viewWithTag:200];
     if (_compressed == YES) {
-        label.text = @"充满";
-        [imageView setHighlighted:YES];
+        [self.expandImageView setHighlighted:YES];
     }else {
-        label.text = @"留白";
-        [imageView setHighlighted:NO];
+        [self.expandImageView setHighlighted:NO];
     }
     
     CGRect frame = [self.scrollView convertRect:self.imageView.frame toView:self];
@@ -298,6 +295,18 @@
     }
     
     self.inCrop = NO;
+}
+
+// 更新向上和向下的状态
+- (void)updateUp:(BOOL)up {
+    
+    [self.updownImageView setHighlighted:up];
+}
+
+// 获取向上和向下的状态
+- (BOOL)getUp {
+    
+    return self.updownImageView.highlighted;
 }
 
 // 是否在裁切图片
@@ -313,6 +322,7 @@
     CGPoint contentOffset = self.scrollView.contentOffset;
     CGPoint beginPointRatio = CGPointZero;
     CGPoint endPointRatio = CGPointZero;
+    // TODO 算法问题
     if (imageRect.size.height / imageRect.size.width <= 1.0) {
         // 扁长
         beginPointRatio = CGPointMake(contentOffset.x / imageRect.size.width, 0);
@@ -330,7 +340,7 @@
     if (self.isDebug) {
         UIImageView *imageView = [MF_KEY_WINDOW viewWithTag:1000];
         if (imageView == nil) {
-            imageView = [[UIImageView alloc] initWithFrame:CGRectMake(60, 0, 64.0, 64.0)];
+            imageView = [[UIImageView alloc] initWithFrame:CGRectMake(64.0, 0, 64.0, 64.0)];
             imageView.backgroundColor = [UIColor redColor];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             imageView.image = cropImage;
@@ -357,7 +367,7 @@
 #pragma mark - UISCrollView Delegate
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     
-    return [self.scrollView viewWithTag:100];
+    return self.imageView;
 }
 
 // called before the scroll view begins zooming its content缩放开始的时候调用

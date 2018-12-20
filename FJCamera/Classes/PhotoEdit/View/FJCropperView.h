@@ -20,6 +20,12 @@
 // 更新留白和充满状态
 - (void)updateCompressed:(BOOL)compressed;
 
+// 更新向上和向下的状态
+- (void)updateUp:(BOOL)up;
+
+// 获取向上和向下的状态
+- (BOOL)getUp;
+
 // 是否在裁切图片
 - (BOOL)inCroppingImage;
 
