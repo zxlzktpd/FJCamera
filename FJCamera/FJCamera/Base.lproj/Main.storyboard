@@ -57,6 +57,10 @@
                                     <action selector="tapINSPhotoLibrary:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oEr-tv-O4j"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ic_photo_tag_down.png" translatesAutoresizingMaskIntoConstraints="NO" id="TyI-Ab-u8R">
+                                <rect key="frame" x="24" y="373" width="182" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -75,6 +79,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gA4-7M-bkW"/>
+                    <connections>
+                        <outlet property="imageView" destination="TyI-Ab-u8R" id="QbV-OD-fhw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -98,6 +105,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="ic_photo_tag_down.png" width="82" height="29"/>
         <image name="test" width="484" height="580"/>
     </resources>
 </document>

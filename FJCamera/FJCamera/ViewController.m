@@ -10,10 +10,13 @@
 #import "FJPhotoLibraryViewController.h"
 #import "FJPhotoLibraryCropperViewController.h"
 #import "FJAVCaptureViewController.h"
-
 #import "FJTakePhotoView.h"
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 @interface ViewController ()
+
+
+@property (nonatomic, weak) IBOutlet UIImageView *imageView;
 
 @end
 
