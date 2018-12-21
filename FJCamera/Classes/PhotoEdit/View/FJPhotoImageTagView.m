@@ -11,15 +11,22 @@
 #import <FJKit_OC/UIView+Utility_FJ.h>
 #import <BlocksKit/UIView+BlocksKit.h>
 #import "FJPhotoImageTagPointView.h"
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 @interface FJPhotoImageTagView ()
 
 @property (nonatomic, weak) IBOutlet UIView *tagBackgroundView;
 @property (nonatomic, weak) IBOutlet UILabel *textLabel;
-@property (nonatomic, weak) IBOutlet UIImageView *triangleUpImageView;
-@property (nonatomic, weak) IBOutlet UIImageView *triangleDownImageView;
+
+@property (nonatomic, weak) IBOutlet UIImageView *tagLeftImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *tagMiddleImageView;
+@property (nonatomic, weak) IBOutlet UIImageView *tagRightImageView;
+
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointUpView;
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointDownView;
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *const_top;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *const_bottom;
 
 @property (nonatomic, strong) FJImageTagModel *model;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
@@ -44,9 +51,9 @@
     view.movingBlock = movingBlock;
     CGFloat w;
     if (@available(iOS 8.2, *)) {
-        w = [model.name fj_width:[UIFont systemFontOfSize:14.0 weight:UIFontWeightMedium] enableCeil:YES];
+        w = [model.name fj_width:[UIFont systemFontOfSize:12.0 weight:UIFontWeightMedium] enableCeil:YES];
     } else {
-        w = [model.name fj_width:[UIFont systemFontOfSize:14.0] enableCeil:YES] + 0.2 * model.name.length;
+        w = [model.name fj_width:[UIFont systemFontOfSize:12.0] enableCeil:YES] + 0.2 * model.name.length;
     }
     view.frame = CGRectMake(point.x, point.y, w + 12.0 + 12.0, FJPhotoImageTagViewHeight);
     [view.tagBackgroundView fj_cornerRadius:2.0];
@@ -54,12 +61,23 @@
         [view addGestureRecognizer:view.panGesture];
         [view addGestureRecognizer:view.tapGesture];
     }
+    
+    view.tagLeftImageView.image = [@"FJPhotoImageTagView.ic_tag_up_left".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
+    view.tagRightImageView.image = [@"FJPhotoImageTagView.ic_tag_up_right".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
+    view.tagLeftImageView.highlightedImage = [@"FJPhotoImageTagView.ic_tag_down_left".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
+    view.tagRightImageView.highlightedImage = [@"FJPhotoImageTagView.ic_tag_down_right".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
     if (model.direction == 0) {
-        view.triangleUpImageView.hidden = NO;
-        view.triangleDownImageView.hidden = YES;
+        [view.tagLeftImageView setHighlighted:NO];
+        [view.tagMiddleImageView setHighlighted:NO];
+        [view.tagRightImageView setHighlighted:NO];
+        view.const_top.constant = 5.0;
+        view.const_bottom.constant = 0;
     }else if (model.direction == 1) {
-        view.triangleUpImageView.hidden = YES;
-        view.triangleDownImageView.hidden = NO;
+        [view.tagLeftImageView setHighlighted:YES];
+        [view.tagMiddleImageView setHighlighted:YES];
+        [view.tagRightImageView setHighlighted:YES];
+        view.const_top.constant = 0;
+        view.const_bottom.constant = 5.0;
     }
     if (model.direction == 0) {
         [view.tagPointDownView stopAnimation];
@@ -141,16 +159,22 @@
     
     if (self.model.direction == 0) {
         self.model.direction = 1;
-        self.triangleUpImageView.hidden = YES;
-        self.triangleDownImageView.hidden = NO;
+        [self.tagLeftImageView setHighlighted:YES];
+        [self.tagMiddleImageView setHighlighted:YES];
+        [self.tagRightImageView setHighlighted:YES];
+        self.const_top.constant = 0;
+        self.const_bottom.constant = 5.0;
         [self.tagPointUpView stopAnimation];
         self.tagPointUpView.hidden = YES;
         self.tagPointDownView.hidden = NO;
         [self.tagPointDownView startAnimation];
     }else if (self.model.direction == 1) {
         self.model.direction = 0;
-        self.triangleUpImageView.hidden = NO;
-        self.triangleDownImageView.hidden = YES;
+        [self.tagLeftImageView setHighlighted:NO];
+        [self.tagMiddleImageView setHighlighted:NO];
+        [self.tagRightImageView setHighlighted:NO];
+        self.const_top.constant = 5.0;
+        self.const_bottom.constant = 0;
         [self.tagPointDownView stopAnimation];
         self.tagPointDownView.hidden = YES;
         self.tagPointUpView.hidden = NO;
