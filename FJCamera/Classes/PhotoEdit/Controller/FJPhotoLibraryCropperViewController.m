@@ -215,7 +215,7 @@
     }
     
     if (_cropperView == nil) {
-        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 ins:YES debug:YES croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
+        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 debug:YES croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
             
         } updownBlock:^(BOOL up) {
             [weakSelf _move:up];

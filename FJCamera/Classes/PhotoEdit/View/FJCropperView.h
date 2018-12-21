@@ -10,9 +10,16 @@
 #import "FJPhotoEditCommonHeader.h"
 #import "FJPhotoManager.h"
 
+@interface FJImageScrollView : UIScrollView
+
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) FJPhotoModel *photoModel;
+
+@end
+
 @interface FJCropperView : UIView
 
-+ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio ins:(BOOL)ins debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
++ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片
 - (void)updateModel:(FJPhotoModel *)model;

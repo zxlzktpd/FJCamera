@@ -11,20 +11,58 @@
 #import <FJKit_OC/Macro.h>
 #import <FJKit_OC/UIImage+Utility_FJ.h>
 
+@interface FJImageScrollView()
+
+@end
+
+@implementation FJImageScrollView
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        NSAssert(NO, @"FJImageScrollView : Please Use - initWithFrame:");
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self _buildUI];
+    }
+    return self;
+}
+
+- (void)_buildUI {
+    
+    self.clipsToBounds = NO;
+    self.layer.masksToBounds = NO;
+    self.maximumZoomScale = 1.0;
+    self.minimumZoomScale = 1.0;
+    self.zoomScale = 1.0;
+    self.showsVerticalScrollIndicator = NO;
+    self.showsHorizontalScrollIndicator = NO;
+    self.bounces = YES;
+    
+    UIImageView *imageView = [[UIImageView alloc] init];
+    [self addSubview:imageView];
+    self.imageView = imageView;
+}
+
+@end
+
 @interface FJCropperView () <UIScrollViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) NSMutableArray *scrollViews;
+@property (nonatomic, strong) FJImageScrollView *currentScrollView;
+@property (nonatomic, weak) IBOutlet UIView *toolView;
 @property (nonatomic, weak) IBOutlet UIImageView *expandImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *updownImageView;
 @property (nonatomic, weak) IBOutlet UIButton *expandButton;
 @property (nonatomic, weak) IBOutlet UIButton *updownButton;
-@property (nonatomic, strong) UIImageView *imageView;
-
-@property (nonatomic, strong) FJPhotoModel *photoModel;
 
 @property (nonatomic, assign) CGFloat horizontalExtemeRatio;
 @property (nonatomic, assign) CGFloat verticalExtemeRatio;
-@property (nonatomic, assign) BOOL ins;
 
 // 1：扁长（超比例）  2：扁长（范围内） 3：窄长（超比例） 4：窄长（范围内）
 @property (nonatomic, assign) int type;
@@ -40,80 +78,93 @@
 
 @implementation FJCropperView
 
+- (NSMutableArray *)scrollViews {
+    
+    if (_scrollViews == nil) {
+        _scrollViews = [[NSMutableArray alloc] init];
+    }
+    return _scrollViews;
+}
+
 - (void)awakeFromNib {
     
     [super awakeFromNib];
 }
 
-+ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio ins:(BOOL)ins debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
++ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
     
     FJCropperView *view = MF_LOAD_NIB(@"FJCropperView");
     view.clipsToBounds = YES;
     view.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
     view.horizontalExtemeRatio = horizontalExtemeRatio;
     view.verticalExtemeRatio = verticalExtemeRatio;
-    view.ins = ins;
     view.croppedBlock = croppedBlock;
     view.updownBlock = updownBlock;
     view.inCrop = NO;
     view.isFirst = YES;
     view.isDebug = debug;
     // Setup UI
-    // ScrollView
-    if (ins) {
-        view.scrollView.clipsToBounds = NO;
-        view.scrollView.layer.masksToBounds = NO;
-    }else {
-        view.scrollView.clipsToBounds = YES;
-        view.scrollView.layer.masksToBounds = YES;
-    }
-    view.scrollView.maximumZoomScale = 1.0;
-    view.scrollView.minimumZoomScale = 1.0;
-    view.scrollView.zoomScale = 1.0;
-    view.scrollView.delegate = view;
-    view.scrollView.showsVerticalScrollIndicator = NO;
-    view.scrollView.showsHorizontalScrollIndicator = NO;
-    view.scrollView.bounces = YES;
-    if (debug) {
-        view.backgroundColor = [UIColor redColor];
-        view.scrollView.backgroundColor = [UIColor grayColor];
-    }else {
-        view.backgroundColor = [UIColor whiteColor];
-        view.scrollView.backgroundColor = [UIColor whiteColor];
-    }
+    [view _buildNewImageScrollView];
     return view;
+}
+
+// 新建
+- (void)_buildNewImageScrollView {
+    
+    // ScrollView
+    self.currentScrollView = [[FJImageScrollView alloc] initWithFrame:self.bounds];
+    [self.scrollViews addObject:self.currentScrollView];
+    self.currentScrollView.delegate = self;
+    [self addSubview:self.currentScrollView];
+    if (self.isDebug) {
+        self.backgroundColor = [UIColor redColor];
+        self.currentScrollView.backgroundColor = [UIColor grayColor];
+    }else {
+        self.backgroundColor = [UIColor whiteColor];
+        self.currentScrollView.backgroundColor = [UIColor whiteColor];
+    }
+    
+    [self bringSubviewToFront:self.currentScrollView];
+    [self bringSubviewToFront:self.toolView];
 }
 
 // 更新图片
 - (void)updateModel:(FJPhotoModel *)model {
     
-    if ([model.asset isEqual:self.photoModel.asset]) {
-        self.photoModel = model;
-        if (model.needCrop) {
-            [self _cropImage:model.needCrop];
+    FJImageScrollView *imageScrollView = nil;
+    for (FJImageScrollView *scrollView in self.scrollViews) {
+        if (scrollView.photoModel == nil) {
+            scrollView.hidden = NO;
+            imageScrollView = scrollView;
+            self.currentScrollView = scrollView;
+            self.currentScrollView.photoModel = model;
+            [self updateImageView:NO];
+        }else if ([scrollView.photoModel isEqual:model]) {
+            scrollView.hidden = NO;
+            imageScrollView = scrollView;
+            self.currentScrollView = scrollView;
+            if ([scrollView isEqual:[self.subviews fj_arrayObjectAtIndex:self.subviews.count - 2]]) {
+                [self _cropImage];
+            }else {
+                [self bringSubviewToFront:scrollView];
+                [self bringSubviewToFront:self.toolView];
+            }
+        }else {
+            scrollView.hidden = YES;
         }
-        return;
     }
-    self.photoModel = model;
-    
-    if (_imageView == nil) {
-        _imageView = [[UIImageView alloc] init];
-        _imageView.tag = 100;
-        [self.scrollView addSubview:_imageView];
+    if (imageScrollView == nil) {
+        [self _buildNewImageScrollView];
+        self.currentScrollView.photoModel = model;
+        [self updateImageView:NO];
     }
-    _imageView.image = [model.asset getGeneralTargetImage];
-    [self updateCompressed:model.compressed];
 }
 
 // 更新留白和充满状态
-- (void)updateCompressed:(BOOL)compressed {
+- (void)updateImageView:(BOOL)compressChange {
     
-    // Expand View UI
-    if (compressed == YES) {
-        [self.expandImageView setHighlighted:YES];
-    }else {
-        [self.expandImageView setHighlighted:NO];
-    }
+    FJPhotoModel *model = self.currentScrollView.photoModel;
+    self.currentScrollView.imageView.image = [model.asset getGeneralTargetImage];
     
     // 图像处理
     CGRect scrollViewFrame = CGRectZero;
@@ -122,67 +173,41 @@
     CGFloat maxScale = 3.0;
     CGFloat minScale = 1.0;
     CGPoint scrollViewOffset = CGPointZero;
-    // 固定临界点数值
-    CGFloat expandSide = 20.0;
-    CGFloat minGapSide = 10.0;
-    self.scrollView.contentOffset = CGPointZero;
-    UIImage *image = self.imageView.image;
+    UIImage *image = self.currentScrollView.imageView.image;
     // 初始化计算
     self.type = 0;
     self.base = 0;
     if (image.size.width / image.size.height >= 1.0) {
         // 水平扁长图片或同等比例
-        if (compressed) {
-            if (self.ins) {
-                // Instagram风格，留白
-                CGFloat ratio = image.size.height / image.size.width;
-                if (ratio < self.horizontalExtemeRatio) {
-                    // 小于极限值
-                    self.type = 1;
-                    self.base = UI_SCREEN_WIDTH * self.horizontalExtemeRatio;
-                    scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, self.base * (image.size.width / image.size.height), self.base);
-                    scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base) / 2.0, UI_SCREEN_WIDTH, self.base);
-                    maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
-                    minScale = 1.0;
-                    if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                        // TODO
-                    }else {
-                        scrollViewOffset = CGPointMake( (imageViewFrame.size.width - UI_SCREEN_WIDTH) / 2.0, 0);
-                    }
-                }else {
-                    self.type = 2;
-                    self.base = UI_SCREEN_WIDTH * image.size.height / image.size.width;
-                    scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, self.base);
-                    scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base) / 2.0, UI_SCREEN_WIDTH, self.base);
-                    maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
-                    minScale = 1.0;
-                    if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                        // TODO
-                    }else {
-                        scrollViewOffset = CGPointMake(0, 0);
-                    }
+        if (model.compressed) {
+            // Instagram风格，留白
+            CGFloat ratio = image.size.height / image.size.width;
+            if (ratio < self.horizontalExtemeRatio) {
+                // 小于极限值
+                self.type = 1;
+                self.base = UI_SCREEN_WIDTH * self.horizontalExtemeRatio;
+                scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, self.base * (image.size.width / image.size.height), self.base);
+                scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base) / 2.0, UI_SCREEN_WIDTH, self.base);
+                maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
+                minScale = 1.0;
+                if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
+                    scrollViewOffset = CGPointMake( (imageViewFrame.size.width - UI_SCREEN_WIDTH) / 2.0, 0);
+                }else if (compressChange) {
+                    scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
                 }
             }else {
-                // 其它风格，留白
-                if (image.size.width / image.size.height > (1.0 / self.horizontalExtemeRatio)) {
-                    // 宽高比大于等于比例 (留白空间固定)
-                    scrollViewFrame = CGRectMake(0, UI_SCREEN_WIDTH * ((1.0 - self.horizontalExtemeRatio) / 2.0), UI_SCREEN_WIDTH, UI_SCREEN_WIDTH * self.horizontalExtemeRatio);
-                    imageViewFrame = CGRectMake(0, 0, (UI_SCREEN_WIDTH * self.horizontalExtemeRatio) * image.size.width / image.size.height, UI_SCREEN_WIDTH * self.horizontalExtemeRatio);
-                    scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
-                    maxScale = 3.0;
-                    scrollViewOffset = CGPointMake((imageViewFrame.size.width - scrollViewFrame.size.width) / 2.0, 0);
-                }else {
-                    // 宽高比小于比例 (固定超出两边20，倒推比例)
-                    CGFloat imageFrameWidth = UI_SCREEN_WIDTH + expandSide * 2;
-                    CGFloat imageFrameHeight = imageFrameWidth * (image.size.height / image.size.width);
-                    CGFloat scrollViewHeight = (imageFrameHeight > UI_SCREEN_WIDTH - minGapSide * 2) ? (UI_SCREEN_WIDTH - minGapSide * 2 ) : imageFrameHeight;
-                    scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - scrollViewHeight) / 2.0, UI_SCREEN_WIDTH, scrollViewHeight);
-                    imageViewFrame = CGRectMake(0, 0, imageFrameWidth, imageFrameHeight);
-                    scrollViewContentSize = CGSizeMake(imageFrameWidth, imageFrameHeight);
-                    maxScale = 3.0;
-                    scrollViewOffset = CGPointMake(expandSide, fabs(imageFrameHeight - scrollViewHeight) / 2.0);
+                self.type = 2;
+                self.base = UI_SCREEN_WIDTH * image.size.height / image.size.width;
+                scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, self.base);
+                scrollViewFrame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base) / 2.0, UI_SCREEN_WIDTH, self.base);
+                maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
+                minScale = 1.0;
+                if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
+                    scrollViewOffset = CGPointMake(0, 0);
+                }else if (compressChange) {
+                    scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
                 }
             }
         }else {
@@ -191,65 +216,43 @@
             imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH * (image.size.width / image.size.height), UI_SCREEN_WIDTH);
             scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
             maxScale = 3.0;
-            if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                // TODO
-            }else {
+            if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
                 scrollViewOffset = CGPointMake((imageViewFrame.size.width - scrollViewFrame.size.width) / 2.0, 0);
+            }else if (compressChange) {
+                scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
             }
         }
     }else {
         // 垂直扁长图片
-        if (compressed) {
-            if (self.ins) {
-                // Instagram风格，留白
-                CGFloat ratio = image.size.width / image.size.height;
-                if (ratio < self.verticalExtemeRatio) {
-                    // 小于极限值
-                    self.type = 3;
-                    self.base = UI_SCREEN_WIDTH * self.verticalExtemeRatio;
-                    scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, self.base, self.base * (image.size.height / image.size.width));
-                    scrollViewFrame = CGRectMake( (UI_SCREEN_WIDTH - self.base) / 2.0, 0, self.base, UI_SCREEN_WIDTH);
-                    maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
-                    minScale = 1.0;
-                    if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                        // TODO
-                    }else {
-                        scrollViewOffset = CGPointMake(0, (imageViewFrame.size.height - UI_SCREEN_WIDTH) / 2.0);
-                    }
-                }else {
-                    self.type = 4;
-                    self.base = UI_SCREEN_WIDTH * image.size.width / image.size.height;
-                    scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, self.base, UI_SCREEN_WIDTH);
-                    scrollViewFrame = CGRectMake( (UI_SCREEN_WIDTH - self.base) / 2.0, 0, self.base, UI_SCREEN_WIDTH);
-                    maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
-                    minScale = 1.0;
-                    if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                        // TODO
-                    }else {
-                        scrollViewOffset = CGPointMake(0, 0);
-                    }
+        if (model.compressed) {
+            // Instagram风格，留白
+            CGFloat ratio = image.size.width / image.size.height;
+            if (ratio < self.verticalExtemeRatio) {
+                // 小于极限值
+                self.type = 3;
+                self.base = UI_SCREEN_WIDTH * self.verticalExtemeRatio;
+                scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, self.base, self.base * (image.size.height / image.size.width));
+                scrollViewFrame = CGRectMake( (UI_SCREEN_WIDTH - self.base) / 2.0, 0, self.base, UI_SCREEN_WIDTH);
+                maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
+                minScale = 1.0;
+                if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
+                    scrollViewOffset = CGPointMake(0, (imageViewFrame.size.height - UI_SCREEN_WIDTH) / 2.0);
+                }else if (compressChange) {
+                    scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
                 }
             }else {
-                // 其它风格，留白
-                if (image.size.height / image.size.width > (1.0 / self.verticalExtemeRatio)) {
-                    // 高宽比大于等于比例（留白空间固定）
-                    scrollViewFrame = CGRectMake(UI_SCREEN_WIDTH * ((1.0 - self.verticalExtemeRatio) / 2.0), 0, UI_SCREEN_WIDTH * self.verticalExtemeRatio, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH * self.verticalExtemeRatio, (UI_SCREEN_WIDTH * self.verticalExtemeRatio) * image.size.height / image.size.width);
-                    scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
-                    maxScale = 3.0;
-                    scrollViewOffset = CGPointMake(0, (imageViewFrame.size.height - scrollViewFrame.size.height) / 2.0);
-                }else {
-                    // 高宽比小于比例
-                    CGFloat imageFrameHeight = UI_SCREEN_WIDTH + expandSide * 2;
-                    CGFloat imageFrameWidth = imageFrameHeight * (image.size.width / image.size.height);
-                    CGFloat scrollViewWidth = (imageFrameWidth > UI_SCREEN_WIDTH - minGapSide * 2) ? (UI_SCREEN_WIDTH - minGapSide * 2 ) : imageFrameWidth;
-                    scrollViewFrame = CGRectMake((UI_SCREEN_WIDTH - imageFrameWidth) / 2.0, 0, scrollViewWidth, UI_SCREEN_WIDTH);
-                    imageViewFrame = CGRectMake(0, 0, imageFrameWidth, imageFrameHeight);
-                    scrollViewContentSize = CGSizeMake(imageFrameWidth, imageFrameHeight);
-                    maxScale = 3.0;
-                    scrollViewOffset = CGPointMake(fabs(imageFrameWidth - scrollViewWidth) / 2.0, expandSide);
+                self.type = 4;
+                self.base = UI_SCREEN_WIDTH * image.size.width / image.size.height;
+                scrollViewContentSize = CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+                imageViewFrame = CGRectMake(0, 0, self.base, UI_SCREEN_WIDTH);
+                scrollViewFrame = CGRectMake( (UI_SCREEN_WIDTH - self.base) / 2.0, 0, self.base, UI_SCREEN_WIDTH);
+                maxScale = UI_SCREEN_WIDTH / self.base * 2.0;
+                minScale = 1.0;
+                if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
+                    scrollViewOffset = CGPointMake(0, 0);
+                }else if (compressChange) {
+                    scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
                 }
             }
         }else {
@@ -258,10 +261,10 @@
             imageViewFrame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH * (image.size.height / image.size.width));
             scrollViewContentSize = CGSizeMake(imageViewFrame.size.width, imageViewFrame.size.height);
             maxScale = 3.0;
-            if (!CGPointEqualToPoint(self.photoModel.beginCropPoint, CGPointZero) || !CGPointEqualToPoint(self.photoModel.endCropPoint, CGPointZero)) {
-                // TODO
-            }else {
+            if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
                 scrollViewOffset = CGPointMake(0 , (imageViewFrame.size.height - scrollViewFrame.size.height) / 2.0);
+            }else if (compressChange) {
+                scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
             }
         }
     }
@@ -269,23 +272,20 @@
     MF_WEAK_SELF
     [self.expandButton setUserInteractionEnabled:NO];
     
-    self.scrollView.frame = scrollViewFrame;
-    self.scrollView.zoomScale = minScale;
-    self.scrollView.contentSize = scrollViewContentSize;
-    self.imageView.frame = imageViewFrame;
-    self.scrollView.maximumZoomScale = maxScale;
-    self.scrollView.minimumZoomScale = minScale;
-    self.scrollView.contentOffset = scrollViewOffset;
-    self.scrollView.zoomScale = minScale;
+    self.currentScrollView.frame = scrollViewFrame;
+    self.currentScrollView.zoomScale = minScale;
+    self.currentScrollView.contentSize = scrollViewContentSize;
+    self.currentScrollView.imageView.frame = imageViewFrame;
+    self.currentScrollView.maximumZoomScale = maxScale;
+    self.currentScrollView.minimumZoomScale = minScale;
+    self.currentScrollView.contentOffset = scrollViewOffset;
+    self.currentScrollView.zoomScale = minScale;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakSelf.expandButton setUserInteractionEnabled:YES];
     });
     
-    CGRect frame = [self.scrollView convertRect:self.imageView.frame toView:self];
-    frame = CGRectMake(self.scrollView.frame.origin.x - frame.origin.x, self.scrollView.frame.origin.y - frame.origin.y, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
-    
-    [self _cropImage:self.photoModel.needCrop];
+    [self _cropImage];
     self.inCrop = NO;
 }
 
@@ -304,20 +304,21 @@
 // 是否在裁切图片
 - (BOOL)inCroppingImage {
     
-    return self.photoModel.needCrop && self.inCrop;
+    return self.currentScrollView.photoModel.needCrop && self.inCrop;
 }
 
-- (void)_cropImage:(BOOL)needCrop {
+- (void)_cropImage {
     
     UIImage *cropImage = nil;
-    CGRect imageRect = CGRectMake(0, 0, self.imageView.frame.size.width, self.imageView.frame.size.height);
-    CGPoint contentOffset = self.scrollView.contentOffset;
+    UIImageView *imageView = self.currentScrollView.imageView;
+    CGRect imageRect = CGRectMake(0, 0, imageView.frame.size.width, imageView.frame.size.height);
+    CGPoint contentOffset = self.currentScrollView.contentOffset;
     CGPoint beginPointRatio = CGPointZero;
     CGPoint endPointRatio = CGPointZero;
     if (imageRect.size.height / imageRect.size.width <= 1.0) {
         // 扁长
         if (imageRect.size.height > UI_SCREEN_WIDTH) {
-            imageRect = [self.scrollView convertRect:imageRect toView:self.scrollView.superview];
+            imageRect = [self.currentScrollView convertRect:imageRect toView:self];
             beginPointRatio = CGPointMake(fabs(imageRect.origin.x) / imageRect.size.width, fabs(imageRect.origin.y) / imageRect.size.height);
             endPointRatio = CGPointMake((fabs(imageRect.origin.x) + UI_SCREEN_WIDTH ) / imageRect.size.width, (fabs(imageRect.origin.y) + UI_SCREEN_WIDTH ) / imageRect.size.height);
         }else {
@@ -327,7 +328,7 @@
     }else {
         // 窄长
         if (imageRect.size.width > UI_SCREEN_WIDTH) {
-            imageRect = [self.scrollView convertRect:imageRect toView:self.scrollView.superview];
+            imageRect = [self.currentScrollView convertRect:imageRect toView:self];
             beginPointRatio = CGPointMake(fabs(imageRect.origin.x) / imageRect.size.width, fabs(imageRect.origin.y) / imageRect.size.height);
             endPointRatio = CGPointMake((fabs(imageRect.origin.x) + UI_SCREEN_WIDTH ) / imageRect.size.width, (fabs(imageRect.origin.y) + UI_SCREEN_WIDTH ) / imageRect.size.height);
         }else {
@@ -335,12 +336,12 @@
             endPointRatio = CGPointMake(1.0, (contentOffset.y + UI_SCREEN_WIDTH) / imageRect.size.height);
         }
     }
-    self.photoModel.beginCropPoint = beginPointRatio;
-    self.photoModel.endCropPoint = endPointRatio;
+    self.currentScrollView.photoModel.beginCropPoint = beginPointRatio;
+    self.currentScrollView.photoModel.endCropPoint = endPointRatio;
     
-    if (needCrop) {
-        cropImage = [self.imageView.image fj_imageCropBeginPointRatio:beginPointRatio endPointRatio:endPointRatio];
-        self.photoModel.croppedImage = cropImage;
+    if (self.currentScrollView.photoModel.needCrop) {
+        cropImage = [imageView.image fj_imageCropBeginPointRatio:beginPointRatio endPointRatio:endPointRatio];
+        self.currentScrollView.photoModel.croppedImage = cropImage;
     }
     
     if (self.isDebug) {
@@ -357,25 +358,30 @@
 
 - (IBAction)_tapCompress:(id)sender {
     
-    FJPhotoModel *model = self.photoModel;
+    FJPhotoModel *model = self.currentScrollView.photoModel;
     model.compressed = !model.compressed;
-    [self updateCompressed:model.compressed];
+    
+    // Expand View UI
+    if (model.compressed == YES) {
+        [self.expandImageView setHighlighted:YES];
+    }else {
+        [self.expandImageView setHighlighted:NO];
+    }
+    
+    [self updateImageView:YES];
 }
 
 - (IBAction)_tapUpdown:(UIButton *)sender {
     
-    if (sender.tag == 0) {
-        sender.tag = 1;
-    }else {
-        sender.tag = 0;
-    }
-    self.updownBlock == nil ? : self.updownBlock(sender.tag == 1);
+    BOOL up = ![self getUp];
+    [self updateUp:up];
+    self.updownBlock == nil ? : self.updownBlock(up);
 }
 
 #pragma mark - UISCrollView Delegate
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     
-    return self.imageView;
+    return self.currentScrollView.imageView;
 }
 
 // called before the scroll view begins zooming its content缩放开始的时候调用
@@ -389,9 +395,9 @@
     
     //把当前的缩放比例设进ZoomScale，以便下次缩放时实在现有的比例的基础上
     // NSLog(@"scale is %f",scale);
-    [_scrollView setZoomScale:scale animated:NO];
+    [self.currentScrollView setZoomScale:scale animated:NO];
     
-    [self _cropImage:self.photoModel.needCrop];
+    [self _cropImage];
     self.inCrop = NO;
 }
 
@@ -403,15 +409,15 @@
     // NSLog(@"......scale is %f",scrollView.zoomScale);
     if (self.type == 1 || self.type == 2) {
         if (self.base * scrollView.zoomScale >= UI_SCREEN_WIDTH) {
-            self.scrollView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+            self.currentScrollView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
         }else {
-            self.scrollView.frame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base * scrollView.zoomScale) / 2.0, UI_SCREEN_WIDTH, self.base * scrollView.zoomScale);
+            self.currentScrollView.frame = CGRectMake(0, (UI_SCREEN_WIDTH - self.base * scrollView.zoomScale) / 2.0, UI_SCREEN_WIDTH, self.base * scrollView.zoomScale);
         }
     }else if (self.type == 3 || self.type == 4) {
         if (self.base * scrollView.zoomScale >= UI_SCREEN_WIDTH) {
-            self.scrollView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+            self.currentScrollView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
         }else {
-            self.scrollView.frame = CGRectMake((UI_SCREEN_WIDTH - self.base * scrollView.zoomScale) / 2.0, 0, self.base * scrollView.zoomScale, UI_SCREEN_WIDTH);
+            self.currentScrollView.frame = CGRectMake((UI_SCREEN_WIDTH - self.base * scrollView.zoomScale) / 2.0, 0, self.base * scrollView.zoomScale, UI_SCREEN_WIDTH);
         }
     }
 }
@@ -435,14 +441,14 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
-    [self _cropImage:self.photoModel.needCrop];
+    [self _cropImage];
     self.inCrop = NO;
     // NSLog(@"--- scrollViewDidEndDecelerating NO");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
-    [self _cropImage:self.photoModel.needCrop];
+    [self _cropImage];
     self.inCrop = NO;
     // NSLog(@"--- scrollViewDidEndDragging NO");
 }
