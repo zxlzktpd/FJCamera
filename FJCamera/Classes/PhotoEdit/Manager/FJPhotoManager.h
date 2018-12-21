@@ -24,7 +24,8 @@
 
 // Extra
 @property (nonatomic, assign) BOOL needCrop;
-// TODO
+// 留白和充满标记
+// YES -> 留白    NO  -> 充满
 @property (nonatomic, assign) BOOL compressed;
 @property (nonatomic, assign) CGPoint beginCropPoint;
 @property (nonatomic, assign) CGPoint endCropPoint;
@@ -50,7 +51,7 @@
 - (FJPhotoModel *)add:(PHAsset *)asset;
 
 // 新增，Distinct
-- (FJPhotoModel *)addDistint:(PHAsset *)asset;
+- (FJPhotoModel *)addDistinct:(id)object;
 
 // 删除
 - (void)remove:(PHAsset *)asset;

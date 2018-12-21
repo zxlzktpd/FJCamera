@@ -20,11 +20,6 @@
 @property (nonatomic, weak) IBOutlet UIButton *updownButton;
 @property (nonatomic, strong) UIImageView *imageView;
 
-// 留白和充满标记
-// YES -> 留白
-// NO  -> 充满
-@property (nonatomic, assign) BOOL compressed;
-
 @property (nonatomic, strong) FJPhotoModel *photoModel;
 
 @property (nonatomic, assign) CGFloat horizontalExtemeRatio;
@@ -95,7 +90,7 @@
     if ([model.asset isEqual:self.photoModel.asset]) {
         self.photoModel = model;
         if (model.needCrop) {
-            [self _cropImage];
+            [self _cropImage:model.needCrop];
         }
         return;
     }
@@ -107,13 +102,20 @@
         [self.scrollView addSubview:_imageView];
     }
     _imageView.image = [model.asset getGeneralTargetImage];
-    [self updateCompressed:self.compressed ];
+    [self updateCompressed:model.compressed];
 }
 
 // 更新留白和充满状态
 - (void)updateCompressed:(BOOL)compressed {
     
-    self.compressed = compressed;
+    // Expand View UI
+    if (compressed == YES) {
+        [self.expandImageView setHighlighted:YES];
+    }else {
+        [self.expandImageView setHighlighted:NO];
+    }
+    
+    // 图像处理
     CGRect scrollViewFrame = CGRectZero;
     CGRect imageViewFrame = CGRectZero;
     CGSize scrollViewContentSize = CGSizeZero;
@@ -280,20 +282,10 @@
         [weakSelf.expandButton setUserInteractionEnabled:YES];
     });
     
-    // Expand View UI
-    if (_compressed == YES) {
-        [self.expandImageView setHighlighted:YES];
-    }else {
-        [self.expandImageView setHighlighted:NO];
-    }
-    
     CGRect frame = [self.scrollView convertRect:self.imageView.frame toView:self];
     frame = CGRectMake(self.scrollView.frame.origin.x - frame.origin.x, self.scrollView.frame.origin.y - frame.origin.y, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
     
-    if (self.photoModel.needCrop) {
-        [self _cropImage];
-    }
-    
+    [self _cropImage:self.photoModel.needCrop];
     self.inCrop = NO;
 }
 
@@ -315,27 +307,41 @@
     return self.photoModel.needCrop && self.inCrop;
 }
 
-- (void)_cropImage {
+- (void)_cropImage:(BOOL)needCrop {
     
     UIImage *cropImage = nil;
-    CGRect imageRect = self.imageView.bounds;
+    CGRect imageRect = CGRectMake(0, 0, self.imageView.frame.size.width, self.imageView.frame.size.height);
     CGPoint contentOffset = self.scrollView.contentOffset;
     CGPoint beginPointRatio = CGPointZero;
     CGPoint endPointRatio = CGPointZero;
-    // TODO 算法问题
     if (imageRect.size.height / imageRect.size.width <= 1.0) {
         // 扁长
-        beginPointRatio = CGPointMake(contentOffset.x / imageRect.size.width, 0);
-        endPointRatio = CGPointMake((contentOffset.x + UI_SCREEN_WIDTH) / imageRect.size.width, 1.0);
+        if (imageRect.size.height > UI_SCREEN_WIDTH) {
+            imageRect = [self.scrollView convertRect:imageRect toView:self.scrollView.superview];
+            beginPointRatio = CGPointMake(fabs(imageRect.origin.x) / imageRect.size.width, fabs(imageRect.origin.y) / imageRect.size.height);
+            endPointRatio = CGPointMake((fabs(imageRect.origin.x) + UI_SCREEN_WIDTH ) / imageRect.size.width, (fabs(imageRect.origin.y) + UI_SCREEN_WIDTH ) / imageRect.size.height);
+        }else {
+            beginPointRatio = CGPointMake(contentOffset.x / imageRect.size.width, 0);
+            endPointRatio = CGPointMake((contentOffset.x + UI_SCREEN_WIDTH) / imageRect.size.width, 1.0);
+        }
     }else {
         // 窄长
-        beginPointRatio = CGPointMake(0, contentOffset.y / imageRect.size.height);
-        endPointRatio = CGPointMake(1.0, (contentOffset.y + UI_SCREEN_WIDTH) / imageRect.size.height);
+        if (imageRect.size.width > UI_SCREEN_WIDTH) {
+            imageRect = [self.scrollView convertRect:imageRect toView:self.scrollView.superview];
+            beginPointRatio = CGPointMake(fabs(imageRect.origin.x) / imageRect.size.width, fabs(imageRect.origin.y) / imageRect.size.height);
+            endPointRatio = CGPointMake((fabs(imageRect.origin.x) + UI_SCREEN_WIDTH ) / imageRect.size.width, (fabs(imageRect.origin.y) + UI_SCREEN_WIDTH ) / imageRect.size.height);
+        }else {
+            beginPointRatio = CGPointMake(0, contentOffset.y / imageRect.size.height);
+            endPointRatio = CGPointMake(1.0, (contentOffset.y + UI_SCREEN_WIDTH) / imageRect.size.height);
+        }
     }
-    cropImage = [self.imageView.image fj_imageCropBeginPointRatio:beginPointRatio endPointRatio:endPointRatio];
-    self.photoModel.croppedImage = cropImage;
     self.photoModel.beginCropPoint = beginPointRatio;
     self.photoModel.endCropPoint = endPointRatio;
+    
+    if (needCrop) {
+        cropImage = [self.imageView.image fj_imageCropBeginPointRatio:beginPointRatio endPointRatio:endPointRatio];
+        self.photoModel.croppedImage = cropImage;
+    }
     
     if (self.isDebug) {
         UIImageView *imageView = [MF_KEY_WINDOW viewWithTag:1000];
@@ -351,7 +357,9 @@
 
 - (IBAction)_tapCompress:(id)sender {
     
-    [self updateCompressed:!_compressed];
+    FJPhotoModel *model = self.photoModel;
+    model.compressed = !model.compressed;
+    [self updateCompressed:model.compressed];
 }
 
 - (IBAction)_tapUpdown:(UIButton *)sender {
@@ -382,11 +390,15 @@
     //把当前的缩放比例设进ZoomScale，以便下次缩放时实在现有的比例的基础上
     // NSLog(@"scale is %f",scale);
     [_scrollView setZoomScale:scale animated:NO];
+    
+    [self _cropImage:self.photoModel.needCrop];
+    self.inCrop = NO;
 }
 
 // 缩放时调用
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     
+    self.inCrop = YES;
     // 可以实时监测缩放比例
     // NSLog(@"......scale is %f",scrollView.zoomScale);
     if (self.type == 1 || self.type == 2) {
@@ -423,19 +435,15 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
+    [self _cropImage:self.photoModel.needCrop];
     self.inCrop = NO;
-    if (self.photoModel.needCrop) {
-        [self _cropImage];
-    }
     // NSLog(@"--- scrollViewDidEndDecelerating NO");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
+    [self _cropImage:self.photoModel.needCrop];
     self.inCrop = NO;
-    if (self.photoModel.needCrop) {
-        [self _cropImage];
-    }
     // NSLog(@"--- scrollViewDidEndDragging NO");
 }
 

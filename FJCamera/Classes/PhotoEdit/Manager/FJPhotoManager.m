@@ -173,17 +173,33 @@ static bool isFirstAccess = YES;
 }
 
 // 新增，Distinct
-- (FJPhotoModel *)addDistint:(PHAsset *)asset {
+- (FJPhotoModel *)addDistinct:(id)object {
     
-    if (asset != nil) {
-        for (FJPhotoModel *model in self.allPhotos) {
-            if ([model.asset isEqual:asset]) {
-                return model;
+    if (object != nil) {
+        if ([object isKindOfClass:[PHAsset class]]) {
+            
+            PHAsset *asset = object;
+            for (FJPhotoModel *model in self.allPhotos) {
+                if ([model.asset isEqual:asset]) {
+                    return model;
+                }
             }
+            FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
+            [self.allPhotos addObject:model];
+            return model;
+        }else if ([object isKindOfClass:[FJPhotoModel class]]) {
+            
+            FJPhotoModel *photoModel = object;
+            for (int i = 0; i < self.allPhotos.count; i++) {
+                FJPhotoModel *model = [self.allPhotos objectAtIndex:i];
+                if ([model.asset isEqual:photoModel.asset]) {
+                    [self.allPhotos fj_arrayReplaceObjectAtIndex:i withObject:photoModel];
+                    return photoModel;
+                }
+            }
+            [self.allPhotos addObject:photoModel];
+            return photoModel;
         }
-        FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
-        [self.allPhotos addObject:model];
-        return model;
     }
     return nil;
 }

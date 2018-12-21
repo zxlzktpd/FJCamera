@@ -17,9 +17,6 @@
 // 更新图片
 - (void)updateModel:(FJPhotoModel *)model;
 
-// 更新留白和充满状态
-- (void)updateCompressed:(BOOL)compressed;
-
 // 更新向上和向下的状态
 - (void)updateUp:(BOOL)up;
 

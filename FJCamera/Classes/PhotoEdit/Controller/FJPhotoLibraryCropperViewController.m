@@ -43,9 +43,20 @@
 // First Picture Auto Selected (拍照后刷新自动选择)
 @property (nonatomic, assign) BOOL firstPhotoAutoSelected;
 
+// temporary photo model array
+@property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *temporaryPhotoModels;
+
 @end
 
 @implementation FJPhotoLibraryCropperViewController
+
+- (NSMutableArray<FJPhotoModel *> *)temporaryPhotoModels {
+    
+    if (_temporaryPhotoModels == nil) {
+        _temporaryPhotoModels = (NSMutableArray<FJPhotoModel *> *)[[NSMutableArray alloc] init];
+    }
+    return _temporaryPhotoModels;
+}
 
 - (UIImagePickerController *)imagePickerController {
     
@@ -170,9 +181,8 @@
                 [weakSelf _reloadPhotoAssetCollections];
                 
                 FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
-                FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:ds.photoAsset];
+                FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
-                model.needCrop = NO;
                 [weakSelf.cropperView updateModel:model];
             }
         });
@@ -280,7 +290,8 @@
                             }
                             // 选择
                             ds.isSelected = YES;
-                            FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
+                            FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+                            [[FJPhotoManager shared] addDistinct:model];
                             [weakSelf.selectedPhotos fj_arrayAddObject:model];
                             
                             // 更新CropperView
@@ -296,8 +307,7 @@
                 if ([weakSelf.cropperView inCroppingImage]) {
                     return;
                 }
-                
-                FJPhotoModel *model = [[FJPhotoManager shared] get:ds.photoAsset];
+                FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 model.needCrop = ds.isSelected;
                 [weakSelf.cropperView updateModel:model];
@@ -640,6 +650,18 @@
         return NO;
     }
     return YES;
+}
+
+- (FJPhotoModel *)_addTemporary:(PHAsset *)asset {
+    
+    for (FJPhotoModel *model in self.temporaryPhotoModels) {
+        if ([model.asset isEqual:asset]) {
+            return model;
+        }
+    }
+    FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
+    [self.temporaryPhotoModels fj_arrayAddObject:model];
+    return model;
 }
 
 #pragma mark - UIImagePickerViewController Delegate
