@@ -13,10 +13,21 @@
 #import "FJPhotoUserTagBaseViewController.h"
 #import "FJPhotoManager.h"
 
+typedef NS_ENUM(NSInteger, FJTakePhotoButtonPosition) {
+    
+    FJTakePhotoButtonPositionNone,
+    FJTakePhotoButtonPositionCell,
+    FJTakePhotoButtonPositionBottom
+    
+};
+
 @interface FJPhotoLibraryCropperViewController : UIViewController
 
 // 是否选择单张/多张照片
 @property (nonatomic, assign) BOOL singleSelection;
+
+// 拍照按钮的位置
+@property (nonatomic, assign) FJTakePhotoButtonPosition takeButtonPosition;
 
 // 多张照片选择最多选择张数（默认为9）
 @property (nonatomic, assign) NSUInteger maxSelectionCount;

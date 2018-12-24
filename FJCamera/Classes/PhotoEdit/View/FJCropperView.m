@@ -342,6 +342,7 @@
     if (self.currentScrollView.photoModel.needCrop) {
         cropImage = [imageView.image fj_imageCropBeginPointRatio:beginPointRatio endPointRatio:endPointRatio];
         self.currentScrollView.photoModel.croppedImage = cropImage;
+        [self.currentScrollView.photoModel.filterThumbImages removeAllObjects];
     }
     
     if (self.isDebug) {

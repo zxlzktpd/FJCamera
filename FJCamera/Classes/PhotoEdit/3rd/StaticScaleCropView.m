@@ -163,8 +163,6 @@
 
 - (void)_updateSubViewsFrame {
     
-    NSLog(@"*** _updateSubViewsFrame");
-    
     // 重置
     [_scrollView setMinimumZoomScale:1.0];
     [_scrollView setZoomScale:1.0];

@@ -12,6 +12,7 @@
 #import "FJPhotoCollectionViewCell.h"
 #import "FJCropperView.h"
 #import "PHAsset+Utility.h"
+#import "FJTakePhotoButton.h"
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (60.0)
 #define UPDOWN_LEAST_HEIGHT (60.0)
@@ -30,6 +31,8 @@
 @property (nonatomic, strong) UIButton *nextBtn;
 // 选择相册组件
 @property (nonatomic, strong) FJPhotoLibraryAlbumSelectionView *albumSelectionView;
+// 拍摄照片Button
+@property (nonatomic, strong) FJTakePhotoButton *takePhotoButton;
 // 所有相册
 @property (nonatomic, strong) NSMutableArray<PHAssetCollection *> *photoAssetCollections;
 // 当前相册
@@ -105,6 +108,7 @@
     if (self) {
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
+        self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
     }
     return self;
 }
@@ -215,7 +219,7 @@
     }
     
     if (_cropperView == nil) {
-        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 debug:YES croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
+        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 debug:NO croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
             
         } updownBlock:^(BOOL up) {
             [weakSelf _move:up];
@@ -230,7 +234,9 @@
         _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
         _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
-        _collectionView.fj_collectionView.contentInset = UIEdgeInsetsMake(0, 0, 48.0, 0);
+        if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+            _collectionView.fj_collectionView.contentInset = UIEdgeInsetsMake(0, 0, 48.0, 0);
+        }
     }
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
@@ -316,7 +322,16 @@
     };
     self.collectionView.fj_scrollBlock = ^(UIScrollView *scrollView, FJClScrollBlockType type, CGFloat height, BOOL willDecelerate) {
         
-        if (scrollView.contentOffset.y < 0) {
+        static BOOL endDrag;
+        
+        if (type == FJClScrollBlockTypeDragDidEnd) {
+            endDrag = YES;
+        }else if (type == FJClScrollBlockTypeDragWillBegin) {
+            endDrag = NO;
+        }
+        
+        if (endDrag == NO && scrollView.contentOffset.y < 0) {
+            
             if (weakSelf.cropperView.frame.origin.y <= 0) {
                 weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
                 if (weakSelf.cropperView.frame.origin.y > 0) {
@@ -333,6 +348,21 @@
             }
         }
     };
+    
+    // Take Photo Button
+    if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+        if (_takePhotoButton == nil) {
+            _takePhotoButton = [FJTakePhotoButton create:^{
+                // 打开相机
+                [weakSelf _openCamera];
+            }];
+            [self.view addSubview:_takePhotoButton];
+            [_takePhotoButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.bottom.right.equalTo(weakSelf.view);
+                make.height.equalTo(@48.0);
+            }];
+        }
+    }
 }
 
 - (void)_panAction:(UIPanGestureRecognizer *)panGesture {
@@ -343,7 +373,6 @@
         case UIGestureRecognizerStateBegan:
         {
             y = self.cropperView.frame.origin.y;
-            NSLog(@" === %f", point.y);
             break;
         }
         case UIGestureRecognizerStateChanged:
@@ -590,9 +619,11 @@
     [self.collectionView.fj_dataSource removeAllObjects];
     
     // 相机Placeholder
-    FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];
-    placeholer.isCameraPlaceholer = YES;
-    [self.collectionView.fj_dataSource fj_arrayAddObject:placeholer];
+    if (self.takeButtonPosition == FJTakePhotoButtonPositionCell) {
+        FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];
+        placeholer.isCameraPlaceholer = YES;
+        [self.collectionView.fj_dataSource fj_arrayAddObject:placeholer];
+    }
     
     // 当前选中相册的照片流
     PHFetchOptions *option = [[PHFetchOptions alloc] init];

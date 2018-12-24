@@ -114,6 +114,8 @@
 		E75C067421887E0900836ABD /* ic_edit_saturation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E75C066A21887E0800836ABD /* ic_edit_saturation@2x.png */; };
 		E769026721A2C71900B15DD0 /* FJImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E769026621A2C71900B15DD0 /* FJImagePickerController.m */; };
 		E76FE4E2218C07AA007C9F7A /* FJFilterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */; };
+		E77381D021D0947100E7F4AF /* FJTakePhotoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E77381CF21D0947100E7F4AF /* FJTakePhotoButton.m */; };
+		E77381D221D0947D00E7F4AF /* FJTakePhotoButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = E77381D121D0947D00E7F4AF /* FJTakePhotoButton.xib */; };
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */; };
@@ -313,6 +315,9 @@
 		E769026621A2C71900B15DD0 /* FJImagePickerController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJImagePickerController.m; sourceTree = "<group>"; };
 		E76FE4E0218C07AA007C9F7A /* FJFilterManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterManager.h; sourceTree = "<group>"; };
 		E76FE4E1218C07AA007C9F7A /* FJFilterManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterManager.m; sourceTree = "<group>"; };
+		E77381CE21D0947100E7F4AF /* FJTakePhotoButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJTakePhotoButton.h; sourceTree = "<group>"; };
+		E77381CF21D0947100E7F4AF /* FJTakePhotoButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJTakePhotoButton.m; sourceTree = "<group>"; };
+		E77381D121D0947D00E7F4AF /* FJTakePhotoButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJTakePhotoButton.xib; sourceTree = "<group>"; };
 		E7887478218ACAA600F4E0C4 /* FJFilterImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJFilterImageView.h; sourceTree = "<group>"; };
 		E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJFilterImageView.m; sourceTree = "<group>"; };
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
@@ -699,6 +704,9 @@
 				E73A26D1219AA618001799BA /* FJCropperView.h */,
 				E73A26D2219AA618001799BA /* FJCropperView.m */,
 				E73A26D4219AA630001799BA /* FJCropperView.xib */,
+				E77381CE21D0947100E7F4AF /* FJTakePhotoButton.h */,
+				E77381CF21D0947100E7F4AF /* FJTakePhotoButton.m */,
+				E77381D121D0947D00E7F4AF /* FJTakePhotoButton.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -952,6 +960,7 @@
 				E75C061721883BC900836ABD /* ic_pagecontrol_unselected@3x.png in Resources */,
 				E7DFF9FD2182B3EB0059CE32 /* LaunchScreen.storyboard in Resources */,
 				E74A5BE221A69FE2009E547C /* ic_torch_off@3x.png in Resources */,
+				E77381D221D0947D00E7F4AF /* FJTakePhotoButton.xib in Resources */,
 				E7B5D74321895D7300961662 /* ic_edit_ok@3x.png in Resources */,
 				E75C066D21887E0900836ABD /* ic_edit_contrast@3x.png in Resources */,
 				E748929A21CB743500B98B3C /* ic_photolibrary_down@3x.png in Resources */,
@@ -1137,6 +1146,7 @@
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
 				E7B5D74E21897EAF00961662 /* FJTuningObject.m in Sources */,
 				E7B5D7462189742000961662 /* FJPhotoEditTuningValueView.m in Sources */,
+				E77381D021D0947100E7F4AF /* FJTakePhotoButton.m in Sources */,
 				E74A5BC021A65CEC009E547C /* NSURL+PreviewImage.m in Sources */,
 				E7BA9DF2219043B5009DAD96 /* FJPhotoImageTagView.m in Sources */,
 				E7B6000021943DE4000AC768 /* FJPhotoEditFilterGenreView.m in Sources */,

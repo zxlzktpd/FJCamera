@@ -39,6 +39,10 @@
 
 @implementation FJPhotoEditToolbarView
 
+- (void)dealloc {
+    
+}
+
 - (FJPhotoEditFilterView *)editFilterView {
     
     if (_editFilterView == nil) {

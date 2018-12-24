@@ -82,7 +82,7 @@
 }
 
 - (void)dealloc {
-    NSLog(@"FJPhotoEditViewController dealloc");
+    
 }
 
 - (instancetype)init {

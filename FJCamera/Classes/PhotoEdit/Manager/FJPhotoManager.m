@@ -66,8 +66,10 @@
 
 - (NSMutableArray<UIImage *> *)filterThumbImages {
     
-    if (_filterThumbImages == nil) {
-        _filterThumbImages = (NSMutableArray<UIImage *> *)[[NSMutableArray alloc] init];
+    if (_filterThumbImages == nil || _filterThumbImages.count == 0) {
+        if (_filterThumbImages == nil) {
+            _filterThumbImages = (NSMutableArray<UIImage *> *)[[NSMutableArray alloc] init];
+        }
         for (int i = 0; i < [FJPhotoModel filterTypes].count; i++ ) {
             FJFilterType type = [[[FJPhotoModel filterTypes] objectAtIndex:i] integerValue];
             UIImage *filteredSmallImage = [[FJFilterManager shared] getImage:self.smallOriginalImage filterType:type];
