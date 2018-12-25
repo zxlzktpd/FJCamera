@@ -30,4 +30,9 @@
  */
 - (void)fj_imageSyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast result:(void(^)(UIImage * image))result;
 
+/**
+ *  是否是本地图片
+ */
+- (BOOL)fj_isLocalImage;
+
 @end

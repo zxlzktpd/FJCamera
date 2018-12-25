@@ -476,6 +476,10 @@
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     // 排序（最新排的在前面）
     option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    if (@available(iOS 9.0, *)) {
+        option.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
+    } else {
+    }
     PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
     
     // 判断firstPhotoAutoSelected

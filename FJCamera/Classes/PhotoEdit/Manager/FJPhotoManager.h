@@ -13,6 +13,7 @@
 
 @interface FJPhotoModel : NSObject
 
+@property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, strong) PHAsset *asset;
 @property (nonatomic, strong) UIImage *croppedImage;
 @property (nonatomic, strong) UIImage *originalImage;

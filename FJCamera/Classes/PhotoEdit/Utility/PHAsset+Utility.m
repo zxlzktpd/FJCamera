@@ -86,4 +86,19 @@
     [self fj_imageAsyncTargetSize:targetSize fast:fast result:result];
 }
 
+/**
+ *  是否是本地图片
+ */
+- (BOOL)fj_isLocalImage {
+    
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    option.networkAccessAllowed = NO;
+    option.synchronous = YES;
+    __block BOOL isInLocalImage = YES;
+    [[PHCachingImageManager defaultManager] requestImageDataForAsset:self options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        isInLocalImage = imageData ? YES : NO;
+    }];
+    return isInLocalImage;
+}
+
 @end

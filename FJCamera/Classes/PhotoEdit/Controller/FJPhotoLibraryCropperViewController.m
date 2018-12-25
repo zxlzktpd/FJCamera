@@ -13,6 +13,7 @@
 #import "FJCropperView.h"
 #import "PHAsset+Utility.h"
 #import "FJTakePhotoButton.h"
+#import <FJKit_OC/NSString+UUID_FJ.h>
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (60.0)
 #define UPDOWN_LEAST_HEIGHT (60.0)
@@ -49,6 +50,9 @@
 // temporary photo model array
 @property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *temporaryPhotoModels;
 
+// UUID
+@property (nonatomic, copy) NSString *uuid;
+
 @end
 
 @implementation FJPhotoLibraryCropperViewController
@@ -68,7 +72,7 @@
         _imagePickerController.delegate = self;
         _imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
         _imagePickerController.modalPresentationStyle = UIModalTransitionStyleCrossDissolve;
-        _imagePickerController.allowsEditing = YES;
+        _imagePickerController.allowsEditing = NO;
     }
     return _imagePickerController;
 }
@@ -109,6 +113,8 @@
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
         self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
+        self.iCloudEnabled = NO;
+        self.uuid = [NSString fj_uuidRandomTimestamp];
     }
     return self;
 }
@@ -629,6 +635,12 @@
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     // 排序（最新排的在前面）
     option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+
+    option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
+    if (@available(iOS 9.0, *)) {
+        option.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
+    } else {
+    }
     PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
     
     // 判断firstPhotoAutoSelected
@@ -649,6 +661,9 @@
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];
+        if (self.iCloudEnabled == NO && [asset fj_isLocalImage] == NO) {
+            continue;
+        }
         BOOL isSelected = NO;
         for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
             if ([selectedPhoto.asset isEqual:asset]) {
@@ -691,6 +706,7 @@
         }
     }
     FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
+    model.uuid = self.uuid;
     [self.temporaryPhotoModels fj_arrayAddObject:model];
     return model;
 }

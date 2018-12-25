@@ -194,7 +194,7 @@ static bool isFirstAccess = YES;
             FJPhotoModel *photoModel = object;
             for (int i = 0; i < self.allPhotos.count; i++) {
                 FJPhotoModel *model = [self.allPhotos objectAtIndex:i];
-                if ([model.asset isEqual:photoModel.asset]) {
+                if ([model.asset isEqual:photoModel.asset] && [model.uuid isEqualToString:photoModel.uuid]) {
                     [self.allPhotos fj_arrayReplaceObjectAtIndex:i withObject:photoModel];
                     return photoModel;
                 }
