@@ -70,6 +70,7 @@
 @property (nonatomic, assign) BOOL inCrop;
 @property (nonatomic, assign) BOOL isFirst;
 @property (nonatomic, assign) BOOL isDebug;
+@property (nonatomic, assign) BOOL iCloudEnabled;
 
 @property (nonatomic, copy) void(^croppedBlock)(FJPhotoModel *photoModel, CGRect frame);
 @property (nonatomic, copy) void(^updownBlock)(BOOL up);
@@ -129,16 +130,22 @@
 }
 
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model {
+- (void)updateModel:(FJPhotoModel *)model iCloudEnable:(BOOL)iCloudEnable {
     
+    self.iCloudEnabled = iCloudEnable;
     FJImageScrollView *imageScrollView = nil;
+    UIImage *image = [model.asset getGeneralTargetImage];
+    if (image == nil) {
+        [self _processICloud];
+        return;
+    }
     for (FJImageScrollView *scrollView in self.scrollViews) {
         if (scrollView.photoModel == nil) {
             scrollView.hidden = NO;
             imageScrollView = scrollView;
             self.currentScrollView = scrollView;
             self.currentScrollView.photoModel = model;
-            [self updateImageView:NO];
+            [self _updateImageView:NO image:image];
         }else if ([scrollView.photoModel isEqual:model]) {
             scrollView.hidden = NO;
             imageScrollView = scrollView;
@@ -156,15 +163,41 @@
     if (imageScrollView == nil) {
         [self _buildNewImageScrollView];
         self.currentScrollView.photoModel = model;
-        [self updateImageView:NO];
+        [self _updateImageView:NO image:image];
     }
 }
 
+// 更新向上和向下的状态
+- (void)updateUp:(BOOL)up {
+    
+    [self.updownImageView setHighlighted:up];
+}
+
+// 获取向上和向下的状态
+- (BOOL)getUp {
+    
+    return self.updownImageView.highlighted;
+}
+
+// 是否在裁切图片
+- (BOOL)inCroppingImage {
+    
+    return self.currentScrollView.photoModel.needCrop && self.inCrop;
+}
+
 // 更新留白和充满状态
-- (void)updateImageView:(BOOL)compressChange {
+- (void)_updateImageView:(BOOL)compressChange image:(UIImage *)image {
     
     FJPhotoModel *model = self.currentScrollView.photoModel;
-    self.currentScrollView.imageView.image = [model.asset getGeneralTargetImage];
+    if (image != nil) {
+        self.currentScrollView.imageView.image = image;
+    }else {
+        self.currentScrollView.imageView.image = [model.asset getGeneralTargetImage];
+    }
+    if (self.currentScrollView.imageView.image == nil) {
+        [self _processICloud];
+        return;
+    }
     
     // 图像处理
     CGRect scrollViewFrame = CGRectZero;
@@ -173,7 +206,7 @@
     CGFloat maxScale = 3.0;
     CGFloat minScale = 1.0;
     CGPoint scrollViewOffset = CGPointZero;
-    UIImage *image = self.currentScrollView.imageView.image;
+    image = self.currentScrollView.imageView.image;
     // 初始化计算
     self.type = 0;
     self.base = 0;
@@ -289,24 +322,18 @@
     self.inCrop = NO;
 }
 
-// 更新向上和向下的状态
-- (void)updateUp:(BOOL)up {
+// 处理iCloud照片
+- (void)_processICloud {
     
-    [self.updownImageView setHighlighted:up];
+    if (self.iCloudEnabled) {
+        // TODO 下载iCloud
+        [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
+    }else {
+        [self fj_toast:FJToastImageTypeNone message:@"不支持iCloud照片"];
+    }
 }
 
-// 获取向上和向下的状态
-- (BOOL)getUp {
-    
-    return self.updownImageView.highlighted;
-}
-
-// 是否在裁切图片
-- (BOOL)inCroppingImage {
-    
-    return self.currentScrollView.photoModel.needCrop && self.inCrop;
-}
-
+// 裁切照片
 - (void)_cropImage {
     
     UIImage *cropImage = nil;
@@ -369,7 +396,7 @@
         [self.expandImageView setHighlighted:NO];
     }
     
-    [self updateImageView:YES];
+    [self _updateImageView:YES image:self.currentScrollView.imageView.image];
 }
 
 - (IBAction)_tapUpdown:(UIButton *)sender {

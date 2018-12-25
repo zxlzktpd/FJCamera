@@ -22,7 +22,7 @@
 + (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model;
+- (void)updateModel:(FJPhotoModel *)model iCloudEnable:(BOOL)iCloudEnable;
 
 // 更新向上和向下的状态
 - (void)updateUp:(BOOL)up;
