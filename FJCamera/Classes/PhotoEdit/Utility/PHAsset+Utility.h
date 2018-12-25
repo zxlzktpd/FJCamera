@@ -35,6 +35,4 @@
  */
 - (BOOL)fj_isCloudImage;
 
-- (PHImageRequestID)requestImageDataCompletion:(void (^)(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler;
-
 @end

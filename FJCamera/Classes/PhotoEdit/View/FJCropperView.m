@@ -70,7 +70,6 @@
 @property (nonatomic, assign) BOOL inCrop;
 @property (nonatomic, assign) BOOL isFirst;
 @property (nonatomic, assign) BOOL isDebug;
-@property (nonatomic, assign) BOOL iCloudEnabled;
 
 @property (nonatomic, copy) void(^croppedBlock)(FJPhotoModel *photoModel, CGRect frame);
 @property (nonatomic, copy) void(^updownBlock)(BOOL up);
@@ -130,13 +129,12 @@
 }
 
 // 更新图片
-- (void)updateModel:(FJPhotoModel *)model iCloudEnable:(BOOL)iCloudEnable {
+- (void)updateModel:(FJPhotoModel *)model {
     
-    self.iCloudEnabled = iCloudEnable;
     FJImageScrollView *imageScrollView = nil;
     UIImage *image = [model.asset getGeneralTargetImage];
     if (image == nil) {
-        [self _processICloud];
+        [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
         return;
     }
     for (FJImageScrollView *scrollView in self.scrollViews) {
@@ -195,7 +193,7 @@
         self.currentScrollView.imageView.image = [model.asset getGeneralTargetImage];
     }
     if (self.currentScrollView.imageView.image == nil) {
-        [self _processICloud];
+        [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
         return;
     }
     
@@ -320,23 +318,6 @@
     
     [self _cropImage];
     self.inCrop = NO;
-}
-
-// 处理iCloud照片
-- (void)_processICloud {
-    
-    if (self.iCloudEnabled) {
-        // TODO 下载iCloud
-        [self.currentScrollView.photoModel.asset requestImageDataCompletion:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-            
-        } progressHandler:^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-            
-        }];
-        [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
-        
-    }else {
-        [self fj_toast:FJToastImageTypeNone message:@"不支持iCloud照片"];
-    }
 }
 
 // 裁切照片

@@ -113,7 +113,6 @@
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
         self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
-        self.iCloudEnabled = YES;
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
     }
@@ -194,7 +193,7 @@
                 FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
-                [weakSelf.cropperView updateModel:model iCloudEnable:weakSelf.iCloudEnabled];
+                [weakSelf.cropperView updateModel:model];
             }
         });
     }];
@@ -309,7 +308,7 @@
                             
                             // 更新CropperView
                             model.needCrop = YES;
-                            [weakSelf.cropperView updateModel:model iCloudEnable:weakSelf.iCloudEnabled];
+                            [weakSelf.cropperView updateModel:model];
                         }
                         [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                         [weakSelf _checkNextState];
@@ -323,7 +322,7 @@
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 model.needCrop = ds.isSelected;
-                [weakSelf.cropperView updateModel:model iCloudEnable:weakSelf.iCloudEnabled];
+                [weakSelf.cropperView updateModel:model];
             }
         }
     };
@@ -685,9 +684,6 @@
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];
-        if (self.iCloudEnabled == NO && [asset fj_isCloudImage] == YES) {
-            continue;
-        }
         BOOL isSelected = NO;
         for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
             if ([selectedPhoto.asset isEqual:asset]) {

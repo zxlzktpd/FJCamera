@@ -6,6 +6,7 @@
 //
 
 #import "PHAsset+Utility.h"
+#import <objc/runtime.h>
 
 @implementation PHAsset (Utility)
 
@@ -34,6 +35,7 @@
                 if (iCloudAsyncDownload == YES) {
                     options.networkAccessAllowed = YES;
                     dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        // TODO 优化下载
                         [[PHImageManager defaultManager] requestImageForAsset:weakSelf targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
                         }];
                     });
@@ -100,7 +102,7 @@
     }else {
         targetSize = CGSizeMake(size.width * multiples, size.width * ((CGFloat)self.pixelHeight / (CGFloat)self.pixelWidth) * multiples);
     }
-    [self fj_imageAsyncTargetSize:targetSize fast:fast iCloud:NO progress:nil result:result];
+    [self fj_imageAsyncTargetSize:targetSize fast:fast iCloud:YES progress:nil result:result];
 }
 
 /**
@@ -122,24 +124,6 @@
     }];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     return !isICloudAsset;
-}
-
-- (PHImageRequestID)requestImageDataCompletion:(void (^)(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler {
-    
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (progressHandler) {
-                progressHandler(progress, error, stop, info);
-            }
-        });
-    };
-    options.networkAccessAllowed = YES;
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    int32_t imageRequestID = [[PHImageManager defaultManager] requestImageDataForAsset:self options:options resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-        if (completion) completion(imageData,dataUTI,orientation,info);
-    }];
-    return imageRequestID;
 }
 
 @end

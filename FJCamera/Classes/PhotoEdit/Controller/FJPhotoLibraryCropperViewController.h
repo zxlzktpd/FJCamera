@@ -36,9 +36,6 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 // 拍照按钮的位置
 @property (nonatomic, assign) FJTakePhotoButtonPosition takeButtonPosition;
 
-// 是否支持iCloud照片
-@property (nonatomic, assign) BOOL iCloudEnabled;
-
 // 排序方式
 @property (nonatomic, assign) FJPhotoSortType sortType;
 
