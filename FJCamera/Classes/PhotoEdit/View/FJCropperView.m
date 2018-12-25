@@ -327,7 +327,13 @@
     
     if (self.iCloudEnabled) {
         // TODO 下载iCloud
+        [self.currentScrollView.photoModel.asset requestImageDataCompletion:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+            
+        } progressHandler:^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+            
+        }];
         [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
+        
     }else {
         [self fj_toast:FJToastImageTypeNone message:@"不支持iCloud照片"];
     }

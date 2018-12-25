@@ -12,9 +12,9 @@
 /**
  * 同步获取固定尺寸的图片
  */
-- (UIImage *)fj_imageSyncTargetSize:(CGSize)size fast:(BOOL)fast {
+- (UIImage *)fj_imageSyncTargetSize:(CGSize)size fast:(BOOL)fast iCloudAsyncDownload:(BOOL)iCloudAsyncDownload {
     
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    __block PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
     // 同步获得图片, 只会返回1张图片
     options.synchronous = YES;
     if (fast) {
@@ -25,10 +25,25 @@
         options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     }
     __block UIImage *ret = nil;
+    __weak typeof(self) weakSelf = self;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [[PHImageManager defaultManager] requestImageForAsset:self targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-        ret = image;
-        dispatch_semaphore_signal(semaphore);
+        if (image == nil) {
+            if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue] == YES) {
+                // 异步加载iCloud照片
+                if (iCloudAsyncDownload == YES) {
+                    options.networkAccessAllowed = YES;
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        [[PHImageManager defaultManager] requestImageForAsset:weakSelf targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+                        }];
+                    });
+                }
+            }
+            dispatch_semaphore_signal(semaphore);
+        }else {
+            ret = image;
+            dispatch_semaphore_signal(semaphore);
+        }
     }];
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     return ret;
@@ -37,7 +52,7 @@
 /**
  * 异步获取固定尺寸的图片
  */
-- (void)fj_imageAsyncTargetSize:(CGSize)size fast:(BOOL)fast result:(void(^)(UIImage * image))result {
+- (void)fj_imageAsyncTargetSize:(CGSize)size fast:(BOOL)fast iCloud:(BOOL)iCloud progress:(PHAssetImageProgressHandler)progress result:(void(^)(UIImage * image))result {
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
@@ -50,6 +65,8 @@
             options.resizeMode = PHImageRequestOptionsResizeModeExact;
             options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         }
+        options.networkAccessAllowed = iCloud;
+        options.progressHandler = progress;
         [[PHImageManager defaultManager] requestImageForAsset:self targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 result == nil ? : result(image);
@@ -69,13 +86,13 @@
     }else {
         targetSize = CGSizeMake(size.width * multiples, size.width * ((CGFloat)self.pixelHeight / (CGFloat)self.pixelWidth) * multiples);
     }
-    return [self fj_imageSyncTargetSize:targetSize fast:fast];
+    return [self fj_imageSyncTargetSize:targetSize fast:fast iCloudAsyncDownload:YES];
 }
 
 /**
  * 异步获取固定倍数尺寸的图片
  */
-- (void)fj_imageSyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast result:(void(^)(UIImage * image))result {
+- (void)fj_imageASyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast result:(void(^)(UIImage * image))result {
     
     CGSize targetSize = CGSizeZero;
     if (self.pixelHeight / self.pixelWidth > size.height / size.width) {
@@ -83,7 +100,7 @@
     }else {
         targetSize = CGSizeMake(size.width * multiples, size.width * ((CGFloat)self.pixelHeight / (CGFloat)self.pixelWidth) * multiples);
     }
-    [self fj_imageAsyncTargetSize:targetSize fast:fast result:result];
+    [self fj_imageAsyncTargetSize:targetSize fast:fast iCloud:NO progress:nil result:result];
 }
 
 /**
@@ -95,14 +112,34 @@
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
     options.synchronous = YES;
     __block BOOL isICloudAsset = NO;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [[PHImageManager defaultManager] requestImageForAsset:self targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage *result, NSDictionary *info) {
         //根据请求会调中的参数重 NSDictionary *info 是否有cloudKey 来判断是否是  iCloud
-        if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue])
-        {
+        if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue]) {
             isICloudAsset = YES;
         }
+        dispatch_semaphore_signal(semaphore);
     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     return !isICloudAsset;
+}
+
+- (PHImageRequestID)requestImageDataCompletion:(void (^)(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler {
+    
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (progressHandler) {
+                progressHandler(progress, error, stop, info);
+            }
+        });
+    };
+    options.networkAccessAllowed = YES;
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    int32_t imageRequestID = [[PHImageManager defaultManager] requestImageDataForAsset:self options:options resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+        if (completion) completion(imageData,dataUTI,orientation,info);
+    }];
+    return imageRequestID;
 }
 
 @end

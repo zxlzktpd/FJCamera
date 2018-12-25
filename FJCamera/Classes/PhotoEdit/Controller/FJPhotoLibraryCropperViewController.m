@@ -113,7 +113,7 @@
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
         self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
-        self.iCloudEnabled = NO;
+        self.iCloudEnabled = YES;
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
     }
@@ -455,9 +455,9 @@
         view = [[UIView alloc] init];
         view.tag = 1000;
         view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
-        [self.collectionView addSubview:view];
+        [self.view addSubview:view];
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(weakSelf.collectionView);
+            make.edges.equalTo(weakSelf.view);
         }];
         
         UIButton *btn = [[UIButton alloc] init];
@@ -469,7 +469,7 @@
         [btn addTarget:self action:@selector(_tapBlurView) forControlEvents:UIControlEventTouchUpInside];
         
         CGPoint point = CGPointZero;
-        _albumSelectionView = [FJPhotoLibraryAlbumSelectionView create:point maxColumn:0 photoAssetCollections:self.photoAssetCollections selectedPhotoAssetCollection:self.currentPhotoAssetColletion assetCollectionChangedBlock:^(PHAssetCollection *currentCollection) {
+        _albumSelectionView = [FJPhotoLibraryAlbumSelectionView create:point maxColumn:5 photoAssetCollections:self.photoAssetCollections selectedPhotoAssetCollection:self.currentPhotoAssetColletion assetCollectionChangedBlock:^(PHAssetCollection *currentCollection) {
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [weakSelf _setAblumSelectionViewHidden:YES animation:YES];
@@ -488,7 +488,7 @@
         [view addSubview:_albumSelectionView];
         
     }else {
-        for (UIView *v in self.collectionView.subviews) {
+        for (UIView *v in self.view.subviews) {
             if ([v isMemberOfClass:[UIView class]] && v.tag == 1000) {
                 view = v;
                 break;

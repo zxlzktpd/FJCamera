@@ -277,9 +277,9 @@
         view = [[UIView alloc] init];
         view.tag = 1000;
         view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
-        [self.collectionView addSubview:view];
+        [self.view addSubview:view];
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(weakSelf.collectionView);
+            make.edges.equalTo(weakSelf.view);
         }];
         
         UIButton *btn = [[UIButton alloc] init];
@@ -309,7 +309,7 @@
         [view addSubview:_albumSelectionView];
         
     }else {
-        for (UIView *v in self.collectionView.subviews) {
+        for (UIView *v in self.view.subviews) {
             if ([v isMemberOfClass:[UIView class]] && v.tag == 1000) {
                 view = v;
                 break;
