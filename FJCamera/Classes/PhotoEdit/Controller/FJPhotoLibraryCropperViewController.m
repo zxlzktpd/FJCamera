@@ -114,6 +114,7 @@
         self.photoListColumn = 4;
         self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
         self.iCloudEnabled = NO;
+        self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
     }
     return self;
@@ -634,7 +635,30 @@
     // 当前选中相册的照片流
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     // 排序（最新排的在前面）
-    option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    switch (self.sortType) {
+        case FJPhotoSortTypeModificationDateDesc:
+        {
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
+            break;
+        }
+        case FJPhotoSortTypeModificationDateAsc:
+        {
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:YES]];
+            break;
+        }
+        case FJPhotoSortTypeCreationDateDesc:
+        {
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            break;
+        }
+        case FJPhotoSortTypeCreationDateAsc:
+        {
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+            break;
+        }
+        default:
+            break;
+    }
 
     option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
     if (@available(iOS 9.0, *)) {
@@ -661,7 +685,7 @@
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];
-        if (self.iCloudEnabled == NO && [asset fj_isLocalImage] == NO) {
+        if (self.iCloudEnabled == NO && [asset fj_isCloudImage] == YES) {
             continue;
         }
         BOOL isSelected = NO;

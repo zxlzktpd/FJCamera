@@ -18,7 +18,14 @@ typedef NS_ENUM(NSInteger, FJTakePhotoButtonPosition) {
     FJTakePhotoButtonPositionNone,
     FJTakePhotoButtonPositionCell,
     FJTakePhotoButtonPositionBottom
+};
+
+typedef NS_ENUM(NSInteger, FJPhotoSortType) {
     
+    FJPhotoSortTypeModificationDateDesc,
+    FJPhotoSortTypeModificationDateAsc,
+    FJPhotoSortTypeCreationDateDesc,
+    FJPhotoSortTypeCreationDateAsc
 };
 
 @interface FJPhotoLibraryCropperViewController : UIViewController
@@ -31,6 +38,9 @@ typedef NS_ENUM(NSInteger, FJTakePhotoButtonPosition) {
 
 // 是否支持iCloud照片
 @property (nonatomic, assign) BOOL iCloudEnabled;
+
+// 排序方式
+@property (nonatomic, assign) FJPhotoSortType sortType;
 
 // 多张照片选择最多选择张数（默认为9）
 @property (nonatomic, assign) NSUInteger maxSelectionCount;

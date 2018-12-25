@@ -31,8 +31,8 @@
 - (void)fj_imageSyncTargetSize:(CGSize)size multiples:(CGFloat)multiples fast:(BOOL)fast result:(void(^)(UIImage * image))result;
 
 /**
- *  是否是本地图片
+ *  是否是iCloud图片
  */
-- (BOOL)fj_isLocalImage;
+- (BOOL)fj_isCloudImage;
 
 @end

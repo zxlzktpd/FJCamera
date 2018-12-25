@@ -87,18 +87,22 @@
 }
 
 /**
- *  是否是本地图片
+ *  是否是iCloud图片
  */
-- (BOOL)fj_isLocalImage {
+- (BOOL)fj_isCloudImage {
     
-    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-    option.networkAccessAllowed = NO;
-    option.synchronous = YES;
-    __block BOOL isInLocalImage = YES;
-    [[PHCachingImageManager defaultManager] requestImageDataForAsset:self options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-        isInLocalImage = imageData ? YES : NO;
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.synchronous = YES;
+    __block BOOL isICloudAsset = NO;
+    [[PHImageManager defaultManager] requestImageForAsset:self targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage *result, NSDictionary *info) {
+        //根据请求会调中的参数重 NSDictionary *info 是否有cloudKey 来判断是否是  iCloud
+        if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue])
+        {
+            isICloudAsset = YES;
+        }
     }];
-    return isInLocalImage;
+    return !isICloudAsset;
 }
 
 @end

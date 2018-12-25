@@ -120,8 +120,8 @@
         self.backgroundColor = [UIColor redColor];
         self.currentScrollView.backgroundColor = [UIColor grayColor];
     }else {
-        self.backgroundColor = [UIColor whiteColor];
-        self.currentScrollView.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = @"#F5F5F5".fj_color;
+        self.currentScrollView.backgroundColor = @"#F5F5F5".fj_color;
     }
     
     [self bringSubviewToFront:self.currentScrollView];
