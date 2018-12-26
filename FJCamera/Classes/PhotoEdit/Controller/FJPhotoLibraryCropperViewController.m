@@ -15,8 +15,8 @@
 #import "FJTakePhotoButton.h"
 #import <FJKit_OC/NSString+UUID_FJ.h>
 
-#define PREVIEW_IMAGE_LEAST_HEIGHT (60.0)
-#define UPDOWN_LEAST_HEIGHT (60.0)
+#define PREVIEW_IMAGE_LEAST_HEIGHT (48.0)
+#define UPDOWN_LEAST_HEIGHT (48.0)
 
 @interface FJPhotoLibraryCropperViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -199,6 +199,7 @@
                 }else if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionNone || weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
                     ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:0];
                 }
+                ds.isHighlighted = YES;
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 [weakSelf.cropperView updateModel:model];
@@ -344,6 +345,8 @@
         
         if (endDrag == NO && scrollView.contentOffset.y < 0) {
             
+            weakSelf.cropperView.blurLabel.hidden = YES;
+            
             if (weakSelf.cropperView.frame.origin.y <= 0) {
                 weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
                 if (weakSelf.cropperView.frame.origin.y > 0) {
@@ -389,6 +392,9 @@
         }
         case UIGestureRecognizerStateChanged:
         {
+            
+            self.cropperView.blurLabel.hidden = YES;
+            
             CGRect frame = CGRectMake(0,  y + point.y, self.cropperView.bounds.size.width, self.cropperView.bounds.size.height);
             if (frame.origin.y >= 0) {
                 frame.origin.y = 0;
@@ -689,12 +695,9 @@
     // 相片数据
     int i = 0;
     if (self.firstPhotoAutoSelected) {
+        i = 1;
         self.firstPhotoAutoSelected = NO;
         PHAsset *firstAsset = [assets firstObject];
-        i = 1;
-        FJPhotoModel *model = [[FJPhotoManager shared] add:firstAsset];
-        [self.selectedPhotos fj_arrayAddObject:model];
-        
         __block FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
         ds.isSelected = YES;
@@ -702,13 +705,13 @@
         ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            // 选择
-            FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-            [[FJPhotoManager shared] addDistinct:model];
-            [weakSelf.selectedPhotos fj_arrayAddObject:model];
-            
-            // 更新CropperView
+        // 选择
+        FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+        [[FJPhotoManager shared] addDistinct:model];
+        [self.selectedPhotos fj_arrayAddObject:model];
+        
+        // 更新CropperView
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             model.needCrop = YES;
             [weakSelf.cropperView updateModel:model];
         });
@@ -730,6 +733,9 @@
         [self.collectionView.fj_dataSource addObject:ds];
     }
     [self.collectionView fj_refresh];
+    
+    // 检查下一步的有效性
+    [self _checkNextState];
 }
 
 - (FJPhotoModel *)_addTemporary:(PHAsset *)asset {

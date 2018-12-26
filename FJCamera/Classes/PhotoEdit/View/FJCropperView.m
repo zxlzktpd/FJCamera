@@ -170,6 +170,7 @@
 - (void)updateUp:(BOOL)up {
     
     [self.updownImageView setHighlighted:up];
+    self.blurLabel.hidden = !up;
 }
 
 // 获取向上和向下的状态

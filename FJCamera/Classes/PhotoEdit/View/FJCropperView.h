@@ -19,6 +19,8 @@
 
 @interface FJCropperView : UIView
 
+@property (nonatomic, weak) IBOutlet UILabel *blurLabel;
+
 + (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock;
 
 // 更新图片(返回NO表示iCoud图片下载中)

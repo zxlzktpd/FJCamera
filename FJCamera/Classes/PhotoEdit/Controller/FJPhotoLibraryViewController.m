@@ -213,7 +213,6 @@
                 [weakSelf _openCamera];
             }else {
                 // 选择照片
-                
                 if (ds.isSelected) {
                     // 移除
                     ds.isSelected = NO;
