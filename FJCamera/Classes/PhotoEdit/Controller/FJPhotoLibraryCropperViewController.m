@@ -106,6 +106,10 @@
     return _selectedPhotos;
 }
 
+- (void)dealloc {
+    
+}
+
 - (instancetype)init {
     
     self = [super init];
@@ -189,8 +193,12 @@
                 // 用户允许当前APP访问相册
                 [weakSelf _buildUI];
                 [weakSelf _reloadPhotoAssetCollections];
-                
-                FJPhotoCollectionViewCellDataSource *ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
+                FJPhotoCollectionViewCellDataSource *ds = nil;
+                if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionCell) {
+                    ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
+                }else if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionNone || weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+                    ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:0];
+                }
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 [weakSelf.cropperView updateModel:model];
@@ -248,72 +256,50 @@
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
         if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
             __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
+            if (ds.isCameraPlaceholer) {
+                // 打开相机
+                [weakSelf _openCamera];
+                return;
+            }
             if (type == FJClActionBlockTypeCustomizedTapped) {
                 
                 if ([weakSelf.cropperView inCroppingImage]) {
                     return;
                 }
-                
-                if (ds.isCameraPlaceholer) {
-                    // 打开相机
-                    [weakSelf _openCamera];
-                }else {
-                    // 选择照片
-                    if (weakSelf.singleSelection) {
-                        // 单图
-                        PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-                        //option.synchronous = YES;
-                        //option.resizeMode = PHImageRequestOptionsResizeModeExact;
-                        option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-                        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                            
-                            [[PHImageManager defaultManager] requestImageForAsset:ds.photoAsset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                
-                                BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
-                                if (downloadFinined) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        [weakSelf _openEditingController:result];
-                                    });
-                                }
-                            }];
-                        });
-                    }else {
-                        // 多图
-                        if (ds.isSelected) {
-                            // 移除
-                            ds.isSelected = NO;
-                            [[FJPhotoManager shared] remove:ds.photoAsset];
-                            for (int i = (int)self.selectedPhotos.count - 1; i >= 0; i--) {
-                                FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
-                                if ([photoModel.asset isEqual:ds.photoAsset]) {
-                                    [weakSelf.selectedPhotos removeObjectAtIndex:i];
-                                    break;
-                                }
-                            }
-                        }else {
-                            // 判断是否超出最大选择数量
-                            if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
-                                if (weakSelf.userOverLimitationBlock != nil) {
-                                    weakSelf.userOverLimitationBlock();
-                                }else {
-                                    [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
-                                }
-                                return;
-                            }
-                            // 选择
-                            ds.isSelected = YES;
-                            FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-                            [[FJPhotoManager shared] addDistinct:model];
-                            [weakSelf.selectedPhotos fj_arrayAddObject:model];
-                            
-                            // 更新CropperView
-                            model.needCrop = YES;
-                            [weakSelf.cropperView updateModel:model];
+                // 选择照片
+                if (ds.isSelected) {
+                    // 移除
+                    ds.isSelected = NO;
+                    [[FJPhotoManager shared] remove:ds.photoAsset];
+                    for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
+                        FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
+                        if ([photoModel.asset isEqual:ds.photoAsset]) {
+                            [weakSelf.selectedPhotos removeObjectAtIndex:i];
+                            break;
                         }
-                        [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
-                        [weakSelf _checkNextState];
                     }
+                }else {
+                    // 判断是否超出最大选择数量
+                    if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
+                        if (weakSelf.userOverLimitationBlock != nil) {
+                            weakSelf.userOverLimitationBlock();
+                        }else {
+                            [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                        }
+                        return;
+                    }
+                    // 选择
+                    ds.isSelected = YES;
+                    FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+                    [[FJPhotoManager shared] addDistinct:model];
+                    [weakSelf.selectedPhotos fj_arrayAddObject:model];
+                    
+                    // 更新CropperView
+                    model.needCrop = YES;
+                    [weakSelf.cropperView updateModel:model];
                 }
+                [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
+                [weakSelf _checkNextState];
             }else if (type == FJClActionBlockTypeTapped) {
                 
                 if ([weakSelf.cropperView inCroppingImage]) {
@@ -569,10 +555,6 @@
     }
 }
 
-- (void)_openEditingController:(UIImage *)image {
-    
-}
-
 - (void)_checkNextState {
     
     if (self.selectedPhotos.count > 0) {
@@ -622,6 +604,7 @@
 
 - (void)_render {
     
+    MF_WEAK_SELF
     [self.collectionView.fj_dataSource removeAllObjects];
     
     // 相机Placeholder
@@ -658,7 +641,7 @@
         default:
             break;
     }
-
+    
     option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
     if (@available(iOS 9.0, *)) {
         option.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
@@ -676,11 +659,23 @@
         FJPhotoModel *model = [[FJPhotoManager shared] add:firstAsset];
         [self.selectedPhotos fj_arrayAddObject:model];
         
-        FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
+        __block FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
         ds.isSelected = YES;
         ds.photoAsset = firstAsset;
+        ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            // 选择
+            FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+            [[FJPhotoManager shared] addDistinct:model];
+            [weakSelf.selectedPhotos fj_arrayAddObject:model];
+            
+            // 更新CropperView
+            model.needCrop = YES;
+            [weakSelf.cropperView updateModel:model];
+        });
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];
@@ -695,6 +690,7 @@
         ds.isMultiSelection = YES;
         ds.isSelected = isSelected;
         ds.photoAsset = asset;
+        ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
     }
     [self.collectionView fj_refresh];
@@ -735,7 +731,13 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
-        UIImage *image = info[@"UIImagePickerControllerEditedImage"];
+        UIImage *image = info[UIImagePickerControllerEditedImage];
+        if (image == nil) {
+            image = info[UIImagePickerControllerOriginalImage];
+            if (image == nil) {
+                return;
+            }
+        }
         void *contextInfo = NULL;
         UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), contextInfo);
     }
@@ -743,6 +745,7 @@
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
     
+    [self.view fj_toast:FJToastImageTypeError message:[error description]];
     self.firstPhotoAutoSelected = YES;
     [self.imagePickerController fj_dismiss];
     [self _reloadPhotoAssetCollections];
@@ -754,13 +757,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

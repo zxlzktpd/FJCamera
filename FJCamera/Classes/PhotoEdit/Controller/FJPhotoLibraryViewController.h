@@ -15,9 +15,6 @@
 
 @interface FJPhotoLibraryViewController : UIViewController
 
-// 是否选择单张/多张照片
-@property (nonatomic, assign) BOOL singleSelection;
-
 // 多张照片选择最多选择张数（默认为9）
 @property (nonatomic, assign) NSUInteger maxSelectionCount;
 

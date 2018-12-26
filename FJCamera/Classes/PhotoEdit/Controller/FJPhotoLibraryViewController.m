@@ -134,7 +134,7 @@
             FJAlertModel *cancel = [FJAlertModel alertModel:@"取消" action:^{
                 [weakSelf fj_dismiss];
             }];
-            [self fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:alert,cancel, nil];
+            [weakSelf fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:alert,cancel, nil];
         }
         return;
     }
@@ -213,56 +213,35 @@
                 [weakSelf _openCamera];
             }else {
                 // 选择照片
-                if (weakSelf.singleSelection) {
-                    // 单图
-                    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-                    //option.synchronous = YES;
-                    //option.resizeMode = PHImageRequestOptionsResizeModeExact;
-                    option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                        
-                        [[PHImageManager defaultManager] requestImageForAsset:ds.photoAsset targetSize:CGSizeMake(UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                            
-                            BOOL downloadFinined = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
-                            if (downloadFinined) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    [weakSelf _openEditingController:result];
-                                });
-                            }
-                        }];
-                    });
-                }else {
-                    // 多图
-                    
-                    if (ds.isSelected) {
-                        // 移除
-                        ds.isSelected = NO;
-                        [[FJPhotoManager shared] remove:ds.photoAsset];
-                        for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
-                            FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
-                            if ([photoModel.asset isEqual:ds.photoAsset]) {
-                                [weakSelf.selectedPhotos removeObjectAtIndex:i];
-                                break;
-                            }
+                
+                if (ds.isSelected) {
+                    // 移除
+                    ds.isSelected = NO;
+                    [[FJPhotoManager shared] remove:ds.photoAsset];
+                    for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
+                        FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
+                        if ([photoModel.asset isEqual:ds.photoAsset]) {
+                            [weakSelf.selectedPhotos removeObjectAtIndex:i];
+                            break;
                         }
-                    }else {
-                        // 判断是否超出最大选择数量
-                        if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
-                            if (weakSelf.userOverLimitationBlock != nil) {
-                                weakSelf.userOverLimitationBlock();
-                            }else {
-                                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
-                            }
-                            return;
-                        }
-                        // 选择
-                        ds.isSelected = YES;
-                        FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
-                        [weakSelf.selectedPhotos fj_arrayAddObject:model];
                     }
-                    [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
-                    [weakSelf _checkNextState];
+                }else {
+                    // 判断是否超出最大选择数量
+                    if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
+                        if (weakSelf.userOverLimitationBlock != nil) {
+                            weakSelf.userOverLimitationBlock();
+                        }else {
+                            [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                        }
+                        return;
+                    }
+                    // 选择
+                    ds.isSelected = YES;
+                    FJPhotoModel *model = [[FJPhotoManager shared] add:ds.photoAsset];
+                    [weakSelf.selectedPhotos fj_arrayAddObject:model];
                 }
+                [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
+                [weakSelf _checkNextState];
             }
         }
     };
@@ -496,6 +475,7 @@
         ds.isMultiSelection = YES;
         ds.isSelected = YES;
         ds.photoAsset = firstAsset;
+        ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
     }
     for (; i < assets.count; i++) {
@@ -511,6 +491,7 @@
         ds.isMultiSelection = YES;
         ds.isSelected = isSelected;
         ds.photoAsset = asset;
+        ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
     }
     [self.collectionView fj_refresh];
@@ -534,6 +515,7 @@
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
     
+    [self.view fj_toast:FJToastImageTypeError message:[error description]];
     self.firstPhotoAutoSelected = YES;
     [self.imagePickerController fj_dismiss];
     [self _reloadPhotoAssetCollections];

@@ -7,12 +7,11 @@
 //
 
 #import "FJPhotoCollectionViewCell.h"
-#import <Photos/Photos.h>
+#import "PHAsset+QuickEdit.h"
 
 @interface FJPhotoCollectionViewCell ()
 
 @property (nonatomic, weak) IBOutlet UIImageView *iv_camera;
-
 @property (nonatomic, weak) IBOutlet UIView *v_content;
 @property (nonatomic, weak) IBOutlet UIImageView *iv_cover;
 @property (nonatomic, weak) IBOutlet UIImageView *iv_select;
@@ -20,6 +19,13 @@
 @end
 
 @implementation FJPhotoCollectionViewCell
+
+- (void)dealloc {
+    self.iv_camera = nil;
+    self.v_content = nil;
+    self.iv_cover = nil;
+    self.iv_select = nil;
+}
 
 - (void)awakeFromNib {
     
@@ -45,17 +51,9 @@
     
     // PHAsset
     MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        
-        PHAsset *asset = ds.photoAsset;
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(150.0, 150.0) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.iv_cover setImage:result];
-            });
-        }];
-    });
-    
+    [ds.photoAsset fj_imageAsyncTargetSize:CGSizeMake(UI_SCREEN_WIDTH * 2.0 / (CGFloat)ds.photoListColumn, UI_SCREEN_WIDTH * 2.0 / (CGFloat)ds.photoListColumn) fast:YES iCloud:YES progress:nil result:^(UIImage *image) {
+        [weakSelf.iv_cover setImage:image];
+    }];
     if (ds.isSelected) {
         [self.iv_select setImage:[FJStorage podImage:@"ic_photo_selected" class:[self class]]];
     }else {
@@ -76,9 +74,16 @@
 {
     self = [super init];
     if (self) {
-        self.fj_size = CGSizeMake((UI_SCREEN_WIDTH - 5 * 4) / 4.0, (UI_SCREEN_WIDTH - 5 * 4) / 4.0);
+        self.photoListColumn = 4.0;
+        self.fj_size = CGSizeMake((UI_SCREEN_WIDTH - 5.0 * (CGFloat)self.photoListColumn) / (CGFloat)self.photoListColumn, (UI_SCREEN_WIDTH - 5.0 * (CGFloat)self.photoListColumn) / (CGFloat)self.photoListColumn);
     }
     return self;
+}
+
+- (void)setPhotoListColumn:(NSUInteger)photoListColumn {
+    
+    _photoListColumn = photoListColumn;
+    self.fj_size = CGSizeMake((UI_SCREEN_WIDTH - 5.0 * (CGFloat)photoListColumn) / (CGFloat)photoListColumn, (UI_SCREEN_WIDTH - 5.0 * (CGFloat)photoListColumn) / (CGFloat)photoListColumn);
 }
 
 @end

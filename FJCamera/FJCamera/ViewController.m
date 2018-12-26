@@ -49,6 +49,9 @@
     FJPhotoLibraryCropperViewController *photoLibVC = [[FJPhotoLibraryCropperViewController alloc] initWithMode:FJPhotoEditModeFilter | FJPhotoEditModeTag editController:^__kindof FJPhotoUserTagBaseViewController *(FJPhotoEditViewController *controller) {
         return nil;
     }];
+    photoLibVC.maxSelectionCount = 3;
+    photoLibVC.photoListColumn = 5;
+    photoLibVC.takeButtonPosition = FJTakePhotoButtonPositionBottom;
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }
 

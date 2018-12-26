@@ -30,9 +30,6 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 
 @interface FJPhotoLibraryCropperViewController : UIViewController
 
-// 是否选择单张/多张照片
-@property (nonatomic, assign) BOOL singleSelection;
-
 // 拍照按钮的位置
 @property (nonatomic, assign) FJTakePhotoButtonPosition takeButtonPosition;
 

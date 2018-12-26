@@ -7,6 +7,7 @@
 //
 
 #import "FJPhotoLibraryAlbumCell.h"
+#import "PHAsset+QuickEdit.h"
 
 @interface FJPhotoLibraryAlbumCell()
 
@@ -33,17 +34,12 @@
     FJPhotoLibraryAlbumCellDataSource *ds = data;
     // 获取当前相册 所有照片对象
     PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:ds.assetCollection options:nil];
-    __block PHAsset *firstAsset = assets.lastObject;
+    PHAsset *firstAsset = assets.lastObject;
     
     MF_WEAK_SELF
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [[PHImageManager defaultManager] requestImageForAsset:firstAsset targetSize:CGSizeMake(150.0, 150.0) contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.albumImage setImage:result];
-            });
-        }];
-    });
+    [firstAsset fj_imageAsyncTargetSize:CGSizeMake(150.0, 150.0) fast:YES iCloud:YES progress:nil result:^(UIImage *image) {
+        [weakSelf.albumImage setImage:image];
+    }];
     self.albumLabel.text = ds.assetCollection.localizedTitle;
     self.countLabel.text = MF_STR(assets.count);
     [self.selectImage setHighlighted:ds.isSelected];

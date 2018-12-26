@@ -19,5 +19,6 @@
 @property (nonatomic, assign) BOOL isMultiSelection;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, strong) PHAsset *photoAsset;
+@property (nonatomic, assign) NSUInteger photoListColumn;
 
 @end
