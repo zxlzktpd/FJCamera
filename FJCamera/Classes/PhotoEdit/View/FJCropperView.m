@@ -180,10 +180,12 @@
 }
 
 // 是否在裁切图片
+/*
 - (BOOL)inCroppingImage {
     
     return self.currentScrollView.photoModel.needCrop && self.inCrop;
 }
+*/
 
 // 更新留白和充满状态
 - (void)_updateImageView:(BOOL)compressChange image:(UIImage *)image {

@@ -261,12 +261,15 @@
                 [weakSelf _openCamera];
                 return;
             }
+            
+            /*
             if ([weakSelf.cropperView inCroppingImage]) {
                 if (ds.isSelected == YES) {
                     ds.isSelected = NO;
                 }
                 return;
             }
+            */
             if (type == FJClActionBlockTypeCustomizedTapped) {
                 // 选择照片
                 if (ds.isSelected) {

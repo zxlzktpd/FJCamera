@@ -33,6 +33,6 @@
 - (BOOL)getUp;
 
 // 是否在裁切图片
-- (BOOL)inCroppingImage;
+// - (BOOL)inCroppingImage;
 
 @end
