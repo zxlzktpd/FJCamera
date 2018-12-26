@@ -255,17 +255,19 @@
     
     _collectionView.fj_actionBlock = ^(FJCollectionView *collectionView, FJClActionBlockType type, NSInteger section, NSInteger item, __kindof NSObject *cellData, __kindof UIView *cell) {
         if ([cellData isKindOfClass:[FJPhotoCollectionViewCellDataSource class]]) {
-            __block FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
+            FJPhotoCollectionViewCellDataSource *ds = (FJPhotoCollectionViewCellDataSource *)cellData;
             if (ds.isCameraPlaceholer) {
                 // 打开相机
                 [weakSelf _openCamera];
                 return;
             }
-            if (type == FJClActionBlockTypeCustomizedTapped) {
-                
-                if ([weakSelf.cropperView inCroppingImage]) {
-                    return;
+            if ([weakSelf.cropperView inCroppingImage]) {
+                if (ds.isSelected == YES) {
+                    ds.isSelected = NO;
                 }
+                return;
+            }
+            if (type == FJClActionBlockTypeCustomizedTapped) {
                 // 选择照片
                 if (ds.isSelected) {
                     // 移除
@@ -296,15 +298,15 @@
                     
                     // 更新CropperView
                     model.needCrop = YES;
-                    [weakSelf.cropperView updateModel:model];
+                    BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
+                    if (updateSuccess == NO) {
+                        ds.isSelected = NO;
+                    }
                 }
                 [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
                 [weakSelf _checkNextState];
             }else if (type == FJClActionBlockTypeTapped) {
                 
-                if ([weakSelf.cropperView inCroppingImage]) {
-                    return;
-                }
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 model.needCrop = ds.isSelected;

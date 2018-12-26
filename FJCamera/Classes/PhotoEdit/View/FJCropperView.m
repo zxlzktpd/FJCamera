@@ -128,14 +128,14 @@
     [self bringSubviewToFront:self.toolView];
 }
 
-// 更新图片
-- (void)updateModel:(FJPhotoModel *)model {
+// 更新图片(返回NO表示iCoud图片下载中)
+- (BOOL)updateModel:(FJPhotoModel *)model {
     
     FJImageScrollView *imageScrollView = nil;
     UIImage *image = [model.asset getGeneralTargetImage];
     if (image == nil) {
         [self fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
-        return;
+        return NO;
     }
     for (FJImageScrollView *scrollView in self.scrollViews) {
         if (scrollView.photoModel == nil) {
@@ -163,6 +163,7 @@
         self.currentScrollView.photoModel = model;
         [self _updateImageView:NO image:image];
     }
+    return YES;
 }
 
 // 更新向上和向下的状态
