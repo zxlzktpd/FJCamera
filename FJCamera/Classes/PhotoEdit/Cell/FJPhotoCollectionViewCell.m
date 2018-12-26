@@ -54,10 +54,17 @@
     [ds.photoAsset fj_imageAsyncTargetSize:CGSizeMake(UI_SCREEN_WIDTH * 2.0 / (CGFloat)ds.photoListColumn, UI_SCREEN_WIDTH * 2.0 / (CGFloat)ds.photoListColumn) fast:YES iCloud:YES progress:nil result:^(UIImage *image) {
         [weakSelf.iv_cover setImage:image];
     }];
+    
     if (ds.isSelected) {
         [self.iv_select setImage:[FJStorage podImage:@"ic_photo_selected" class:[self class]]];
     }else {
         [self.iv_select setImage:[FJStorage podImage:@"ic_photo_unselected" class:[self class]]];
+    }
+    
+    if (ds.isHighlighted) {
+        [self fj_cornerRadius:2.0 borderWidth:2.0 boderColor:@"#FF7725".fj_color];
+    }else {
+        [self fj_cornerRadius:0 borderWidth:0 boderColor:[UIColor clearColor]];
     }
 }
 

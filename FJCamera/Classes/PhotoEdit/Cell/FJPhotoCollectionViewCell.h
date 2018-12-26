@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL isCameraPlaceholer;
 @property (nonatomic, assign) BOOL isMultiSelection;
 @property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, assign) BOOL isHighlighted;
 @property (nonatomic, strong) PHAsset *photoAsset;
 @property (nonatomic, assign) NSUInteger photoListColumn;
 

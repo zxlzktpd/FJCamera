@@ -146,13 +146,12 @@
     }];
     
     // 获取权限
-    // 加载相册
     PHAuthorizationStatus oldStatus = [PHPhotoLibrary authorizationStatus];
     if (oldStatus == PHAuthorizationStatusDenied || oldStatus == PHAuthorizationStatusRestricted) {
         if (self.userNoPhotoLibraryPermissionBlock != nil) {
             self.userNoPhotoLibraryPermissionBlock();
         }else {
-            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去开启" action:^{
                 if (@available(iOS 10.0, *)) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
                 } else {
@@ -162,7 +161,7 @@
             FJAlertModel *cancel = [FJAlertModel alertModel:@"取消" action:^{
                 [weakSelf fj_dismiss];
             }];
-            [weakSelf fj_alertView:nil message:@"未获得相册权限" cancel:NO item:alert,cancel, nil];
+            [weakSelf fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:alert,cancel, nil];
         }
         return;
     }
@@ -174,8 +173,7 @@
                 //用户拒绝当前APP访问相册
                 if (oldStatus != PHAuthorizationStatusNotDetermined) {
                     //提醒用户打开开关
-                    MF_WEAK_SELF
-                    FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"前往设置" action:^{
+                    FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"去开启" action:^{
                         NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                         if ([[UIApplication sharedApplication] canOpenURL:url]) {
                             [[UIApplication sharedApplication] openURL:url];
@@ -184,7 +182,9 @@
                     FJAlertModel *cancelAlertModel = [FJAlertModel alertModelDefaultCancel:^{
                         [weakSelf fj_dismiss];
                     }];
-                    [weakSelf fj_alertView:nil message:@"系统设置禁止App访问相册" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+                    [weakSelf fj_alertView:@"打开相册权限" message:@"打开相册权限后，才能浏览相册哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+                }else {
+                    [weakSelf fj_dismiss];
                 }
             }else if (status == PHAuthorizationStatusRestricted) {
                 // (系统原因)无法访问相册
@@ -205,7 +205,6 @@
             }
         });
     }];
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         weakSelf.userInitBlock == nil ? : weakSelf.userInitBlock();
     });
@@ -301,6 +300,7 @@
                     BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
                     if (updateSuccess == NO) {
                         ds.isSelected = NO;
+                        return;
                     }
                 }
                 [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
@@ -310,7 +310,25 @@
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 // 更新CropperView
                 model.needCrop = ds.isSelected;
-                [weakSelf.cropperView updateModel:model];
+                BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
+                if (updateSuccess == NO) {
+                    return;
+                }
+            }
+            for (FJPhotoCollectionViewCellDataSource *data in weakSelf.collectionView.fj_dataSource) {
+                if ([data isEqual:cellData]) {
+                    data.isHighlighted = YES;
+                }else {
+                    data.isHighlighted = NO;
+                }
+            }
+            FJPhotoCollectionViewCell *cl = (FJPhotoCollectionViewCell *)[weakSelf.collectionView.fj_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section]];
+            for (FJPhotoCollectionViewCell *c in [weakSelf.collectionView.fj_collectionView visibleCells]) {
+                if ([c isEqual:cl]) {
+                    [c fj_cornerRadius:2.0 borderWidth:2.0 boderColor:@"#FF7725".fj_color];
+                }else {
+                    [c fj_cornerRadius:0 borderWidth:0 boderColor:[UIColor clearColor]];
+                }
             }
         }
     };
@@ -537,24 +555,40 @@
 
 - (void)_openCamera {
     
-    if ([self _cameraPermission] == NO) {
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
         if (self.userNoCameraPermissionBlock != nil) {
             self.userNoCameraPermissionBlock();
         }else {
-            FJAlertModel *alert = [FJAlertModel alertModel:@"去设置" action:^{
+            FJAlertModel *alert = [FJAlertModel alertModel:@"去开启" action:^{
                 if (@available(iOS 10.0, *)) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly:@""} completionHandler:^(BOOL success){}];
                 } else {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
                 }
             }];
-            [self fj_alertView:nil message:@"未获得相机权限" cancel:YES item:alert, nil];
+            [self fj_alertView:@"打开相机权限" message:@"打开相机权限后，才能拍照哦" cancel:YES item:alert, nil];
         }
         return;
-    }else {
-        
-        [self.navigationController presentViewController:self.imagePickerController animated:YES completion:nil];
     }
+    MF_WEAK_SELF
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+        if (granted) {
+            [weakSelf.navigationController presentViewController:weakSelf.imagePickerController animated:YES completion:nil];
+        }else {
+            //提醒用户打开开关
+            FJAlertModel *goSettingAlertModel = [FJAlertModel alertModel:@"去开启" action:^{
+                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+            }];
+            FJAlertModel *cancelAlertModel = [FJAlertModel alertModelDefaultCancel:^{
+                [weakSelf fj_dismiss];
+            }];
+            [weakSelf fj_alertView:@"打开相机权限" message:@"打开相机权限后，才能拍照哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
+        }
+    }];
 }
 
 - (void)_checkNextState {
@@ -696,24 +730,6 @@
         [self.collectionView.fj_dataSource addObject:ds];
     }
     [self.collectionView fj_refresh];
-}
-
-- (BOOL)_cameraPermission {
-    
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (status == AVAuthorizationStatusDenied || status == AVAuthorizationStatusRestricted) {
-        return NO;
-    }
-    return YES;
-}
-
-- (BOOL)_photoLibraryPermission {
-    
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status == PHAuthorizationStatusDenied || status == PHAuthorizationStatusRestricted) {
-        return NO;
-    }
-    return YES;
 }
 
 - (FJPhotoModel *)_addTemporary:(PHAsset *)asset {

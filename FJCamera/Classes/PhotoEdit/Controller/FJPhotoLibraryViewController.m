@@ -387,11 +387,6 @@
     
 }
 
-- (void)_openEditingController:(UIImage *)image {
-    // TODO
-    
-}
-
 - (void)_checkNextState {
     
     if (self.selectedPhotos.count > 0) {
