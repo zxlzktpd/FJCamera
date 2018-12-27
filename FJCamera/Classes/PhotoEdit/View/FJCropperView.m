@@ -254,7 +254,12 @@
             if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
                 scrollViewOffset = CGPointMake((imageViewFrame.size.width - scrollViewFrame.size.width) / 2.0, 0);
             }else if (compressChange) {
-                scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
+                scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, 0);
+                if (scrollViewOffset.x < 0) {
+                    scrollViewOffset = CGPointMake(0 , 0);
+                }else if (scrollViewOffset.x > imageViewFrame.size.width - scrollViewFrame.size.width) {
+                    scrollViewOffset = CGPointMake(imageViewFrame.size.width - scrollViewFrame.size.width , 0);
+                }
             }
         }
     }else {
@@ -299,7 +304,12 @@
             if (CGPointEqualToPoint(self.currentScrollView.photoModel.beginCropPoint, CGPointZero) && CGPointEqualToPoint(self.currentScrollView.photoModel.endCropPoint, CGPointZero)) {
                 scrollViewOffset = CGPointMake(0 , (imageViewFrame.size.height - scrollViewFrame.size.height) / 2.0);
             }else if (compressChange) {
-                scrollViewOffset = CGPointMake(imageViewFrame.size.width * model.beginCropPoint.x, imageViewFrame.size.height * model.beginCropPoint.y);
+                scrollViewOffset = CGPointMake(0, imageViewFrame.size.height * model.beginCropPoint.y);
+                if (scrollViewOffset.y < 0) {
+                    scrollViewOffset = CGPointMake(0 , 0);
+                }else if (scrollViewOffset.y > imageViewFrame.size.height - scrollViewFrame.size.height) {
+                    scrollViewOffset = CGPointMake(0 , imageViewFrame.size.height - scrollViewFrame.size.height);
+                }
             }
         }
     }
