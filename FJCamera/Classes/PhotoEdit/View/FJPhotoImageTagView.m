@@ -17,22 +17,15 @@
 
 @property (nonatomic, weak) IBOutlet UIView *tagBackgroundView;
 @property (nonatomic, weak) IBOutlet UILabel *textLabel;
-
-@property (nonatomic, weak) IBOutlet UIImageView *tagLeftImageView;
-@property (nonatomic, weak) IBOutlet UIImageView *tagMiddleImageView;
-@property (nonatomic, weak) IBOutlet UIImageView *tagRightImageView;
-
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointUpView;
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointDownView;
-
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *const_top;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *const_bottom;
-
+@property (nonatomic, weak) IBOutlet UIView *tagLineUpView;
+@property (nonatomic, weak) IBOutlet UIView *tagLineDownView;
 @property (nonatomic, strong) FJImageTagModel *model;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, copy) void(^tapBlock)(FJPhotoImageTagView *photoImageTagView);
-@property (nonatomic, copy) void(^movingBlock)(void);
+@property (nonatomic, copy) void(^movingBlock)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView);
 
 @end
 
@@ -42,7 +35,7 @@
     
 }
 
-+ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(void))movingBlock {
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
     
     FJPhotoImageTagView *view = MF_LOAD_NIB(@"FJPhotoImageTagView");
     view.model = model;
@@ -62,32 +55,19 @@
         [view addGestureRecognizer:view.tapGesture];
     }
     
-    view.tagLeftImageView.image = [@"FJPhotoImageTagView.ic_tag_up_left".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
-    view.tagRightImageView.image = [@"FJPhotoImageTagView.ic_tag_up_right".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
-    view.tagLeftImageView.highlightedImage = [@"FJPhotoImageTagView.ic_tag_down_left".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
-    view.tagRightImageView.highlightedImage = [@"FJPhotoImageTagView.ic_tag_down_right".fj_image stretchableImageWithLeftCapWidth:2.0 topCapHeight:4.0];
-    if (model.direction == 0) {
-        [view.tagLeftImageView setHighlighted:NO];
-        [view.tagMiddleImageView setHighlighted:NO];
-        [view.tagRightImageView setHighlighted:NO];
-        view.const_top.constant = 5.0;
-        view.const_bottom.constant = 0;
-    }else if (model.direction == 1) {
-        [view.tagLeftImageView setHighlighted:YES];
-        [view.tagMiddleImageView setHighlighted:YES];
-        [view.tagRightImageView setHighlighted:YES];
-        view.const_top.constant = 0;
-        view.const_bottom.constant = 5.0;
-    }
     if (model.direction == 0) {
         [view.tagPointDownView stopAnimation];
         view.tagPointDownView.hidden = YES;
+        view.tagLineDownView.hidden = YES;
         view.tagPointUpView.hidden = NO;
+        view.tagLineUpView.hidden = NO;
         [view.tagPointUpView startAnimation];
     }else {
         [view.tagPointUpView stopAnimation];
         view.tagPointUpView.hidden = YES;
+        view.tagLineUpView.hidden = YES;
         view.tagPointDownView.hidden = NO;
+        view.tagLineDownView.hidden = NO;
         [view.tagPointDownView startAnimation];
     }
     // 修正view使得view在ContainerSize内
@@ -102,6 +82,9 @@
         view.frame = CGRectMake(view.frame.origin.x, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
         model.yPercent = view.frame.origin.y / containerSize.height;
     }
+    
+    // 圆角修饰
+    [view.tagBackgroundView fj_cornerRadius:12.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     return view;
 }
 
@@ -123,6 +106,8 @@
 
 - (void)_panAction:(UIPanGestureRecognizer *)panGesture {
     
+    UIGestureRecognizerState state = panGesture.state;
+    CGPoint locationPoint = [panGesture locationInView:panGesture.view.superview.superview.superview];
     CGPoint point = [panGesture translationInView:panGesture.view];
     BOOL isContain = CGRectContainsRect(self.superview.bounds, self.frame);
     if (isContain) {
@@ -147,7 +132,7 @@
     [panGesture setTranslation:CGPointZero inView:panGesture.view];
     self.model.xPercent = self.frame.origin.x / self.superview.bounds.size.width;
     self.model.yPercent = self.frame.origin.y / self.superview.bounds.size.height;
-    self.movingBlock == nil ? : self.movingBlock();
+    self.movingBlock == nil ? : self.movingBlock(state, locationPoint, self);
 }
 
 - (void)_tapAction:(UITapGestureRecognizer *)tapGesture {
@@ -155,29 +140,29 @@
     self.tapBlock == nil ? : self.tapBlock(self);
 }
 
+- (IBAction)_tapReverse:(UIButton *)button {
+    
+    [self reverseDirection];
+    self.tapBlock == nil ? : self.tapBlock(self);
+}
+
 - (void)reverseDirection {
     
     if (self.model.direction == 0) {
         self.model.direction = 1;
-        [self.tagLeftImageView setHighlighted:YES];
-        [self.tagMiddleImageView setHighlighted:YES];
-        [self.tagRightImageView setHighlighted:YES];
-        self.const_top.constant = 0;
-        self.const_bottom.constant = 5.0;
         [self.tagPointUpView stopAnimation];
         self.tagPointUpView.hidden = YES;
+        self.tagLineUpView.hidden = YES;
         self.tagPointDownView.hidden = NO;
+        self.tagLineDownView.hidden = NO;
         [self.tagPointDownView startAnimation];
     }else if (self.model.direction == 1) {
         self.model.direction = 0;
-        [self.tagLeftImageView setHighlighted:NO];
-        [self.tagMiddleImageView setHighlighted:NO];
-        [self.tagRightImageView setHighlighted:NO];
-        self.const_top.constant = 5.0;
-        self.const_bottom.constant = 0;
         [self.tagPointDownView stopAnimation];
         self.tagPointDownView.hidden = YES;
+        self.tagLineDownView.hidden = YES;
         self.tagPointUpView.hidden = NO;
+        self.tagLineUpView.hidden = NO;
         [self.tagPointUpView startAnimation];
     }
 }

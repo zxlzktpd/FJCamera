@@ -18,6 +18,7 @@
 #import "FJPhotoImageTagView.h"
 #import "FJPhotoTagAlertView.h"
 #import "FJImageTagModel.h"
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 @interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
@@ -33,8 +34,8 @@
 @property (nonatomic, strong) StaticScaleCropView *cropperView;
 // Filter View
 @property (nonatomic, strong) FJFilterImageView *filterView;
-// Tag Alert View
-@property (nonatomic, strong) FJPhotoTagAlertView *alertView;
+// Tag Deletion ImageView
+@property (nonatomic, strong) UIImageView *deletionImageView;
 // Current ImageView on ScrollView
 @property (nonatomic, strong) UIImageView *currentImageView;
 
@@ -47,6 +48,16 @@
 @end
 
 @implementation FJPhotoEditViewController
+
+- (UIImageView *)deletionImageView {
+    
+    if (_deletionImageView == nil) {
+        _deletionImageView = [[UIImageView alloc] init];
+        _deletionImageView.image = @"FJPhotoEditViewController.ic_tag_garbage".fj_image;
+        [self.view addSubview:_deletionImageView];
+    }
+    return _deletionImageView;
+}
 
 - (UIButton *)nextBtn {
     
@@ -157,7 +168,7 @@
         static NSString *_ratio = nil;
         static BOOL _confirm = NO;
         _toolbar = [FJPhotoEditToolbarView create:self.mode editingBlock:^(BOOL inEditing) {
-
+            
             if (inEditing) {
                 weakSelf.scrollView.hidden = YES;
                 [weakSelf.customTitleView setPageControllHidden:YES];
@@ -232,7 +243,7 @@
                 [weakSelf.cropperView updateCurrentTuning:currentPhoto.tuningObject];
             }
         } tuneBlock:^(FJTuningType type, float value, BOOL confirm) {
-
+            
             FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
             if (confirm) {
                 [currentPhoto.tuningObject setType:type value:value];
@@ -324,7 +335,7 @@
             make.left.bottom.right.equalTo(weakSelf.view);
             make.height.equalTo(@167.0);
         }];
-
+        
         _toolbar.tagBlock = ^{
             
             if ([weakSelf.userTagController isKindOfClass:[FJPhotoUserTagBaseViewController class]]) {
@@ -392,7 +403,7 @@
 }
 
 - (UIImageView *)currentImageView {
-
+    
     FJPhotoModel *currentModel = [FJPhotoManager shared].currentEditPhoto;
     for (UIImageView *imageView in self.scrollView.subviews) {
         if (imageView.tag == [currentModel.asset hash]) {
@@ -451,80 +462,110 @@
 - (void)_addImageTagOnImageView:(UIImageView *)imageView tag:(FJImageTagModel *)tag point:(CGPoint)point {
     
     MF_WEAK_SELF
-    [_alertView removeFromSuperview];
-    _alertView = nil;
-    
     tag.createdTime = [[NSDate date] timeIntervalSince1970];
     tag.xPercent = point.x / imageView.bounds.size.width;
     tag.yPercent = point.y / imageView.bounds.size.height;
+    // 切换方向的Hint
+    __block NSNumber *shownImageTagHint = [[NSUserDefaults standardUserDefaults] valueForKey:@"shownImageTagHint"];
+    if (shownImageTagHint == nil) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@"shownImageTagHint"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point containerSize:imageView.bounds.size model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
-        // 114.0 32.0 4.0
-        CGRect frame = CGRectZero;
-        if (photoImageTagView.frame.size.width > 114.0) {
-            if (photoImageTagView.frame.origin.y >= 36.0) {
-                // 置上
-                frame = CGRectMake(photoImageTagView.frame.origin.x + (photoImageTagView.frame.size.width - 114.0) / 2.0,
-                                   photoImageTagView.frame.origin.y - 36.0,
-                                   114.0,
-                                   32.0);
-            }else {
-                // 置下
-                frame = CGRectMake(photoImageTagView.frame.origin.x + (photoImageTagView.frame.size.width - 114.0) / 2.0,
-                                   photoImageTagView.frame.origin.y + photoImageTagView.frame.size.height + 4.0,
-                                   114.0,
-                                   32.0);
-            }
-        }else {
-            if (photoImageTagView.frame.origin.y >= 36.0) {
-                // 置上
-                frame = CGRectMake(photoImageTagView.frame.origin.x - (114.0 - photoImageTagView.frame.size.width) / 2.0,
-                                   photoImageTagView.frame.origin.y - 36.0,
-                                   114.0,
-                                   32.0);
-            }else {
-                // 置下
-                frame = CGRectMake(photoImageTagView.frame.origin.x - (114.0 - photoImageTagView.frame.size.width) / 2.0,
-                                   photoImageTagView.frame.origin.y + photoImageTagView.frame.size.height + 4.0,
-                                   114.0,
-                                   32.0);
+        
+        if (shownImageTagHint == nil) {
+            for (UILabel *hintLabel in imageView.subviews) {
+                if ([hintLabel isKindOfClass:[UILabel class]] && hintLabel.tag == 1001) {
+                    [hintLabel removeFromSuperview];
+                    break;
+                }
             }
         }
-        if (weakSelf.alertView == nil) {
-            weakSelf.alertView = [FJPhotoTagAlertView create:frame deleteBlock:^{
-                
-                FJPhotoModel *photoModel = [FJPhotoManager shared].currentEditPhoto;
-                [photoModel.imageTags removeObject:[photoImageTagView getTagModel]];
-                [photoImageTagView removeFromSuperview];
-                [weakSelf.alertView removeFromSuperview];
-                weakSelf.alertView = nil;
-            } switchBlock:^{
-                
-                [photoImageTagView reverseDirection];
-                [weakSelf.alertView removeFromSuperview];
-                weakSelf.alertView = nil;
-            }];
-            [imageView addSubview:weakSelf.alertView];
-        }else {
-            if (CGRectEqualToRect(weakSelf.alertView.frame, frame)) {
-                [weakSelf.alertView removeFromSuperview];
-                weakSelf.alertView = nil;
-            }else {
-                weakSelf.alertView.frame = frame;
+    } movingBlock:^(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView) {
+        
+        static BOOL isDeletion;
+        switch (state) {
+            case UIGestureRecognizerStateBegan:
+            {
+                weakSelf.deletionImageView.hidden = NO;
+                weakSelf.deletionImageView.frame = CGRectMake((weakSelf.scrollView.frame.size.width - 48.0) / 2.0, weakSelf.currentImageView.frame.origin.y + weakSelf.currentImageView.frame.size.height - 48.0 - 20.0 , 48.0, 48.0);
+                [self.view bringSubviewToFront:weakSelf.deletionImageView];
+                if (shownImageTagHint == nil) {
+                    for (UILabel *hintLabel in imageView.subviews) {
+                        if ([hintLabel isKindOfClass:[UILabel class]] && hintLabel.tag == 1001) {
+                            [hintLabel removeFromSuperview];
+                            break;
+                        }
+                    }
+                }
+                break;
             }
-        }
-    } movingBlock:^{
-        if (weakSelf.alertView != nil) {
-            [weakSelf.alertView removeFromSuperview];
-            weakSelf.alertView = nil;
+            case UIGestureRecognizerStateChanged:
+            {
+                if (point.x >= weakSelf.deletionImageView.frame.origin.x &&
+                    point.x <= weakSelf.deletionImageView.frame.origin.x + weakSelf.deletionImageView.frame.size.width &&
+                    point.y >= weakSelf.deletionImageView.frame.origin.y &&
+                    point.y <= weakSelf.deletionImageView.frame.origin.y + weakSelf.deletionImageView.frame.size.height) {
+                    if (isDeletion == NO) {
+                        [UIView animateWithDuration:0.3 animations:^{
+                            weakSelf.deletionImageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.5, 1.5);
+                        }];
+                    }
+                    imageTagView.hidden = YES;
+                    isDeletion = YES;
+                }else {
+                    if (isDeletion == YES) {
+                        weakSelf.deletionImageView.transform = CGAffineTransformIdentity;
+                    }
+                    imageTagView.hidden = NO;
+                    isDeletion = NO;
+                }
+                break;
+            }
+            case UIGestureRecognizerStateCancelled:
+            case UIGestureRecognizerStateEnded:
+            {
+                weakSelf.deletionImageView.hidden = YES;
+                if (isDeletion && state == UIGestureRecognizerStateEnded) {
+                    FJPhotoModel *photoModel = [FJPhotoManager shared].currentEditPhoto;
+                    [photoModel.imageTags removeObject:[imageTagView getTagModel]];
+                    [imageTagView removeFromSuperview];
+                }
+                isDeletion = NO;
+                weakSelf.deletionImageView.transform = CGAffineTransformIdentity;
+                break;
+            }
+            default:
+                break;
         }
     }];
     [imageView addSubview:tagView];
+    
+    if (shownImageTagHint == nil) {
+        UILabel *hintTapReverseLabel = [[UILabel alloc] init];
+        hintTapReverseLabel.tag = 1001;
+        hintTapReverseLabel.frame = CGRectMake(tagView.frame.origin.x + tagView.frame.size.width / 2.0 + 8.0, tagView.frame.origin.y - 2.0, 120.0, 18.0);
+        if (hintTapReverseLabel.frame.origin.x + hintTapReverseLabel.frame.size.width >= UI_SCREEN_WIDTH) {
+            hintTapReverseLabel.frame = CGRectMake(hintTapReverseLabel.frame.origin.x - hintTapReverseLabel.frame.size.width - 8.0 * 2.0, hintTapReverseLabel.frame.origin.y, hintTapReverseLabel.frame.size.width, hintTapReverseLabel.frame.size.height);
+        }
+        hintTapReverseLabel.backgroundColor = [@"#FF7725".fj_color colorWithAlphaComponent:0.8];
+        hintTapReverseLabel.attributedText = @"轻触圆点切换方向".typeset.font([UIFont systemFontOfSize:12.0].fontName, 12.0).color([UIColor whiteColor]).textAlignment(NSTextAlignmentCenter).string;
+        [hintTapReverseLabel fj_cornerRadius:hintTapReverseLabel.frame.size.height / 2.0];
+        [imageView addSubview:hintTapReverseLabel];
+        /*
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            for (UILabel *hintLabel in imageView.subviews) {
+                if ([hintLabel isKindOfClass:[UILabel class]] && hintLabel.tag == 1001) {
+                    [hintLabel removeFromSuperview];
+                    break;
+                }
+            }
+        }); */
+    }
 }
 
 - (void)_tapNext {
     
-    [_alertView removeFromSuperview];
-    _alertView = nil;
     self.userEditNextBlock == nil ? : self.userEditNextBlock();
 }
 
