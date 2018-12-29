@@ -37,6 +37,13 @@
                                 <action selector="_tapUpdown:" destination="iN0-l3-epB" eventType="touchUpInside" id="L3C-fG-9J8"/>
                             </connections>
                         </button>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z8z-Pt-A6z">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40371919014084506" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <imageView userInteractionEnabled="NO" tag="200" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_compress.png" highlightedImage="ic_photolibrary_fullfill.png" translatesAutoresizingMaskIntoConstraints="NO" id="X7p-qY-DBG">
                             <rect key="frame" x="8" y="8" width="32" height="32"/>
                             <constraints>
@@ -51,13 +58,6 @@
                                 <constraint firstAttribute="width" constant="32" id="yhG-Yv-2Yk"/>
                             </constraints>
                         </imageView>
-                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z8z-Pt-A6z">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40371919014084506" colorSpace="calibratedRGB"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>

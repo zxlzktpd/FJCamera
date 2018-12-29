@@ -15,7 +15,7 @@
  */
 - (UIImage *)getSmallTargetImage {
     
-    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:0.25 fast:YES];
+    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:0.2 fast:YES];
 }
 
 /**
@@ -23,7 +23,7 @@
  */
 - (UIImage *)getGeneralTargetImage {
     
-    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:2 fast:YES];
+    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:2.0 fast:YES];
 }
 
 /**
@@ -31,7 +31,7 @@
  */
 - (UIImage *)getLargeTargetImage {
     
-    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:3 fast:YES];
+    return [self fj_imageSyncTargetSize:CGSizeMake(FJCAMERA_IMAGE_WIDTH, FJCAMERA_IMAGE_HEIGHT) multiples:3.0 fast:YES];
 }
 
 @end

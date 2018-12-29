@@ -10,8 +10,8 @@
 #import "PHAsset+Utility.h"
 
 // 用于FJPhotoEditViewController
-#define FJCAMERA_IMAGE_WIDTH  (UI_SCREEN_WIDTH)
-#define FJCAMERA_IMAGE_HEIGHT (UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - 167.0)
+#define FJCAMERA_IMAGE_WIDTH  (800.0)
+#define FJCAMERA_IMAGE_HEIGHT (1000.0)
 
 @interface PHAsset (QuickEdit)
 
