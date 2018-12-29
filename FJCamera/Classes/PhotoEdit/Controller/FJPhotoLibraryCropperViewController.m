@@ -338,31 +338,38 @@
     };
     self.collectionView.fj_scrollBlock = ^(UIScrollView *scrollView, FJClScrollBlockType type, CGFloat height, BOOL willDecelerate) {
         
-        static BOOL endDrag;
-        
-        if (type == FJClScrollBlockTypeDragDidEnd) {
-            endDrag = YES;
-        }else if (type == FJClScrollBlockTypeDragWillBegin) {
-            endDrag = NO;
-        }
-        
-        if (endDrag == NO && scrollView.contentOffset.y < 0) {
+        if (type == FJClScrollBlockTypeMoveDown) {
             
-            weakSelf.cropperView.blurLabel.hidden = YES;
-            
-            if (weakSelf.cropperView.frame.origin.y <= 0) {
-                weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
-                if (weakSelf.cropperView.frame.origin.y > 0) {
-                    weakSelf.cropperView.frame = CGRectMake(0, 0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
-                }
-                weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
-            }
-        }
-        if (type == FJClScrollBlockTypeDragDidEnd) {
-            if (weakSelf.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
-                [weakSelf _move:NO];
-            }else {
+            static CGFloat y = 0;
+            if (scrollView.contentOffset.y - y > 10.0) {
                 [weakSelf _move:YES];
+            }
+            y = scrollView.contentOffset.y;
+        }else {
+            static BOOL endDrag;
+            if (type == FJClScrollBlockTypeDragDidEnd) {
+                endDrag = YES;
+            }else if (type == FJClScrollBlockTypeDragWillBegin) {
+                endDrag = NO;
+            }
+            if (endDrag == NO) {
+                if (scrollView.contentOffset.y < 0) {
+                    weakSelf.cropperView.blurLabel.hidden = YES;
+                    if (weakSelf.cropperView.frame.origin.y <= 0) {
+                        weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                        if (weakSelf.cropperView.frame.origin.y > 0) {
+                            weakSelf.cropperView.frame = CGRectMake(0, 0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                        }
+                        weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+                    }
+                }
+            }
+            if (type == FJClScrollBlockTypeDragDidEnd) {
+                if (weakSelf.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
+                    [weakSelf _move:NO];
+                }else {
+                    [weakSelf _move:YES];
+                }
             }
         }
     };
@@ -434,6 +441,11 @@
 
 - (void)_move:(BOOL)up {
     
+    static BOOL inAnimation = NO;
+    if (inAnimation) {
+        return;
+    }
+    
     MF_WEAK_SELF
     CGRect frame = CGRectZero;
     if (up) {
@@ -441,8 +453,7 @@
     }else {
         frame = CGRectMake(0,  0, weakSelf.cropperView.bounds.size.width, weakSelf.cropperView.bounds.size.height);
     }
-    static BOOL inAnimation = NO;
-    if (inAnimation) {
+    if (up == [self.cropperView getUp] && CGRectEqualToRect(weakSelf.cropperView.frame, frame)) {
         return;
     }
     inAnimation = YES;
