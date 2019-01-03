@@ -42,6 +42,9 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 // 照片瀑布流的列数（默认为4）
 @property (nonatomic, assign) NSUInteger photoListColumn;
 
+// 过滤尺寸（小于尺寸的照片不在相册选择中显示）
+@property (nonatomic, assign) CGSize filterMinPhotoPixelSize;
+
 // 启动时的Block
 @property (nonatomic, copy) void(^userInitBlock)(void);
 

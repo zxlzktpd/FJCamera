@@ -119,6 +119,7 @@
         self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
+        self.filterMinPhotoPixelSize = CGSizeMake(400.0, 400.0);
     }
     return self;
 }
@@ -646,7 +647,14 @@
     for (int index = (int)self.photoAssetCollections.count - 1; index >= 0; index--) {
         PHAssetCollection *assetCollection = [self.photoAssetCollections objectAtIndex:index];
         PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-        if (assets == nil || assets.count == 0) {
+        // 过滤小照片
+        int removedCnt = 0;
+        for (PHAsset *asset in assets) {
+            if (asset.pixelWidth < self.filterMinPhotoPixelSize.width && asset.pixelHeight < self.filterMinPhotoPixelSize.height) {
+                removedCnt++;
+            }
+        }
+        if (assets == nil || assets.count == 0 || assets.count == removedCnt) {
             [self.photoAssetCollections removeObjectAtIndex:index];
         }
     }
@@ -732,6 +740,10 @@
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];
+        // 过滤小照片
+        if (asset.pixelWidth < self.filterMinPhotoPixelSize.width && asset.pixelHeight < self.filterMinPhotoPixelSize.height) {
+            continue;
+        }
         BOOL isSelected = NO;
         for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
             if ([selectedPhoto.asset isEqual:asset]) {
