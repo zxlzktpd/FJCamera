@@ -14,6 +14,7 @@
 #import "PHAsset+Utility.h"
 #import "FJTakePhotoButton.h"
 #import <FJKit_OC/NSString+UUID_FJ.h>
+#import "PHAsset+QuickEdit.h"
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (48.0)
 #define UPDOWN_LEAST_HEIGHT (48.0)
@@ -285,6 +286,15 @@
                         }
                     }
                 }else {
+                    // 判断是否是iCloud照片
+                    UIImage *image = [ds.photoAsset getGeneralTargetImage];
+                    if (image == nil) {
+                        if ([weakSelf.view fj_inToasting]) {
+                            return;
+                        }
+                        [weakSelf.view fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
+                        return;
+                    }
                     // 判断是否超出最大选择数量
                     if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
                         if (weakSelf.userOverLimitationBlock != nil) {
