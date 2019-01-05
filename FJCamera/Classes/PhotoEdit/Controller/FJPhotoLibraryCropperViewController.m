@@ -265,13 +265,13 @@
             }
             
             /*
-            if ([weakSelf.cropperView inCroppingImage]) {
-                if (ds.isSelected == YES) {
-                    ds.isSelected = NO;
-                }
-                return;
-            }
-            */
+             if ([weakSelf.cropperView inCroppingImage]) {
+             if (ds.isSelected == YES) {
+             ds.isSelected = NO;
+             }
+             return;
+             }
+             */
             if (type == FJClActionBlockTypeCustomizedTapped) {
                 // 选择照片
                 if (ds.isSelected) {
@@ -732,21 +732,34 @@
         PHAsset *firstAsset = [assets firstObject];
         __block FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
-        ds.isSelected = YES;
+        if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
+            if (weakSelf.userOverLimitationBlock != nil) {
+                weakSelf.userOverLimitationBlock();
+            }else {
+                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+            }
+            ds.isSelected = NO;
+        }else {
+            ds.isSelected = YES;
+        }
         ds.photoAsset = firstAsset;
         ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
         
         // 选择
         FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-        [[FJPhotoManager shared] addDistinct:model];
-        [self.selectedPhotos fj_arrayAddObject:model];
+        if (ds.isSelected) {
+            [[FJPhotoManager shared] addDistinct:model];
+            [self.selectedPhotos fj_arrayAddObject:model];
+        }
         
         // 更新CropperView
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            model.needCrop = YES;
-            [weakSelf.cropperView updateModel:model];
-        });
+        if (ds.isSelected) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                model.needCrop = YES;
+                [weakSelf.cropperView updateModel:model];
+            });
+        }
     }
     for (; i < assets.count; i++) {
         PHAsset *asset = [assets objectAtIndex:i];

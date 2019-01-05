@@ -467,7 +467,16 @@
         
         FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
-        ds.isSelected = YES;
+        if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
+            if (weakSelf.userOverLimitationBlock != nil) {
+                weakSelf.userOverLimitationBlock();
+            }else {
+                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+            }
+            ds.isSelected = NO;
+        }else {
+            ds.isSelected = YES;
+        }
         ds.photoAsset = firstAsset;
         ds.photoListColumn = self.photoListColumn;
         [self.collectionView.fj_dataSource addObject:ds];
