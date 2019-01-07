@@ -35,10 +35,9 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LPg-JW-MdF">
-                                <rect key="frame" x="84" y="0.0" width="36" height="32"/>
+                                <rect key="frame" x="0.0" y="0.0" width="120" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="4cX-WU-iwU"/>
-                                    <constraint firstAttribute="width" constant="36" id="zBe-lA-zwN"/>
+                                    <constraint firstAttribute="height" constant="40" id="4cX-WU-iwU"/>
                                 </constraints>
                                 <connections>
                                     <action selector="_tapSelect:" destination="gTV-IL-0wX" eventType="touchUpInside" id="K1w-83-bym"/>
@@ -47,6 +46,7 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="LPg-JW-MdF" firstAttribute="leading" secondItem="x77-d6-xve" secondAttribute="leading" id="4y2-TB-uDb"/>
                             <constraint firstAttribute="trailing" secondItem="LPg-JW-MdF" secondAttribute="trailing" id="H6U-uy-lbI"/>
                             <constraint firstAttribute="trailing" secondItem="5IJ-pJ-Igd" secondAttribute="trailing" constant="4" id="IUw-8Y-H1t"/>
                             <constraint firstAttribute="trailing" secondItem="w4q-v5-1gJ" secondAttribute="trailing" id="ZXl-zE-BzY"/>
