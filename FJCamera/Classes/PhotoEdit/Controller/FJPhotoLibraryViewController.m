@@ -467,11 +467,11 @@
         
         FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
         ds.isMultiSelection = YES;
-        if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
-            if (weakSelf.userOverLimitationBlock != nil) {
-                weakSelf.userOverLimitationBlock();
+        if (self.selectedPhotos.count == self.maxSelectionCount) {
+            if (self.userOverLimitationBlock != nil) {
+                self.userOverLimitationBlock();
             }else {
-                [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
+                [self.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)self.maxSelectionCount]];
             }
             ds.isSelected = NO;
         }else {
