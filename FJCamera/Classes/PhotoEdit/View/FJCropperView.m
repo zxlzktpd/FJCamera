@@ -10,6 +10,7 @@
 #import "PHAsset+QuickEdit.h"
 #import <FJKit_OC/Macro.h>
 #import <FJKit_OC/UIImage+Utility_FJ.h>
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 @interface FJImageScrollView()
 
@@ -126,6 +127,49 @@
     
     [self bringSubviewToFront:self.currentScrollView];
     [self bringSubviewToFront:self.toolView];
+    
+    // Hint
+    NSString *lastVersion = [FJStorage valueNSObject:@"FJCameraUpdateVersion"];
+    NSString *version = MF_APP_VERSION;
+    if (lastVersion == nil || ![lastVersion isEqualToString:version]) {
+        
+        [FJStorage saveNSObject:version key:@"FJCameraUpdateVersion"];
+        
+        UIImageView *imageView = [[UIImageView alloc] init];
+        [imageView setUserInteractionEnabled:YES];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapHint:)];
+        [imageView addGestureRecognizer:tap];
+        imageView.backgroundColor = [UIColor clearColor];
+        imageView.image = @"FJCropperView.ic_pop_left".fj_image;
+        [self addSubview:imageView];
+        __weak typeof(self) weakSelf = self;
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@170.0);
+            make.height.equalTo(@36.0);
+            make.left.equalTo(weakSelf).offset(10.0);
+            make.bottom.equalTo(weakSelf).offset(-48.0);
+        }];
+        
+        imageView = [[UIImageView alloc] init];
+        [imageView setUserInteractionEnabled:YES];
+        tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapHint:)];
+        [imageView addGestureRecognizer:tap];
+        imageView.backgroundColor = [UIColor clearColor];
+        imageView.image = @"FJCropperView.ic_pop_right".fj_image;
+        [self addSubview:imageView];
+        [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(@124.0);
+            make.height.equalTo(@36.0);
+            make.right.equalTo(weakSelf).offset(-10.0);
+            make.bottom.equalTo(weakSelf).offset(-48.0);
+        }];
+    }
+    
+}
+
+- (void)_tapHint:(UITapGestureRecognizer *)tap {
+    
+    [tap.view removeFromSuperview];
 }
 
 // 更新图片(返回NO表示iCoud图片下载中)

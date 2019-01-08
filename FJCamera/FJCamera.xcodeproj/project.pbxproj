@@ -107,6 +107,10 @@
 		E788747A218ACAA600F4E0C4 /* FJFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7887479218ACAA600F4E0C4 /* FJFilterImageView.m */; };
 		E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */; };
 		E789D4CA218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */; };
+		E78D5DB821E4B1FE009CCA02 /* ic_pop_left@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E78D5DB421E4B1FE009CCA02 /* ic_pop_left@3x.png */; };
+		E78D5DB921E4B1FE009CCA02 /* ic_pop_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E78D5DB521E4B1FE009CCA02 /* ic_pop_left@2x.png */; };
+		E78D5DBA21E4B1FE009CCA02 /* ic_pop_right@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E78D5DB621E4B1FE009CCA02 /* ic_pop_right@3x.png */; };
+		E78D5DBB21E4B1FE009CCA02 /* ic_pop_right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E78D5DB721E4B1FE009CCA02 /* ic_pop_right@2x.png */; };
 		E7916F8521C9E9EF0015640B /* PHAsset+QuickEdit.m in Sources */ = {isa = PBXBuildFile; fileRef = E7916F8421C9E9EF0015640B /* PHAsset+QuickEdit.m */; };
 		E792D2E921916134004465A1 /* FJPhotoTagAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E792D2E821916134004465A1 /* FJPhotoTagAlertView.m */; };
 		E792D2EB21916145004465A1 /* FJPhotoTagAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E792D2EA21916145004465A1 /* FJPhotoTagAlertView.xib */; };
@@ -301,6 +305,10 @@
 		E788747B218ACABA00F4E0C4 /* FJFilterImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJFilterImageView.xib; sourceTree = "<group>"; };
 		E789D4C8218FEC5200B83670 /* FJPhotoUserTagBaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoUserTagBaseViewController.h; sourceTree = "<group>"; };
 		E789D4C9218FEC5200B83670 /* FJPhotoUserTagBaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoUserTagBaseViewController.m; sourceTree = "<group>"; };
+		E78D5DB421E4B1FE009CCA02 /* ic_pop_left@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_pop_left@3x.png"; sourceTree = "<group>"; };
+		E78D5DB521E4B1FE009CCA02 /* ic_pop_left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_pop_left@2x.png"; sourceTree = "<group>"; };
+		E78D5DB621E4B1FE009CCA02 /* ic_pop_right@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_pop_right@3x.png"; sourceTree = "<group>"; };
+		E78D5DB721E4B1FE009CCA02 /* ic_pop_right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_pop_right@2x.png"; sourceTree = "<group>"; };
 		E7916F8321C9E9EF0015640B /* PHAsset+QuickEdit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PHAsset+QuickEdit.h"; sourceTree = "<group>"; };
 		E7916F8421C9E9EF0015640B /* PHAsset+QuickEdit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PHAsset+QuickEdit.m"; sourceTree = "<group>"; };
 		E792D2E721916134004465A1 /* FJPhotoTagAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoTagAlertView.h; sourceTree = "<group>"; };
@@ -744,6 +752,10 @@
 		E7DFFA752182BC560059CE32 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E78D5DB521E4B1FE009CCA02 /* ic_pop_left@2x.png */,
+				E78D5DB421E4B1FE009CCA02 /* ic_pop_left@3x.png */,
+				E78D5DB721E4B1FE009CCA02 /* ic_pop_right@2x.png */,
+				E78D5DB621E4B1FE009CCA02 /* ic_pop_right@3x.png */,
 				E7F6B97821D47C5800AF2662 /* ic_tag_garbage@2x.png */,
 				E7F6B97721D47C5800AF2662 /* ic_tag_garbage@3x.png */,
 				E748929121CB743400B98B3C /* ic_photolibrary_compress@2x.png */,
@@ -901,12 +913,14 @@
 				E7B6FFF02194361B000AC768 /* ic_edit_filter_highlighted@3x.png in Resources */,
 				E7DFFA932182EBAE0059CE32 /* ic_photo_unselected@3x.png in Resources */,
 				E75C06112188395700836ABD /* FJPhotoEditTitleScrollView.xib in Resources */,
+				E78D5DB821E4B1FE009CCA02 /* ic_pop_left@3x.png in Resources */,
 				E75C06592188783200836ABD /* ic_4_5_highlighted@3x.png in Resources */,
 				E74A5BC621A67AB4009E547C /* nav_back_w@3x.png in Resources */,
 				E7B6FFF321943624000AC768 /* ic_edit_tag_highlighted@3x.png in Resources */,
 				E75C066B21887E0900836ABD /* ic_edit_contrast@2x.png in Resources */,
 				E748929C21CB743500B98B3C /* ic_photolibrary_compress@3x.png in Resources */,
 				E75C061821883BC900836ABD /* ic_pagecontrol_selected@2x.png in Resources */,
+				E78D5DBB21E4B1FE009CCA02 /* ic_pop_right@2x.png in Resources */,
 				E75C065F2188783200836ABD /* ic_3_4_highlighted@2x.png in Resources */,
 				E75C06562188783200836ABD /* ic_5_4@3x.png in Resources */,
 				E75C067321887E0900836ABD /* ic_edit_warm@3x.png in Resources */,
@@ -983,12 +997,14 @@
 				E75C065C2188783200836ABD /* ic_3_4_highlighted@3x.png in Resources */,
 				E75C066F21887E0900836ABD /* ic_edit_halation@3x.png in Resources */,
 				E7B6FFF421943624000AC768 /* ic_edit_tag_highlighted@2x.png in Resources */,
+				E78D5DB921E4B1FE009CCA02 /* ic_pop_left@2x.png in Resources */,
 				E75C0628218863A100836ABD /* ic_edit_tag@3x.png in Resources */,
 				E75C062A218863A100836ABD /* ic_edit_tuning@3x.png in Resources */,
 				E7DFFA832182C5030059CE32 /* ic_arrow_down@3x.png in Resources */,
 				E7DFFAA4218311C80059CE32 /* ic_album_unselected@2x.png in Resources */,
 				E7F6B97A21D47C5800AF2662 /* ic_tag_garbage@2x.png in Resources */,
 				E74A5BDD21A69FE2009E547C /* ic_torch_off@2x.png in Resources */,
+				E78D5DBA21E4B1FE009CCA02 /* ic_pop_right@3x.png in Resources */,
 				E7DFFA7E2182C30F0059CE32 /* FJPhotoLibrarySelectionView.xib in Resources */,
 				E75C067221887E0900836ABD /* ic_edit_halation@2x.png in Resources */,
 				E75C0625218863A100836ABD /* ic_edit_tuning@2x.png in Resources */,
