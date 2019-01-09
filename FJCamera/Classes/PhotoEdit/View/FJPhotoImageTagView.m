@@ -83,6 +83,9 @@
         model.yPercent = view.frame.origin.y / containerSize.height;
     }
     
+    // 调整后的frame
+    model.adjustedFrame = view.frame;
+    
     // 圆角修饰
     [view.tagBackgroundView fj_cornerRadius:12.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     return view;

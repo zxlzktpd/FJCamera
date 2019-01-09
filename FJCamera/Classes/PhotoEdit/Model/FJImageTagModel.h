@@ -27,5 +27,7 @@
 @property (nonatomic, assign) int direction;
 // Tag创建时间
 @property (nonatomic, assign) long long createdTime;
+// Tag View Frame (计算后填入，用于页面滑动刷新)
+@property (nonatomic, assign) CGRect adjustedFrame;
 
 @end
