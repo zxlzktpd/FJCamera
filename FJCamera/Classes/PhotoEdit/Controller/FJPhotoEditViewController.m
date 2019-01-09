@@ -488,13 +488,13 @@
     tag.yPercent = point.y / imageView.bounds.size.height;
     // 切换方向的Hint
     __block NSNumber *shownImageTagHint = [[NSUserDefaults standardUserDefaults] valueForKey:@"shownImageTagHint"];
-    if (shownImageTagHint == nil) {
+    if (shownImageTagHint == nil && tag.isHint == NO) {
         [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@"shownImageTagHint"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point containerSize:imageView.bounds.size model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
         
-        if (shownImageTagHint == nil) {
+        if (shownImageTagHint == nil && tag.isHint == NO) {
             for (UILabel *hintLabel in imageView.subviews) {
                 if ([hintLabel isKindOfClass:[UILabel class]] && hintLabel.tag == 1001) {
                     [hintLabel removeFromSuperview];
@@ -511,7 +511,7 @@
                 weakSelf.deletionImageView.hidden = NO;
                 weakSelf.deletionImageView.frame = CGRectMake((weakSelf.scrollView.frame.size.width - 48.0) / 2.0, weakSelf.currentImageView.frame.origin.y + weakSelf.currentImageView.frame.size.height - 48.0 - 20.0 , 48.0, 48.0);
                 [self.view bringSubviewToFront:weakSelf.deletionImageView];
-                if (shownImageTagHint == nil) {
+                if (shownImageTagHint == nil && tag.isHint == NO) {
                     for (UILabel *hintLabel in imageView.subviews) {
                         if ([hintLabel isKindOfClass:[UILabel class]] && hintLabel.tag == 1001) {
                             [hintLabel removeFromSuperview];
@@ -562,14 +562,14 @@
     }];
     [imageView addSubview:tagView];
     
-    if (shownImageTagHint == nil) {
+    if (shownImageTagHint == nil && tag.isHint == NO) {
         UILabel *hintTapReverseLabel = [[UILabel alloc] init];
         hintTapReverseLabel.tag = 1001;
         hintTapReverseLabel.frame = CGRectMake(tagView.frame.origin.x + tagView.frame.size.width / 2.0 + 8.0, tagView.frame.origin.y - 2.0, 120.0, 18.0);
         if (hintTapReverseLabel.frame.origin.x + hintTapReverseLabel.frame.size.width >= UI_SCREEN_WIDTH) {
             hintTapReverseLabel.frame = CGRectMake(hintTapReverseLabel.frame.origin.x - hintTapReverseLabel.frame.size.width - 8.0 * 2.0, hintTapReverseLabel.frame.origin.y, hintTapReverseLabel.frame.size.width, hintTapReverseLabel.frame.size.height);
         }
-        hintTapReverseLabel.backgroundColor = [@"#FF7725".fj_color colorWithAlphaComponent:0.8];
+        hintTapReverseLabel.backgroundColor = @"#FF7A00".fj_color;
         hintTapReverseLabel.attributedText = @"轻触圆点切换方向".typeset.font([UIFont systemFontOfSize:12.0].fontName, 12.0).color([UIColor whiteColor]).textAlignment(NSTextAlignmentCenter).string;
         [hintTapReverseLabel fj_cornerRadius:hintTapReverseLabel.frame.size.height / 2.0];
         [imageView addSubview:hintTapReverseLabel];

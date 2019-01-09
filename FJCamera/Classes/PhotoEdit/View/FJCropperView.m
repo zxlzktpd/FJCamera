@@ -136,6 +136,7 @@
         [FJStorage saveNSObject:version key:@"FJCameraUpdateVersion"];
         
         UIImageView *imageView = [[UIImageView alloc] init];
+        imageView.tag = 1000;
         [imageView setUserInteractionEnabled:YES];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapHint:)];
         [imageView addGestureRecognizer:tap];
@@ -151,6 +152,7 @@
         }];
         
         imageView = [[UIImageView alloc] init];
+        imageView.tag = 2000;
         [imageView setUserInteractionEnabled:YES];
         tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapHint:)];
         [imageView addGestureRecognizer:tap];
@@ -164,7 +166,6 @@
             make.bottom.equalTo(weakSelf).offset(-48.0);
         }];
     }
-    
 }
 
 - (void)_tapHint:(UITapGestureRecognizer *)tap {
@@ -206,6 +207,13 @@
         [self _buildNewImageScrollView];
         self.currentScrollView.photoModel = model;
         [self _updateImageView:NO image:image];
+        
+        // 加载新图片，删除Hint
+        for (UIImageView *imageView in self.subviews) {
+            if (imageView.tag == 1000 || imageView.tag == 2000) {
+                [imageView removeFromSuperview];
+            }
+        }
     }
     return YES;
 }
