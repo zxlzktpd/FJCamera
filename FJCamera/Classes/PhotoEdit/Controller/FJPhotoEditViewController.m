@@ -382,10 +382,21 @@
             imageView.tag = [model.asset hash];
             
             // 添加TagView
-            for (FJImageTagModel *tagModel in model.imageTags) {
-                
-                CGPoint p = CGPointMake(imageView.bounds.size.width * tagModel.xPercent, imageView.bounds.size.height * tagModel.yPercent);
-                [weakSelf _addImageTagOnImageView:imageView tag:tagModel point:p];
+            if (model.imageTags.count == 0) {
+                // 添加提示标签语：添加说明标签可以被更多人看见
+                FJImageTagModel *hintTagModel = [[FJImageTagModel alloc] init];
+                hintTagModel.isHint = YES;
+                hintTagModel.name = @"添加说明标签可以被更多人看见";
+                hintTagModel.xPercent = (UI_SCREEN_WIDTH - 196.0) / 2.0 / UI_SCREEN_WIDTH;
+                hintTagModel.yPercent = (imageView.bounds.size.height - 60.0) / imageView.bounds.size.height;
+                hintTagModel.direction = 0;
+                CGPoint p = CGPointMake(imageView.bounds.size.width * hintTagModel.xPercent, imageView.bounds.size.height * hintTagModel.yPercent);
+                [weakSelf _addImageTagOnImageView:imageView tag:hintTagModel point:p];
+            }else {
+                for (FJImageTagModel *tagModel in model.imageTags) {
+                    CGPoint p = CGPointMake(imageView.bounds.size.width * tagModel.xPercent, imageView.bounds.size.height * tagModel.yPercent);
+                    [weakSelf _addImageTagOnImageView:imageView tag:tagModel point:p];
+                }
             }
             
             // 打Tag手势
@@ -449,6 +460,16 @@
 
 - (void)_tapAddTag:(UITapGestureRecognizer *)tapGesuture {
     
+    // 把Hint Tag View删除
+    for (FJPhotoImageTagView *tagView in self.currentImageView.subviews) {
+        if ([tagView isKindOfClass:[FJPhotoImageTagView class]]) {
+            if ([tagView getTagModel].isHint == YES) {
+                [tagView removeFromSuperview];
+            }
+        }
+    }
+    
+    // 跳转用户的标签选择页面
     UIImageView *imageView = (UIImageView *)tapGesuture.view;
     if ([imageView isKindOfClass:[UIImageView class]]) {
         CGPoint p = [tapGesuture locationInView:imageView];

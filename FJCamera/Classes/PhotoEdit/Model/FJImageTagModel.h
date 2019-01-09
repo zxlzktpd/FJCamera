@@ -29,5 +29,7 @@
 @property (nonatomic, assign) long long createdTime;
 // Tag View Frame (计算后填入，用于页面滑动刷新)
 @property (nonatomic, assign) CGRect adjustedFrame;
+// isHint
+@property (nonatomic, assign) BOOL isHint;
 
 @end

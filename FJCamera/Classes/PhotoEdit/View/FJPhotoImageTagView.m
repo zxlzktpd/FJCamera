@@ -88,6 +88,13 @@
     
     // 圆角修饰
     [view.tagBackgroundView fj_cornerRadius:12.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
+    
+    // 是否是Hint
+    if (model.isHint) {
+        [view setUserInteractionEnabled:NO];
+    }else {
+        [view setUserInteractionEnabled:YES];
+    }
     return view;
 }
 
