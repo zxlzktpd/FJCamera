@@ -70,11 +70,6 @@
     
     CGImageRef cr = CGImageCreateWithImageInRect([_imageView.highlightedImage CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:cr];
-    
-    // fix orientation
-    // UIImage *fixedImage = [UIImage imageWithCGImage:cr scale:1.0 orientation:(UIImageOrientation)cropped.imageOrientation];
-    
-    // cropped = nil;
     CGImageRelease(cr);
     
     return cropped;

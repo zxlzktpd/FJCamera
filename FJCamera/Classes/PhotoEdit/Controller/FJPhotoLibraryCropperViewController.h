@@ -17,7 +17,8 @@ typedef NS_ENUM(NSInteger, FJTakePhotoButtonPosition) {
     
     FJTakePhotoButtonPositionNone,
     FJTakePhotoButtonPositionCell,
-    FJTakePhotoButtonPositionBottom
+    FJTakePhotoButtonPositionBottom,
+    FJTakePhotoButtonPositionBottomWithDraft
 };
 
 typedef NS_ENUM(NSInteger, FJPhotoSortType) {

@@ -11,6 +11,52 @@
 #import "FJTuningObject.h"
 #import "FJImageTagModel.h"
 
+#pragma mark - Photo Saving Model
+@interface FJPhotoPostSavingModel : NSObject
+
+// Photo 信息
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *assetIdentifier;
+@property (nonatomic, strong) FJTuningObject *tuningObject;
+@property (nonatomic, strong) NSMutableArray<FJImageTagModel *> *imageTags;
+@property (nonatomic, assign) BOOL compressed;
+@property (nonatomic, assign) CGFloat beginCropPointX;
+@property (nonatomic, assign) CGFloat beginCropPointY;
+@property (nonatomic, assign) CGFloat endCropPointX;
+@property (nonatomic, assign) CGFloat endCropPointY;
+
+@end
+
+#pragma mark - Post Object Saving Model
+@interface FJPhotoPostDraftSavingModel : NSObject
+
+// Photo 列表
+@property (nonatomic, strong) NSMutableArray<FJPhotoPostSavingModel *> *photos;
+// Extra 信息
+@property (nonatomic, assign) int extraType;
+@property (nonatomic, copy) NSString *extra0;
+@property (nonatomic, copy) NSString *extra1;
+@property (nonatomic, copy) NSString *extra2;
+@property (nonatomic, copy) NSString *extra3;
+@property (nonatomic, copy) NSString *extra4;
+@property (nonatomic, copy) NSString *extra5;
+@property (nonatomic, copy) NSString *extra6;
+@property (nonatomic, copy) NSString *extra7;
+@property (nonatomic, copy) NSString *extra8;
+@property (nonatomic, copy) NSString *extra9;
+// 保存时间
+@property (nonatomic, assign) long long savingDate;
+
+@end
+
+#pragma mark - Post Object List Saving Model
+@interface FJPhotoPostDraftListSavingModel : NSObject
+
+@property (nonatomic, strong) NSMutableArray<FJPhotoPostDraftSavingModel *> *drafts;
+
+@end
+
+#pragma mark - Photo Model
 @interface FJPhotoModel : NSObject
 
 @property (nonatomic, copy) NSString *uuid;
@@ -45,6 +91,8 @@
 
 + (FJPhotoManager *)shared;
 
+#pragma mark - Photo
+
 // 获取
 - (FJPhotoModel *)get:(PHAsset *)asset;
 
@@ -68,5 +116,22 @@
 
 // 清空
 - (void)clean;
+
+#pragma mark - Draft
+
+// 判断存在（用于退出保存）
+- (BOOL)isDraftExist;
+
+// 保存（用于退出保存）
+- (void)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras;
+
+// 加载（用于退出保存）
+- (FJPhotoPostDraftListSavingModel *)loadDraftCache;
+
+// 加载到allPhoto（用于退出保存）
+- (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft;
+
+// 删除（用于退出保存）
+- (void)cleanDraftCache;
 
 @end

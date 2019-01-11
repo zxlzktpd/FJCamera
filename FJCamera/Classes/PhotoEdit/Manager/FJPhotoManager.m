@@ -10,7 +10,58 @@
 #import "PHAsset+QuickEdit.h"
 #import "FJFilterManager.h"
 #import <FJKit_OC/UIImage+Utility_FJ.h>
+#import <FJKit_OC/NSArray+JSON_FJ.h>
+#import <FJKit_OC/NSDate+Utility_FJ.h>
 
+#pragma mark - Photo Saving Model
+@implementation FJPhotoPostSavingModel
+
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    
+    return @{@"tuningObject" : FJTuningObject.class , @"imageTags" : FJImageTagModel.class};
+}
+
+@end
+
+#pragma mark - Post Object Saving Model
+@implementation FJPhotoPostDraftSavingModel
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.photos = (NSMutableArray<FJPhotoPostSavingModel *> *)[[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    
+    return @{@"photos" : FJPhotoPostSavingModel.class};
+}
+
+@end
+
+#pragma mark - Post Object List Saving Model
+@implementation FJPhotoPostDraftListSavingModel
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.drafts = (NSMutableArray<FJPhotoPostDraftSavingModel *> *)[[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
++ (NSDictionary *)modelContainerPropertyGenericClass {
+    
+    return @{@"drafts" : FJPhotoPostDraftSavingModel.class};
+}
+
+@end
+
+#pragma mark - Photo Model
 @implementation FJPhotoModel
 
 - (instancetype)init {
@@ -61,7 +112,7 @@
     if (_croppedImage != nil) {
         return _croppedImage;
     }
-    return _originalImage;
+    return self.originalImage;
 }
 
 - (NSMutableArray<UIImage *> *)filterThumbImages {
@@ -151,6 +202,8 @@ static bool isFirstAccess = YES;
     }
     return _allPhotos;
 }
+
+#pragma mark - Photo
 
 // 获取
 - (FJPhotoModel *)get:(PHAsset *)asset {
@@ -248,5 +301,134 @@ static bool isFirstAccess = YES;
     [self.allPhotos removeAllObjects];
 }
 
+#pragma mark - Draft
+
+// 判断存在（用于退出保存）
+- (BOOL)isDraftExist {
+    
+    FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+    return objectListModel != nil && objectListModel.drafts != nil && objectListModel.drafts.count > 0;
+}
+
+// 保存（用于退出保存）
+- (void)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras {
+    
+    // 判断是否是已经存在已保存的draft中
+    // 如果存在，先删除老的draft，再保存新的draft
+    FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+    if (overwrite && objectListModel.drafts.count > 0) {
+        NSMutableArray *arr = [[NSMutableArray alloc] init];
+        for (int i = (int)objectListModel.drafts.count - 1; i >= 0; i--) {
+            FJPhotoPostDraftSavingModel *draft = [objectListModel.drafts fj_arrayObjectAtIndex:i];
+            [arr removeAllObjects];
+            for (FJPhotoPostSavingModel *photo in draft.photos) {
+                [arr addObject:photo.assetIdentifier];
+            }
+            for (int j = 0; j < self.allPhotos.count; j++) {
+                FJPhotoModel *model = [self.allPhotos fj_arrayObjectAtIndex:j];
+                if ([arr containsObject:model.asset.localIdentifier]) {
+                    if (j == self.allPhotos.count - 1) {
+                        // 存在重复
+                        [objectListModel.drafts fj_arrayRemoveObjectAtIndex:i];
+                    }
+                }else {
+                    break;
+                }
+            }
+        }
+    }
+    
+    if (objectListModel == nil) {
+        objectListModel = [[FJPhotoPostDraftListSavingModel alloc] init];
+    }
+    
+    FJPhotoPostDraftSavingModel *objectModel = [[FJPhotoPostDraftSavingModel alloc] init];
+    objectModel.extraType = extraType;
+    objectModel.extra0 = [extras objectForKey:@"extra0"];
+    objectModel.extra1 = [extras objectForKey:@"extra1"];
+    objectModel.extra2 = [extras objectForKey:@"extra2"];
+    objectModel.extra3 = [extras objectForKey:@"extra3"];
+    objectModel.extra4 = [extras objectForKey:@"extra4"];
+    objectModel.extra5 = [extras objectForKey:@"extra5"];
+    for (FJPhotoModel *model in self.allPhotos) {
+        FJPhotoPostSavingModel *postPhotoModel = [[FJPhotoPostSavingModel alloc] init];
+        postPhotoModel.uuid = model.uuid;
+        postPhotoModel.assetIdentifier = [model.asset localIdentifier];
+        postPhotoModel.tuningObject = model.tuningObject;
+        postPhotoModel.imageTags = model.imageTags;
+        postPhotoModel.compressed = model.compressed;
+        postPhotoModel.beginCropPointX = model.beginCropPoint.x;
+        postPhotoModel.beginCropPointY = model.beginCropPoint.y;
+        postPhotoModel.endCropPointX = model.endCropPoint.x;
+        postPhotoModel.endCropPointY = model.endCropPoint.y;
+        [objectModel.photos addObject:postPhotoModel];
+    }
+    objectModel.savingDate = [NSDate fj_dateTimeStampSince1970];
+    [objectListModel.drafts addObject:objectModel];
+    [FJStorage saveAnyObject:objectListModel];
+}
+
+// 加载（用于退出保存）
+- (FJPhotoPostDraftListSavingModel *)loadDraftCache {
+    
+    FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+    return objectListModel;
+}
+
+// 加载到allPhoto（用于退出保存）
+- (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft {
+    
+    [self clean];
+    for (FJPhotoPostSavingModel *savingPhotoModel in draft.photos) {
+        
+        FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
+        // 定位PHAsset
+        PHAsset *findedAsset = nil;
+        // 系统相机查找
+        PHFetchResult<PHAssetCollection *> *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+        for (PHAssetCollection *collection in collections) {
+            if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumMyPhotoStream || collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumCloudShared) {
+                // 屏蔽 iCloud 照片流
+            }else {
+                PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+                for (PHAsset *asset in assets) {
+                    if ([[asset localIdentifier] isEqualToString:savingPhotoModel.assetIdentifier]) {
+                        findedAsset = asset;
+                        break;
+                    }
+                }
+            }
+        }
+        // 自定义相册查找
+        if (findedAsset == nil) {
+            PHFetchResult<PHAssetCollection *> *customCollections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+            for (PHAssetCollection *collection in customCollections) {
+                PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+                for (PHAsset *asset in assets) {
+                    if ([[asset localIdentifier] isEqualToString:savingPhotoModel.assetIdentifier]) {
+                        findedAsset = asset;
+                        break;
+                    }
+                }
+            }
+        }
+        photoModel.asset = findedAsset;
+        photoModel.uuid = savingPhotoModel.uuid;
+        photoModel.tuningObject = savingPhotoModel.tuningObject;
+        photoModel.imageTags = savingPhotoModel.imageTags;
+        photoModel.compressed = savingPhotoModel.compressed;
+        photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
+        photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
+        UIImage *originalImage = [findedAsset getGeneralTargetImage];
+        photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
+        [self.allPhotos addObject:photoModel];
+    }
+}
+
+// 删除（用于退出保存）
+- (void)cleanDraftCache {
+    
+    [FJStorage clearObject:@"FJPhotoPostDraftListSavingModel"];
+}
 
 @end

@@ -198,7 +198,9 @@
                 FJPhotoCollectionViewCellDataSource *ds = nil;
                 if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionCell) {
                     ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:1];
-                }else if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionNone || weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+                }else if (weakSelf.takeButtonPosition == FJTakePhotoButtonPositionNone ||
+                          weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
+                          weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
                     ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:0];
                 }
                 ds.isHighlighted = YES;
@@ -250,7 +252,8 @@
         _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
         _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
-        if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+        if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
+            self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
             _collectionView.fj_collectionView.contentInset = UIEdgeInsetsMake(0, 0, 48.0, 0);
         }
     }
@@ -386,7 +389,8 @@
     };
     
     // Take Photo Button
-    if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom) {
+    if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
+        self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
         if (_takePhotoButton == nil) {
             _takePhotoButton = [FJTakePhotoButton create:^{
                 // 打开相机
