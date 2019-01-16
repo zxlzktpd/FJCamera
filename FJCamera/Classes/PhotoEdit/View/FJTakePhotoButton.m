@@ -8,25 +8,43 @@
 
 #import "FJTakePhotoButton.h"
 #import <FJKit_OC/Macro.h>
+#import <Masonry/Masonry.h>
 
 @interface FJTakePhotoButton ()
 
+
+@property (nonatomic, weak) IBOutlet UIView *takePhotoView;
+@property (nonatomic, weak) IBOutlet UIView *draftView;
 @property (nonatomic, copy) void(^takePhotoBlock)(void);
+@property (nonatomic, copy) void(^draftBlock)(void);
 
 @end
 
 @implementation FJTakePhotoButton
 
-+ (FJTakePhotoButton *)create:(void(^)(void))takePhotoBlock {
++ (FJTakePhotoButton *)create:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock {
     
     FJTakePhotoButton *button = MF_LOAD_NIB(@"FJTakePhotoButton");
+    if (withDraft) {
+        button.draftBlock = draftBlock;
+    }else {
+        button.draftView.hidden = YES;
+        MF_WEAK_OBJECT(button)
+        [button.takePhotoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(weakbutton);
+        }];
+    }
     button.takePhotoBlock = takePhotoBlock;
     return button;
 }
 
-- (IBAction)_tap:(id)sender {
+- (IBAction)_tap:(UIButton *)sender {
     
-    self.takePhotoBlock == nil ? : self.takePhotoBlock();
+    if (sender.tag == 0) {
+        self.takePhotoBlock == nil ? : self.takePhotoBlock();
+    }else if (sender.tag == 1) {
+        self.draftBlock == nil ? : self.draftBlock();
+    }
 }
 
 /*

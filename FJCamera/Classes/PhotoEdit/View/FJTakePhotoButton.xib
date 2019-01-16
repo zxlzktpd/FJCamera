@@ -18,33 +18,71 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ygU-2g-bIc">
                     <rect key="frame" x="0.0" y="0.0" width="187.5" height="48"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mDN-XR-YuX">
-                            <rect key="frame" x="0.0" y="-1" width="197" height="48"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-oK-dsu">
+                            <rect key="frame" x="82" y="4" width="24" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="afR-c5-uQO"/>
+                                <constraint firstAttribute="width" constant="24" id="orV-pf-GB4"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="拍摄照片" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkR-OB-nkN">
+                            <rect key="frame" x="73.5" y="31" width="41" height="12"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                            <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mDN-XR-YuX">
+                            <rect key="frame" x="0.0" y="0.0" width="187.5" height="48"/>
                             <connections>
                                 <action selector="_tap:" destination="iN0-l3-epB" eventType="touchUpInside" id="HS9-gH-7Te"/>
                             </connections>
                         </button>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-oK-dsu">
-                            <rect key="frame" x="46" y="12" width="24" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="24" id="Ywi-Jv-hL5"/>
-                                <constraint firstAttribute="width" constant="24" id="xNk-X4-dbx"/>
-                            </constraints>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="拍摄照片" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkR-OB-nkN">
-                            <rect key="frame" x="76" y="15.5" width="58" height="17"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <color key="textColor" red="1" green="0.46666666666666667" blue="0.14509803921568626" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="WB0-oK-dsu" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" constant="-36" id="SZy-T5-Pnj"/>
-                        <constraint firstItem="kkR-OB-nkN" firstAttribute="centerY" secondItem="WB0-oK-dsu" secondAttribute="centerY" id="Sa8-0u-VIO"/>
-                        <constraint firstItem="WB0-oK-dsu" firstAttribute="centerY" secondItem="ygU-2g-bIc" secondAttribute="centerY" id="f6e-qx-wjH"/>
-                        <constraint firstItem="kkR-OB-nkN" firstAttribute="leading" secondItem="WB0-oK-dsu" secondAttribute="trailing" constant="6" id="vI9-O8-r1i"/>
+                        <constraint firstItem="WB0-oK-dsu" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" constant="4" id="2rO-Rf-MR0"/>
+                        <constraint firstItem="kkR-OB-nkN" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" id="50r-A3-I5z"/>
+                        <constraint firstItem="mDN-XR-YuX" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" id="d7g-Xv-R40"/>
+                        <constraint firstAttribute="trailing" secondItem="mDN-XR-YuX" secondAttribute="trailing" id="dAJ-GW-czJ"/>
+                        <constraint firstItem="mDN-XR-YuX" firstAttribute="leading" secondItem="ygU-2g-bIc" secondAttribute="leading" id="fFV-ZT-4jp"/>
+                        <constraint firstItem="kkR-OB-nkN" firstAttribute="top" secondItem="WB0-oK-dsu" secondAttribute="bottom" constant="3" id="h1p-dr-Vuh"/>
+                        <constraint firstAttribute="bottom" secondItem="mDN-XR-YuX" secondAttribute="bottom" id="n9m-zr-qju"/>
+                        <constraint firstItem="WB0-oK-dsu" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" id="nAm-vr-Xs4"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fja-v5-6Ml">
+                    <rect key="frame" x="187.5" y="0.0" width="187.5" height="48"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_draft.png" translatesAutoresizingMaskIntoConstraints="NO" id="fiw-48-sRQ">
+                            <rect key="frame" x="82" y="4" width="24" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="24" id="3u2-XB-4Cn"/>
+                                <constraint firstAttribute="height" constant="24" id="ydd-JV-WC1"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="草稿箱" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GuS-WX-wwD">
+                            <rect key="frame" x="78.5" y="31" width="31" height="12"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                            <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cHE-Xr-YYs">
+                            <rect key="frame" x="0.0" y="0.0" width="187.5" height="48"/>
+                            <connections>
+                                <action selector="_tap:" destination="iN0-l3-epB" eventType="touchUpInside" id="g7T-Zh-irZ"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="fiw-48-sRQ" firstAttribute="centerX" secondItem="fja-v5-6Ml" secondAttribute="centerX" id="4Ex-mx-mOc"/>
+                        <constraint firstItem="GuS-WX-wwD" firstAttribute="centerX" secondItem="fja-v5-6Ml" secondAttribute="centerX" id="9qI-8l-cmW"/>
+                        <constraint firstItem="cHE-Xr-YYs" firstAttribute="top" secondItem="fja-v5-6Ml" secondAttribute="top" id="B6z-ta-TC7"/>
+                        <constraint firstItem="cHE-Xr-YYs" firstAttribute="leading" secondItem="fja-v5-6Ml" secondAttribute="leading" id="XUN-4k-A71"/>
+                        <constraint firstItem="fiw-48-sRQ" firstAttribute="top" secondItem="fja-v5-6Ml" secondAttribute="top" constant="4" id="afF-uj-wrm"/>
+                        <constraint firstAttribute="bottom" secondItem="cHE-Xr-YYs" secondAttribute="bottom" id="cq6-Ra-azy"/>
+                        <constraint firstAttribute="trailing" secondItem="cHE-Xr-YYs" secondAttribute="trailing" id="xiT-t5-hsD"/>
+                        <constraint firstItem="GuS-WX-wwD" firstAttribute="top" secondItem="fiw-48-sRQ" secondAttribute="bottom" constant="3" id="yte-sq-bzE"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZIH-n7-7x7">
@@ -52,37 +90,6 @@
                     <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="0.5" id="zOT-65-Ptz"/>
-                    </constraints>
-                </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fja-v5-6Ml">
-                    <rect key="frame" x="187.5" y="0.0" width="187.5" height="48"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cHE-Xr-YYs">
-                            <rect key="frame" x="18" y="-1" width="179" height="48"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <connections>
-                                <action selector="_tap:" destination="iN0-l3-epB" eventType="touchUpInside" id="g7T-Zh-irZ"/>
-                            </connections>
-                        </button>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="fiw-48-sRQ">
-                            <rect key="frame" x="46" y="12" width="24" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="24" id="eCr-kL-h0L"/>
-                                <constraint firstAttribute="width" constant="24" id="nxe-pf-2Wu"/>
-                            </constraints>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="草稿箱" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GuS-WX-wwD">
-                            <rect key="frame" x="80" y="15" width="43" height="17"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <color key="textColor" red="1" green="0.46666666670000001" blue="0.1450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstItem="fiw-48-sRQ" firstAttribute="centerY" secondItem="fja-v5-6Ml" secondAttribute="centerY" id="4DF-7A-MDm"/>
-                        <constraint firstItem="fiw-48-sRQ" firstAttribute="centerX" secondItem="fja-v5-6Ml" secondAttribute="centerX" constant="-36" id="zBF-6P-gpw"/>
                     </constraints>
                 </view>
             </subviews>
@@ -101,10 +108,15 @@
                 <constraint firstItem="ZIH-n7-7x7" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ySD-o9-SbB"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="draftView" destination="fja-v5-6Ml" id="xyZ-ja-O9s"/>
+                <outlet property="takePhotoView" destination="ygU-2g-bIc" id="jLQ-bB-Ql9"/>
+            </connections>
             <point key="canvasLocation" x="132" y="154.72263868065968"/>
         </view>
     </objects>
     <resources>
+        <image name="ic_photolibrary_draft.png" width="24" height="24"/>
         <image name="ic_photolibrary_take.png" width="24" height="24"/>
     </resources>
 </document>

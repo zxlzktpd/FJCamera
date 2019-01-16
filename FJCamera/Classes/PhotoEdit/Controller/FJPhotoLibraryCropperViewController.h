@@ -61,6 +61,9 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 // 用户设置的未获得访问相机权限的Block
 @property (nonatomic, copy) void(^userNoCameraPermissionBlock)(void);
 
+// 用户选择未发布的草稿的Block
+@property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft);
+
 // Mode (Edit Controller)
 @property (nonatomic, assign) FJPhotoEditMode mode;
 

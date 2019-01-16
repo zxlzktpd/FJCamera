@@ -134,4 +134,10 @@
 // 删除（用于退出保存）
 - (void)cleanDraftCache;
 
+// 删除某个Draft（用于退出保存）
+- (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft;
+
+// 根据Asset Identifier查找PHAsset
+- (PHAsset *)findByIdentifier:(NSString *)assetIdentifier;
+
 @end

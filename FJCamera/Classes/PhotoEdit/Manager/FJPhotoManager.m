@@ -383,35 +383,8 @@ static bool isFirstAccess = YES;
         
         FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
         // 定位PHAsset
-        PHAsset *findedAsset = nil;
-        // 系统相机查找
-        PHFetchResult<PHAssetCollection *> *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-        for (PHAssetCollection *collection in collections) {
-            if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumMyPhotoStream || collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumCloudShared) {
-                // 屏蔽 iCloud 照片流
-            }else {
-                PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-                for (PHAsset *asset in assets) {
-                    if ([[asset localIdentifier] isEqualToString:savingPhotoModel.assetIdentifier]) {
-                        findedAsset = asset;
-                        break;
-                    }
-                }
-            }
-        }
-        // 自定义相册查找
-        if (findedAsset == nil) {
-            PHFetchResult<PHAssetCollection *> *customCollections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-            for (PHAssetCollection *collection in customCollections) {
-                PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
-                for (PHAsset *asset in assets) {
-                    if ([[asset localIdentifier] isEqualToString:savingPhotoModel.assetIdentifier]) {
-                        findedAsset = asset;
-                        break;
-                    }
-                }
-            }
-        }
+        PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
+        
         photoModel.asset = findedAsset;
         photoModel.uuid = savingPhotoModel.uuid;
         photoModel.tuningObject = savingPhotoModel.tuningObject;
@@ -429,6 +402,55 @@ static bool isFirstAccess = YES;
 - (void)cleanDraftCache {
     
     [FJStorage clearObject:@"FJPhotoPostDraftListSavingModel"];
+}
+
+// 删除某个Draft（用于退出保存）
+- (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft {
+    
+    FJPhotoPostDraftListSavingModel *draftList = [self loadDraftCache];
+    for (int i = (int)draftList.drafts.count - 1; i >= 0; i--) {
+        FJPhotoPostDraftSavingModel *d = [draftList.drafts fj_arrayObjectAtIndex:i];
+        if (d.savingDate == draft.savingDate) {
+            [draftList.drafts fj_arrayRemoveObjectAtIndex:i];
+            break;
+        }
+    }
+    if (draftList.drafts.count == 0) {
+        [self cleanDraftCache];
+    }else {
+        [FJStorage saveAnyObject:draftList];
+    }
+}
+
+
+// 根据Asset Identifier查找PHAsset
+- (PHAsset *)findByIdentifier:(NSString *)assetIdentifier {
+    
+    // 系统相机查找
+    PHFetchResult<PHAssetCollection *> *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    for (PHAssetCollection *collection in collections) {
+        if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumMyPhotoStream || collection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumCloudShared) {
+            // 屏蔽 iCloud 照片流
+        }else {
+            PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+            for (PHAsset *asset in assets) {
+                if ([[asset localIdentifier] isEqualToString:assetIdentifier]) {
+                    return asset;
+                }
+            }
+        }
+    }
+    // 自定义相册查找
+    PHFetchResult<PHAssetCollection *> *customCollections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+    for (PHAssetCollection *collection in customCollections) {
+        PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+        for (PHAsset *asset in assets) {
+            if ([[asset localIdentifier] isEqualToString:assetIdentifier]) {
+                return asset;
+            }
+        }
+    }
+    return nil;
 }
 
 @end

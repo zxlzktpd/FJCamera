@@ -15,6 +15,7 @@
 #import "FJTakePhotoButton.h"
 #import <FJKit_OC/NSString+UUID_FJ.h>
 #import "PHAsset+QuickEdit.h"
+#import "FJPhotoDraftHistoryViewController.h"
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (48.0)
 #define UPDOWN_LEAST_HEIGHT (48.0)
@@ -117,7 +118,7 @@
     if (self) {
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
-        self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
+        self.takeButtonPosition = FJTakePhotoButtonPositionBottomWithDraft;
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
         self.filterMinPhotoPixelSize = CGSizeMake(400.0, 400.0);
@@ -392,7 +393,9 @@
     if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
         self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
         if (_takePhotoButton == nil) {
-            _takePhotoButton = [FJTakePhotoButton create:^{
+            _takePhotoButton = [FJTakePhotoButton create:self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft draftBlock:^{
+                [weakSelf _openDraft];
+            } takePhotoBlock:^{
                 // 打开相机
                 [weakSelf _openCamera];
             }];
@@ -624,6 +627,13 @@
             [weakSelf fj_alertView:@"打开相机权限" message:@"打开相机权限后，才能拍照哦" cancel:NO item:goSettingAlertModel,cancelAlertModel, nil];
         }
     }];
+}
+
+- (void)_openDraft {
+    
+    FJPhotoDraftHistoryViewController *draftVC = [[FJPhotoDraftHistoryViewController alloc] init];
+    draftVC.userSelectDraftBlock = self.userSelectDraftBlock;
+    [self.navigationController pushViewController:draftVC animated:YES];
 }
 
 - (void)_checkNextState {

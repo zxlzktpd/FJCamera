@@ -51,7 +51,7 @@
     }];
     photoLibVC.maxSelectionCount = 3;
     photoLibVC.photoListColumn = 5;
-    photoLibVC.takeButtonPosition = FJTakePhotoButtonPositionBottom;
+    photoLibVC.takeButtonPosition = FJTakePhotoButtonPositionBottomWithDraft;
     [self.navigationController pushViewController:photoLibVC animated:YES];
 }
 
