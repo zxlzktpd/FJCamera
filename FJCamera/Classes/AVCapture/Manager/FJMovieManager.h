@@ -9,12 +9,31 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 typedef NS_ENUM(NSInteger, FJAVFileType) {
     FJAVFileTypeMP4,   // MPEG4
     FJAVFileTypeMOV    // QuickMovie
 };
+
+@interface FJAVInputSettingConfig : NSObject
+
+/// 视频写入参数
+// 视频编码格式
+@property (nonatomic, copy) NSString *videoCodec;
+// 视频像素宽
+@property (nonatomic, copy) NSNumber *videoWidth;
+// 视频像素高
+@property (nonatomic, copy) NSNumber *videoHeight;
+// 采样率
+@property (nonatomic, copy) NSNumber *videoAverageBitRate;
+// 帧数
+@property (nonatomic, copy) NSNumber *videoMaxKeyFrameInterval;
+/// 音频写入参数
+// 音频编码格式
+@property (nonatomic, copy) NSNumber *audioFormatID;
+// 采样率
+@property (nonatomic, copy) NSNumber *audioEncoderBitRatePerChannel;
+
+@end
 
 @interface FJMovieManager : NSObject
 
@@ -24,7 +43,7 @@ typedef NS_ENUM(NSInteger, FJAVFileType) {
 
 @property(nonatomic, strong) AVCaptureDevice *currentDevice;
 
-- (instancetype)initWithAVFileType:(FJAVFileType)type;
+- (instancetype)initWithAVFileType:(FJAVFileType)type inputSettingConfig:(FJAVInputSettingConfig *)inputSettingConfig;
 
 - (void)start:(void(^)(NSError *error))handle;
 
@@ -32,11 +51,6 @@ typedef NS_ENUM(NSInteger, FJAVFileType) {
 
 - (void)removeAllTemporaryVideoFiles;
 
-- (void)writeData:(AVCaptureConnection *)connection
-            video:(AVCaptureConnection*)video
-            audio:(AVCaptureConnection *)audio
-           buffer:(CMSampleBufferRef)buffer;
+- (void)writeData:(AVCaptureConnection *)connection video:(AVCaptureConnection*)video audio:(AVCaptureConnection *)audio buffer:(CMSampleBufferRef)buffer;
 
 @end
-
-NS_ASSUME_NONNULL_END

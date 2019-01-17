@@ -10,9 +10,14 @@
 #import "FJCameraView.h"
 #import "FJMediaObject.h"
 #import "FJCaptureConfig.h"
+#import "FJMovieManager.h"
 
 @interface FJAVCaptureViewController : UIViewController
 
+// 自定义初始化
+- (instancetype)initWithAVInputSettingConfig:(FJAVInputSettingConfig *)inputSettingConfig outputExtension:(FJAVFileType)outputExtension;
+
+// Media
 @property (nonatomic, strong, readonly) NSMutableArray *medias;
 
 // FJCaptureConfig参数

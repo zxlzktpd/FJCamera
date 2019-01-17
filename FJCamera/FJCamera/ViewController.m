@@ -57,7 +57,8 @@
 
 - (IBAction)tapAVCapture:(id)sender {
     
-    FJAVCaptureViewController *avCaptureVC = [[FJAVCaptureViewController alloc] init];
+    FJAVInputSettingConfig *inputConfig = [[FJAVInputSettingConfig alloc] init];
+    FJAVCaptureViewController *avCaptureVC = [[FJAVCaptureViewController alloc] initWithAVInputSettingConfig:inputConfig outputExtension:FJAVFileTypeMP4];
     FJCaptureConfig *config = [[FJCaptureConfig alloc] init];
     config.enableSwitch = YES;
     config.enableLightSupplement = YES;

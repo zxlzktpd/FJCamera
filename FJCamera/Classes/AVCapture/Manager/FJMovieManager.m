@@ -9,6 +9,34 @@
 #import "FJMovieManager.h"
 #import <FJKit_OC/FJStorage.h>
 
+@implementation FJAVInputSettingConfig
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        /// 视频写入参数
+        // 视频编码格式
+        self.videoCodec = AVVideoCodecH264;
+        // 视频像素宽
+        self.videoWidth = nil;
+        // 视频像素高
+        self.videoHeight = nil;
+        // 采样率
+        self.videoAverageBitRate = [NSNumber numberWithInt:16 * 100000];
+        // 帧数
+        self.videoMaxKeyFrameInterval = [NSNumber numberWithInt:30];
+        /// 音频写入参数
+        // 音频编码格式
+        self.audioFormatID = [NSNumber numberWithInteger: kAudioFormatMPEG4AAC];
+        // 采样率
+        self.audioEncoderBitRatePerChannel = [NSNumber numberWithInt: 64000];
+    }
+    return self;
+}
+
+@end
+
 @interface FJMovieManager()
 {
     BOOL                _readyToRecordVideo;
@@ -20,6 +48,7 @@
     AVAssetWriterInput *_movieVideoInput;
     
     FJAVFileType       _exportAVFileType;
+    FJAVInputSettingConfig *_inputSettingConfig;
 }
 
 @property (nonatomic, strong) NSURL *movieURL;
@@ -55,11 +84,12 @@
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Use -initWithAVFileType:" userInfo:nil];
 }
 
-- (instancetype)initWithAVFileType:(FJAVFileType)type {
+- (instancetype)initWithAVFileType:(FJAVFileType)type inputSettingConfig:(FJAVInputSettingConfig *)inputSettingConfig {
     
     self = [super init];
     if (self) {
         _exportAVFileType = type;
+        _inputSettingConfig = inputSettingConfig;
         _movieWritingQueue = dispatch_queue_create("Movie.Writing.Queue", DISPATCH_QUEUE_SERIAL);
         _referenceOrientation = AVCaptureVideoOrientationPortrait;
     }
@@ -190,11 +220,13 @@
     const AudioStreamBasicDescription *currentASBD = CMAudioFormatDescriptionGetStreamBasicDescription(currentFormatDescription);
     const AudioChannelLayout *channelLayout = CMAudioFormatDescriptionGetChannelLayout(currentFormatDescription,&aclSize);
     NSData *dataLayout = aclSize > 0 ? [NSData dataWithBytes:channelLayout length:aclSize] : [NSData data];
-    NSDictionary *settings = @{AVFormatIDKey: [NSNumber numberWithInteger: kAudioFormatMPEG4AAC],
+    NSNumber *audioFormat = _inputSettingConfig.audioFormatID == nil ? [NSNumber numberWithInteger: kAudioFormatMPEG4AAC] : _inputSettingConfig.audioFormatID;
+    NSNumber *encoderBitRatePerChannel = _inputSettingConfig.audioEncoderBitRatePerChannel == nil ? [NSNumber numberWithInt: 64000] : _inputSettingConfig.audioEncoderBitRatePerChannel;
+    NSDictionary *settings = @{AVFormatIDKey: audioFormat,
                              AVSampleRateKey: [NSNumber numberWithFloat: currentASBD->mSampleRate],
                           AVChannelLayoutKey: dataLayout,
                        AVNumberOfChannelsKey: [NSNumber numberWithInteger: currentASBD->mChannelsPerFrame],
-               AVEncoderBitRatePerChannelKey: [NSNumber numberWithInt: 64000]};
+               AVEncoderBitRatePerChannelKey: encoderBitRatePerChannel};
 
     if ([_movieWriter canApplyOutputSettings:settings forMediaType: AVMediaTypeAudio]){
         _movieAudioInput = [AVAssetWriterInput assetWriterInputWithMediaType: AVMediaTypeAudio outputSettings:settings];
@@ -216,13 +248,29 @@
     CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(currentFormatDescription);
     NSUInteger numPixels = dimensions.width * dimensions.height;
     CGFloat bitsPerPixel = numPixels < (640 * 480) ? 4.05 : 11.0;
-    NSDictionary *compression = @{AVVideoAverageBitRateKey: [NSNumber numberWithInteger: numPixels * bitsPerPixel],
-                                  AVVideoMaxKeyFrameIntervalKey: [NSNumber numberWithInteger:30]};
-    NSDictionary *settings = @{AVVideoCodecKey: AVVideoCodecH264,
-                               AVVideoWidthKey: [NSNumber numberWithInteger:dimensions.width],
-                              AVVideoHeightKey: [NSNumber numberWithInteger:dimensions.height],
-               AVVideoCompressionPropertiesKey: compression};
-
+    NSNumber *videoAverageBitRate = _inputSettingConfig.videoAverageBitRate == nil ? [NSNumber numberWithInteger: numPixels * bitsPerPixel] : _inputSettingConfig.videoAverageBitRate;
+    NSString *videoCodec = _inputSettingConfig.videoCodec == nil ? AVVideoCodecH264 : _inputSettingConfig.videoCodec;
+    NSNumber *videoMaxKeyFrameInterval = _inputSettingConfig.videoMaxKeyFrameInterval == nil ? [NSNumber numberWithInteger:30] : _inputSettingConfig.videoMaxKeyFrameInterval;
+    NSNumber *videoWidth = nil;
+    NSNumber *videoHeight = nil;
+    if (_inputSettingConfig.videoWidth == nil && _inputSettingConfig.videoHeight ==nil) {
+        videoWidth = [NSNumber numberWithInteger:dimensions.width];
+        videoHeight = [NSNumber numberWithInteger:dimensions.height];
+    }else if (_inputSettingConfig.videoWidth) {
+        videoWidth = _inputSettingConfig.videoWidth;
+        float h = [_inputSettingConfig.videoWidth floatValue] * ((float)dimensions.height / (float)dimensions.width);
+        videoHeight = [NSNumber numberWithInt:(int)h];
+    }else if (_inputSettingConfig.videoHeight) {
+        videoHeight = _inputSettingConfig.videoHeight;
+        float w = [_inputSettingConfig.videoHeight floatValue] * ((float)dimensions.width / (float)dimensions.height);
+        videoWidth = [NSNumber numberWithInteger:(int)w];
+    }
+    NSDictionary *compression = @{AVVideoAverageBitRateKey: videoAverageBitRate,
+                                  AVVideoMaxKeyFrameIntervalKey: videoMaxKeyFrameInterval};
+    NSDictionary *settings = @{AVVideoCodecKey: videoCodec,
+                               AVVideoWidthKey: videoWidth,
+                              AVVideoHeightKey: videoHeight,
+                               AVVideoCompressionPropertiesKey: compression};
     if ([_movieWriter canApplyOutputSettings:settings forMediaType:AVMediaTypeVideo]){
         _movieVideoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:settings];
         _movieVideoInput.expectsMediaDataInRealTime = YES;

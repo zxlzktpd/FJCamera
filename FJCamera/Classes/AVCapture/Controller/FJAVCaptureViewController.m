@@ -24,7 +24,7 @@
 @interface FJAVCaptureViewController () <AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, FJCameraViewDelegate>
 {
     // 会话
-    AVCaptureSession          *_session;
+    AVCaptureSession            *_session;
     
     // 输入
     AVCaptureDeviceInput      *_deviceInput;
@@ -33,18 +33,18 @@
     AVCaptureConnection       *_videoConnection;
     AVCaptureConnection       *_audioConnection;
     AVCaptureVideoDataOutput  *_videoOutput;
-    AVCaptureStillImageOutput *_imageOutput;
+    AVCaptureStillImageOutput  *_imageOutput;
     
     // 录制
     BOOL                       _recording;
 }
 
-@property (nonatomic, strong) FJCameraView    *cameraView;       // 界面布局
-@property (nonatomic, strong) FJMovieManager  *movieManager;     // 视频管理
-@property (nonatomic, strong) FJCameraManager *cameraManager;    // 相机管理
+@property (nonatomic, strong) FJCameraView    *cameraView;          // 界面布局
+@property (nonatomic, strong) FJMovieManager  *movieManager;      // 视频管理
+@property (nonatomic, strong) FJCameraManager *cameraManager;  // 相机管理
 @property (nonatomic, strong) FJMotionManager *motionManager;    // 陀螺仪管理
-@property (nonatomic, strong) AVCaptureDevice *activeCamera;     // 当前输入设备
-@property (nonatomic, strong) AVCaptureDevice *inactiveCamera;   // 不活跃的设备(这里指前摄像头或后摄像头，不包括外接输入设备)
+@property (nonatomic, strong) AVCaptureDevice *activeCamera;       // 当前输入设备
+@property (nonatomic, strong) AVCaptureDevice *inactiveCamera;    // 不活跃的设备(这里指前摄像头或后摄像头，不包括外接输入设备)
 
 @property (nonatomic, strong) NSMutableArray *medias;
 
@@ -60,11 +60,24 @@
     return _medias;
 }
 
+// 默认初始化
 - (instancetype)init {
     
     self = [super init];
     if (self) {
-        _movieManager  = [[FJMovieManager alloc] initWithAVFileType:FJAVFileTypeMP4];
+        _movieManager  = [[FJMovieManager alloc] initWithAVFileType:FJAVFileTypeMP4 inputSettingConfig:nil];
+        _motionManager = [[FJMotionManager alloc] init];
+        _cameraManager = [[FJCameraManager alloc] init];
+    }
+    return self;
+}
+
+// 自定义初始化
+- (instancetype)initWithAVInputSettingConfig:(FJAVInputSettingConfig *)inputSettingConfig outputExtension:(FJAVFileType)outputExtension {
+    
+    self = [super init];
+    if (self) {
+        _movieManager  = [[FJMovieManager alloc] initWithAVFileType:outputExtension inputSettingConfig:inputSettingConfig];
         _motionManager = [[FJMotionManager alloc] init];
         _cameraManager = [[FJCameraManager alloc] init];
     }
