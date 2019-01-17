@@ -136,6 +136,16 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    if (self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
+        if (![[FJPhotoManager shared] isDraftExist]) {
+            [self.takePhotoButton updateWithDraft:NO];
+        }
+    }
+}
+
 - (void)viewDidLoad {
     
     MF_WEAK_SELF
@@ -204,10 +214,12 @@
                           weakSelf.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
                     ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:0];
                 }
-                ds.isHighlighted = YES;
-                FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-                // 更新CropperView
-                [weakSelf.cropperView updateModel:model];
+                if (ds != nil) {
+                    ds.isHighlighted = YES;
+                    FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+                    // 更新CropperView
+                    [weakSelf.cropperView updateModel:model];
+                }
             }
         });
     }];
@@ -393,7 +405,8 @@
     if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
         self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
         if (_takePhotoButton == nil) {
-            _takePhotoButton = [FJTakePhotoButton create:self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft draftBlock:^{
+            BOOL enableDraft =  [[FJPhotoManager shared] isDraftExist] && self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft;
+            _takePhotoButton = [FJTakePhotoButton create:enableDraft draftBlock:^{
                 [weakSelf _openDraft];
             } takePhotoBlock:^{
                 // 打开相机
@@ -694,107 +707,114 @@
     
     MF_WEAK_SELF
     [self.collectionView.fj_dataSource removeAllObjects];
-    
-    // 相机Placeholder
-    if (self.takeButtonPosition == FJTakePhotoButtonPositionCell) {
-        FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];
-        placeholer.isCameraPlaceholer = YES;
-        [self.collectionView.fj_dataSource fj_arrayAddObject:placeholer];
-    }
-    
-    // 当前选中相册的照片流
-    PHFetchOptions *option = [[PHFetchOptions alloc] init];
-    // 排序（最新排的在前面）
-    switch (self.sortType) {
-        case FJPhotoSortTypeModificationDateDesc:
-        {
-            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
-            break;
-        }
-        case FJPhotoSortTypeModificationDateAsc:
-        {
-            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:YES]];
-            break;
-        }
-        case FJPhotoSortTypeCreationDateDesc:
-        {
-            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-            break;
-        }
-        case FJPhotoSortTypeCreationDateAsc:
-        {
-            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-            break;
-        }
-        default:
-            break;
-    }
-    
-    option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
-    if (@available(iOS 9.0, *)) {
-        option.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
-    } else {
-    }
-    PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
-    
-    // 判断firstPhotoAutoSelected
-    // 相片数据
-    int i = 0;
-    if (self.firstPhotoAutoSelected) {
-        i = 1;
-        self.firstPhotoAutoSelected = NO;
-        PHAsset *firstAsset = [assets firstObject];
-        __block FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
-        ds.isMultiSelection = YES;
-        if (self.selectedPhotos.count == self.maxSelectionCount) {
-            if (self.userOverLimitationBlock != nil) {
-                self.userOverLimitationBlock();
-            }else {
-                [self.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)self.maxSelectionCount]];
-            }
-            ds.isSelected = NO;
-        }else {
-            ds.isSelected = YES;
-        }
-        ds.photoAsset = firstAsset;
-        ds.photoListColumn = self.photoListColumn;
-        [self.collectionView.fj_dataSource addObject:ds];
-        
-        // 选择
-        FJPhotoModel *model = [self _addTemporary:ds.photoAsset];
-        if (ds.isSelected) {
-            [[FJPhotoManager shared] addDistinct:model];
-            [self.selectedPhotos fj_arrayAddObject:model];
+    if (self.currentPhotoAssetColletion == nil) {
+        [self.view fj_toast:FJToastImageTypeWarning message:@"该相册暂时无照片"];
+        self.customTitleView.hidden = YES;
+    }else {
+        self.customTitleView.hidden = NO;
+        // 相机Placeholder
+        if (self.takeButtonPosition == FJTakePhotoButtonPositionCell) {
+            FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];
+            placeholer.isCameraPlaceholer = YES;
+            [self.collectionView.fj_dataSource fj_arrayAddObject:placeholer];
         }
         
-        // 更新CropperView
-        if (ds.isSelected) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                model.needCrop = YES;
-                [weakSelf.cropperView updateModel:model];
-            });
-        }
-    }
-    for (; i < assets.count; i++) {
-        PHAsset *asset = [assets objectAtIndex:i];
-        // 过滤小照片
-        if (asset.pixelWidth < self.filterMinPhotoPixelSize.width && asset.pixelHeight < self.filterMinPhotoPixelSize.height) {
-            continue;
-        }
-        BOOL isSelected = NO;
-        for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
-            if ([selectedPhoto.asset isEqual:asset]) {
-                isSelected = YES;
+        // 当前选中相册的照片流
+        PHFetchOptions *option = [[PHFetchOptions alloc] init];
+        // 排序（最新排的在前面）
+        switch (self.sortType) {
+            case FJPhotoSortTypeModificationDateDesc:
+            {
+                option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
                 break;
             }
+            case FJPhotoSortTypeModificationDateAsc:
+            {
+                option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:YES]];
+                break;
+            }
+            case FJPhotoSortTypeCreationDateDesc:
+            {
+                option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+                break;
+            }
+            case FJPhotoSortTypeCreationDateAsc:
+            {
+                option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+                break;
+            }
+            default:
+                break;
         }
-        FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
-        ds.isMultiSelection = YES;
-        ds.isSelected = isSelected;
-        ds.photoAsset = asset;
-        ds.photoListColumn = self.photoListColumn;
-        [self.collectionView.fj_dataSource addObject:ds];
+        
+        option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
+        if (@available(iOS 9.0, *)) {
+            option.includeAssetSourceTypes = PHAssetSourceTypeUserLibrary;
+        } else {
+        }
+        PHFetchResult<PHAsset *> *assets = [PHAsset fetchAssetsInAssetCollection:self.currentPhotoAssetColletion options:option];
+        
+        // 判断firstPhotoAutoSelected
+        // 相片数据
+        int i = 0;
+        if (self.firstPhotoAutoSelected) {
+            i = 1;
+            self.firstPhotoAutoSelected = NO;
+            PHAsset *firstAsset = [assets firstObject];
+            __block FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
+            ds.isMultiSelection = YES;
+            if (self.selectedPhotos.count == self.maxSelectionCount) {
+                if (self.userOverLimitationBlock != nil) {
+                    self.userOverLimitationBlock();
+                }else {
+                    [self.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)self.maxSelectionCount]];
+                }
+                ds.isSelected = NO;
+            }else {
+                ds.isSelected = YES;
+            }
+            ds.photoAsset = firstAsset;
+            ds.photoListColumn = self.photoListColumn;
+            [self.collectionView.fj_dataSource addObject:ds];
+            
+            // 选择
+            FJPhotoModel *model = [self _addTemporary:ds.photoAsset];
+            if (ds.isSelected) {
+                [[FJPhotoManager shared] addDistinct:model];
+                [self.selectedPhotos fj_arrayAddObject:model];
+            }
+            
+            // 更新CropperView
+            if (ds.isSelected) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    model.needCrop = YES;
+                    [weakSelf.cropperView updateModel:model];
+                });
+            }
+        }
+        for (; i < assets.count; i++) {
+            PHAsset *asset = [assets objectAtIndex:i];
+            // 过滤小照片
+            if (asset.pixelWidth < self.filterMinPhotoPixelSize.width && asset.pixelHeight < self.filterMinPhotoPixelSize.height) {
+                continue;
+            }
+            BOOL isSelected = NO;
+            for (FJPhotoModel *selectedPhoto in self.selectedPhotos) {
+                if ([selectedPhoto.asset isEqual:asset]) {
+                    isSelected = YES;
+                    break;
+                }
+            }
+            FJPhotoCollectionViewCellDataSource *ds = [[FJPhotoCollectionViewCellDataSource alloc] init];
+            ds.isMultiSelection = YES;
+            ds.isSelected = isSelected;
+            ds.photoAsset = asset;
+            ds.photoListColumn = self.photoListColumn;
+            [self.collectionView.fj_dataSource addObject:ds];
+        }
     }
+    
+    // CollectionView 刷新
     [self.collectionView fj_refresh];
     
     // 检查下一步的有效性

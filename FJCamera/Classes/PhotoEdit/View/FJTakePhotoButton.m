@@ -25,17 +25,31 @@
 + (FJTakePhotoButton *)create:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock {
     
     FJTakePhotoButton *button = MF_LOAD_NIB(@"FJTakePhotoButton");
-    if (withDraft) {
-        button.draftBlock = draftBlock;
-    }else {
-        button.draftView.hidden = YES;
-        MF_WEAK_OBJECT(button)
-        [button.takePhotoView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(weakbutton);
-        }];
-    }
+    [button updateWithDraft:withDraft];
+    button.draftBlock = draftBlock;
     button.takePhotoBlock = takePhotoBlock;
     return button;
+}
+
+- (void)updateWithDraft:(BOOL)withDraft {
+    
+    MF_WEAK_SELF
+    if (withDraft) {
+        self.draftView.hidden = NO;
+        [self.takePhotoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.top.bottom.equalTo(weakSelf);
+            make.right.equalTo(weakSelf.draftView.mas_left);
+        }];
+        [self.draftView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.top.bottom.equalTo(weakSelf);
+            make.width.equalTo(weakSelf.takePhotoView.mas_width);
+        }];
+    }else {
+        self.draftView.hidden = YES;
+        [self.takePhotoView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(weakSelf);
+        }];
+    }
 }
 
 - (IBAction)_tap:(UIButton *)sender {

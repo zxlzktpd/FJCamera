@@ -12,4 +12,6 @@
 
 + (FJTakePhotoButton *)create:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock;
 
+- (void)updateWithDraft:(BOOL)withDraft;
+
 @end

@@ -19,14 +19,14 @@
                     <rect key="frame" x="0.0" y="0.0" width="187.5" height="48"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-oK-dsu">
-                            <rect key="frame" x="82" y="4" width="24" height="24"/>
+                            <rect key="frame" x="82" y="8" width="24" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="24" id="afR-c5-uQO"/>
                                 <constraint firstAttribute="width" constant="24" id="orV-pf-GB4"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="拍摄照片" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkR-OB-nkN">
-                            <rect key="frame" x="73.5" y="31" width="41" height="12"/>
+                            <rect key="frame" x="73.5" y="35" width="41" height="12"/>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                             <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
@@ -40,7 +40,7 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="WB0-oK-dsu" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" constant="4" id="2rO-Rf-MR0"/>
+                        <constraint firstItem="WB0-oK-dsu" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" constant="8" id="2rO-Rf-MR0"/>
                         <constraint firstItem="kkR-OB-nkN" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" id="50r-A3-I5z"/>
                         <constraint firstItem="mDN-XR-YuX" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" id="d7g-Xv-R40"/>
                         <constraint firstAttribute="trailing" secondItem="mDN-XR-YuX" secondAttribute="trailing" id="dAJ-GW-czJ"/>
@@ -54,14 +54,14 @@
                     <rect key="frame" x="187.5" y="0.0" width="187.5" height="48"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_draft.png" translatesAutoresizingMaskIntoConstraints="NO" id="fiw-48-sRQ">
-                            <rect key="frame" x="82" y="4" width="24" height="24"/>
+                            <rect key="frame" x="82" y="8" width="24" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="24" id="3u2-XB-4Cn"/>
                                 <constraint firstAttribute="height" constant="24" id="ydd-JV-WC1"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="草稿箱" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GuS-WX-wwD">
-                            <rect key="frame" x="78.5" y="31" width="31" height="12"/>
+                            <rect key="frame" x="78.5" y="35" width="31" height="12"/>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                             <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
@@ -79,7 +79,7 @@
                         <constraint firstItem="GuS-WX-wwD" firstAttribute="centerX" secondItem="fja-v5-6Ml" secondAttribute="centerX" id="9qI-8l-cmW"/>
                         <constraint firstItem="cHE-Xr-YYs" firstAttribute="top" secondItem="fja-v5-6Ml" secondAttribute="top" id="B6z-ta-TC7"/>
                         <constraint firstItem="cHE-Xr-YYs" firstAttribute="leading" secondItem="fja-v5-6Ml" secondAttribute="leading" id="XUN-4k-A71"/>
-                        <constraint firstItem="fiw-48-sRQ" firstAttribute="top" secondItem="fja-v5-6Ml" secondAttribute="top" constant="4" id="afF-uj-wrm"/>
+                        <constraint firstItem="fiw-48-sRQ" firstAttribute="top" secondItem="fja-v5-6Ml" secondAttribute="top" constant="8" id="afF-uj-wrm"/>
                         <constraint firstAttribute="bottom" secondItem="cHE-Xr-YYs" secondAttribute="bottom" id="cq6-Ra-azy"/>
                         <constraint firstAttribute="trailing" secondItem="cHE-Xr-YYs" secondAttribute="trailing" id="xiT-t5-hsD"/>
                         <constraint firstItem="GuS-WX-wwD" firstAttribute="top" secondItem="fiw-48-sRQ" secondAttribute="bottom" constant="3" id="yte-sq-bzE"/>
