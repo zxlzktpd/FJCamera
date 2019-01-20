@@ -40,7 +40,11 @@
     PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
     if (asset == nil) {
         self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
-        ds.pictureRemoved = YES;
+        if (ds.data.photos.count == 1) {
+            ds.pictureRemoved = YES;
+        }else {
+            ds.pictureRemoved = NO;
+        }
     }else {
         ds.pictureRemoved = NO;
         UIImage *image = [asset getSmallTargetImage];
