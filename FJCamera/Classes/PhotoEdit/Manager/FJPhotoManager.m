@@ -12,6 +12,7 @@
 #import <FJKit_OC/UIImage+Utility_FJ.h>
 #import <FJKit_OC/NSArray+JSON_FJ.h>
 #import <FJKit_OC/NSDate+Utility_FJ.h>
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 #pragma mark - Photo Saving Model
 @implementation FJPhotoPostSavingModel
@@ -96,6 +97,13 @@
     if (self.needCrop == NO) {
         if (_smallOriginalImage == nil) {
             _smallOriginalImage = [self.asset getSmallTargetImage];
+            if (_smallOriginalImage == nil) {
+                if (_croppedImage != nil) {
+                    _smallOriginalImage = _croppedImage;
+                }else {
+                    _smallOriginalImage = _originalImage;
+                }
+            }
         }
     }else {
         static CGPoint lastBeginPoint;
@@ -382,18 +390,22 @@ static bool isFirstAccess = YES;
     for (FJPhotoPostSavingModel *savingPhotoModel in draft.photos) {
         
         FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
-        // 定位PHAsset
-        PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
-        
-        photoModel.asset = findedAsset;
+        // 赋值照片属性
         photoModel.uuid = savingPhotoModel.uuid;
         photoModel.tuningObject = savingPhotoModel.tuningObject;
         photoModel.imageTags = savingPhotoModel.imageTags;
         photoModel.compressed = savingPhotoModel.compressed;
         photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
         photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
-        UIImage *originalImage = [findedAsset getGeneralTargetImage];
-        photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
+        // 查找相册并赋值PHAsset
+        PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
+        if (findedAsset == nil) {
+            photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+        }else {
+            photoModel.asset = findedAsset;
+            UIImage *originalImage = [findedAsset getGeneralTargetImage];
+            photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
+        }
         [self.allPhotos addObject:photoModel];
     }
 }

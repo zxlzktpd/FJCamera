@@ -18,6 +18,7 @@
 @interface FJPhotoDraftCellDataSource : FJCellDataSource
 
 @property (nonatomic, strong) FJPhotoPostDraftSavingModel *data;
+@property (nonatomic, assign) BOOL pictureRemoved;
 
 @end
 

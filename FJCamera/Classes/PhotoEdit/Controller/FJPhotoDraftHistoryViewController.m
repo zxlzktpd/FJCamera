@@ -51,7 +51,7 @@
         if (type == FJActionBlockTypeTapped) {
             if ([cellData isKindOfClass:[FJPhotoDraftCellDataSource class]]) {
                 FJPhotoDraftCellDataSource *ds = cellData;
-                weakSelf.userSelectDraftBlock == nil ? : weakSelf.userSelectDraftBlock(ds.data);
+                weakSelf.userSelectDraftBlock == nil ? : weakSelf.userSelectDraftBlock(ds.data, ds.pictureRemoved);
             }
         }else if (type == FJActionBlockTypeDeleted) {
             if ([cellData isKindOfClass:[FJPhotoDraftCellDataSource class]]) {

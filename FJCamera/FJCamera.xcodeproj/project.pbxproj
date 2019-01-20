@@ -18,6 +18,8 @@
 		E71BBE0D21BF938500EF2CE6 /* FJPhotoImageTagPointView.m in Sources */ = {isa = PBXBuildFile; fileRef = E71BBE0C21BF938500EF2CE6 /* FJPhotoImageTagPointView.m */; };
 		E71BBE3321C3537000EF2CE6 /* FJPhotoImageTagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E71BBE3221C3537000EF2CE6 /* FJPhotoImageTagView.xib */; };
 		E72F5C0921AD286300039CB9 /* FJCamera.podspec in Resources */ = {isa = PBXBuildFile; fileRef = E72F5C0821AD286300039CB9 /* FJCamera.podspec */; };
+		E73401BC21F42BA500AFE6A4 /* ic_photo_no_found@3x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E73401BA21F42BA400AFE6A4 /* ic_photo_no_found@3x.jpg */; };
+		E73401BD21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E73401BB21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg */; };
 		E73A26BF219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */; };
 		E73A26D3219AA618001799BA /* FJCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A26D2219AA618001799BA /* FJCropperView.m */; };
 		E73A26D5219AA630001799BA /* FJCropperView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E73A26D4219AA630001799BA /* FJCropperView.xib */; };
@@ -208,6 +210,8 @@
 		E71BBE0C21BF938500EF2CE6 /* FJPhotoImageTagPointView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FJPhotoImageTagPointView.m; sourceTree = "<group>"; };
 		E71BBE3221C3537000EF2CE6 /* FJPhotoImageTagView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoImageTagView.xib; sourceTree = "<group>"; };
 		E72F5C0821AD286300039CB9 /* FJCamera.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FJCamera.podspec; path = ../FJCamera.podspec; sourceTree = "<group>"; };
+		E73401BA21F42BA400AFE6A4 /* ic_photo_no_found@3x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "ic_photo_no_found@3x.jpg"; sourceTree = "<group>"; };
+		E73401BB21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "ic_photo_no_found@2x.jpg"; sourceTree = "<group>"; };
 		E73A26BD219A6DC7001799BA /* FJPhotoLibraryCropperViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryCropperViewController.h; sourceTree = "<group>"; };
 		E73A26BE219A6DC7001799BA /* FJPhotoLibraryCropperViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryCropperViewController.m; sourceTree = "<group>"; };
 		E73A26D1219AA618001799BA /* FJCropperView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCropperView.h; sourceTree = "<group>"; };
@@ -769,6 +773,8 @@
 		E7DFFA752182BC560059CE32 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E73401BB21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg */,
+				E73401BA21F42BA400AFE6A4 /* ic_photo_no_found@3x.jpg */,
 				E78D5DB521E4B1FE009CCA02 /* ic_pop_left@2x.png */,
 				E78D5DB421E4B1FE009CCA02 /* ic_pop_left@3x.png */,
 				E78D5DB721E4B1FE009CCA02 /* ic_pop_right@2x.png */,
@@ -925,6 +931,7 @@
 				E7B5D74221895D7300961662 /* ic_edit_close@3x.png in Resources */,
 				E75C06602188783200836ABD /* ic_1_1_highlighted@2x.png in Resources */,
 				E7B6FFEB21943611000AC768 /* ic_edit_cropper_highlighted@2x.png in Resources */,
+				E73401BD21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg in Resources */,
 				E74A5BD921A69FE2009E547C /* ic_auto_focus_exposure@3x.png in Resources */,
 				E7B5D7482189743400961662 /* FJPhotoEditTuningValueView.xib in Resources */,
 				E7DFFA972182EBC10059CE32 /* ic_camera_placeholder@3x.png in Resources */,
@@ -965,6 +972,7 @@
 				E748929A21CB743500B98B3C /* ic_photolibrary_down@3x.png in Resources */,
 				E74A5BE921A6A2A0009E547C /* ic_torch_off_2@2x.png in Resources */,
 				E7DFFA862182C5030059CE32 /* ic_arrow_up@2x.png in Resources */,
+				E73401BC21F42BA500AFE6A4 /* ic_photo_no_found@3x.jpg in Resources */,
 				E7DFFA8C2182DE310059CE32 /* FJPhotoCollectionViewCell.xib in Resources */,
 				E75C065D2188783200836ABD /* ic_4_5@3x.png in Resources */,
 				E75C06572188783200836ABD /* ic_4_3@2x.png in Resources */,

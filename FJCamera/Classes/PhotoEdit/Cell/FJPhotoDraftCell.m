@@ -9,6 +9,7 @@
 #import "FJPhotoDraftCell.h"
 #import "PHAsset+QuickEdit.h"
 #import <FJKit_OC/UIImage+Utility_FJ.h>
+#import <FJKit_OC/NSString+Image_FJ.h>
 
 @interface FJPhotoDraftCell()
 
@@ -38,9 +39,10 @@
     FJPhotoPostSavingModel *pModel = [ds.data.photos fj_arrayObjectAtIndex:0];
     PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
     if (asset == nil) {
-        // TODO
-        self.draftImageView.image = nil;
+        self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
+        ds.pictureRemoved = YES;
     }else {
+        ds.pictureRemoved = NO;
         UIImage *image = [asset getSmallTargetImage];
         image = [image fj_imageCropBeginPointRatio:CGPointMake(pModel.beginCropPointX, pModel.beginCropPointY) endPointRatio:CGPointMake(pModel.endCropPointX, pModel.endCropPointY)];
         image = [[FJFilterManager shared] getImage:image tuningObject:pModel.tuningObject appendFilterType:pModel.tuningObject.filterType];

@@ -62,7 +62,7 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 @property (nonatomic, copy) void(^userNoCameraPermissionBlock)(void);
 
 // 用户选择未发布的草稿的Block
-@property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft);
+@property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved);
 
 // Mode (Edit Controller)
 @property (nonatomic, assign) FJPhotoEditMode mode;

@@ -12,6 +12,6 @@
 
 @interface FJPhotoDraftHistoryViewController : UIViewController
 
-@property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft);
+@property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved);
 
 @end
