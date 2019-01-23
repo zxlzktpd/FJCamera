@@ -16,6 +16,7 @@
 #import <FJKit_OC/NSString+UUID_FJ.h>
 #import "PHAsset+QuickEdit.h"
 #import "FJPhotoDraftHistoryViewController.h"
+#import "FJPhotoLibraryNoAlbumView.h"
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (48.0)
 #define UPDOWN_LEAST_HEIGHT (48.0)
@@ -36,6 +37,8 @@
 @property (nonatomic, strong) FJPhotoLibraryAlbumSelectionView *albumSelectionView;
 // 拍摄照片Button
 @property (nonatomic, strong) FJTakePhotoButton *takePhotoButton;
+// 没有相片的提示图片和文案控件
+@property (nonatomic, strong) FJPhotoLibraryNoAlbumView *noAlbumView;
 // 所有相册
 @property (nonatomic, strong) NSMutableArray<PHAssetCollection *> *photoAssetCollections;
 // 当前相册
@@ -77,6 +80,20 @@
         _imagePickerController.allowsEditing = NO;
     }
     return _imagePickerController;
+}
+
+- (FJPhotoLibraryNoAlbumView *)noAlbumView {
+    
+    if (_noAlbumView == nil) {
+        _noAlbumView = [FJPhotoLibraryNoAlbumView create];
+        [self.view addSubview:_noAlbumView];
+        __weak typeof(self) weakSelf = self;
+        [_noAlbumView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.equalTo(weakSelf.view);
+            make.bottom.equalTo(weakSelf.takePhotoButton.mas_top);
+        }];
+    }
+    return _noAlbumView;
 }
 
 - (UIButton *)nextBtn {
@@ -406,16 +423,11 @@
         self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
         if (_takePhotoButton == nil) {
             BOOL enableDraft =  [[FJPhotoManager shared] isDraftExist] && self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft;
-            _takePhotoButton = [FJTakePhotoButton create:enableDraft draftBlock:^{
+            _takePhotoButton = [FJTakePhotoButton createOn:self.view withDraft:enableDraft draftBlock:^{
                 [weakSelf _openDraft];
             } takePhotoBlock:^{
                 // 打开相机
                 [weakSelf _openCamera];
-            }];
-            [self.view addSubview:_takePhotoButton];
-            [_takePhotoButton mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.bottom.right.equalTo(weakSelf.view);
-                make.height.equalTo(@48.0);
             }];
         }
     }
@@ -708,10 +720,12 @@
     MF_WEAK_SELF
     [self.collectionView.fj_dataSource removeAllObjects];
     if (self.currentPhotoAssetColletion == nil) {
-        [self.view fj_toast:FJToastImageTypeWarning message:@"该相册暂时无照片"];
+        // [self.view fj_toast:FJToastImageTypeWarning message:@"该相册暂时无照片"];
         self.customTitleView.hidden = YES;
+        [self.view bringSubviewToFront:self.noAlbumView];
     }else {
         self.customTitleView.hidden = NO;
+        _noAlbumView.hidden = YES;
         // 相机Placeholder
         if (self.takeButtonPosition == FJTakePhotoButtonPositionCell) {
             FJPhotoCollectionViewCellDataSource *placeholer = [[FJPhotoCollectionViewCellDataSource alloc] init];

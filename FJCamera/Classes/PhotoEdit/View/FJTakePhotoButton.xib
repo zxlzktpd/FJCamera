@@ -18,15 +18,13 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ygU-2g-bIc">
                     <rect key="frame" x="0.0" y="0.0" width="187.5" height="48"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-oK-dsu">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ic_photolibrary_take.png" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-oK-dsu">
                             <rect key="frame" x="82" y="8" width="24" height="24"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="24" id="afR-c5-uQO"/>
-                                <constraint firstAttribute="width" constant="24" id="orV-pf-GB4"/>
-                            </constraints>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="拍摄照片" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkR-OB-nkN">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="拍摄照片" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkR-OB-nkN">
                             <rect key="frame" x="73.5" y="35" width="41" height="12"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                             <color key="textColor" red="0.1137254902" green="0.1137254902" blue="0.1215686275" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
@@ -40,14 +38,10 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="WB0-oK-dsu" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" constant="8" id="2rO-Rf-MR0"/>
-                        <constraint firstItem="kkR-OB-nkN" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" id="50r-A3-I5z"/>
                         <constraint firstItem="mDN-XR-YuX" firstAttribute="top" secondItem="ygU-2g-bIc" secondAttribute="top" id="d7g-Xv-R40"/>
                         <constraint firstAttribute="trailing" secondItem="mDN-XR-YuX" secondAttribute="trailing" id="dAJ-GW-czJ"/>
                         <constraint firstItem="mDN-XR-YuX" firstAttribute="leading" secondItem="ygU-2g-bIc" secondAttribute="leading" id="fFV-ZT-4jp"/>
-                        <constraint firstItem="kkR-OB-nkN" firstAttribute="top" secondItem="WB0-oK-dsu" secondAttribute="bottom" constant="3" id="h1p-dr-Vuh"/>
                         <constraint firstAttribute="bottom" secondItem="mDN-XR-YuX" secondAttribute="bottom" id="n9m-zr-qju"/>
-                        <constraint firstItem="WB0-oK-dsu" firstAttribute="centerX" secondItem="ygU-2g-bIc" secondAttribute="centerX" id="nAm-vr-Xs4"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fja-v5-6Ml">
@@ -110,6 +104,8 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="draftView" destination="fja-v5-6Ml" id="xyZ-ja-O9s"/>
+                <outlet property="takePhotoImageView" destination="WB0-oK-dsu" id="odp-b9-fSj"/>
+                <outlet property="takePhotoTextLabel" destination="kkR-OB-nkN" id="CDD-xW-krr"/>
                 <outlet property="takePhotoView" destination="ygU-2g-bIc" id="jLQ-bB-Ql9"/>
             </connections>
             <point key="canvasLocation" x="132" y="154.72263868065968"/>

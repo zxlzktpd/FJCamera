@@ -19,6 +19,7 @@
 #import "FJPhotoTagAlertView.h"
 #import "FJImageTagModel.h"
 #import <FJKit_OC/NSString+Image_FJ.h>
+#import <FJKit_OC/UIImage+Utility_FJ.h>
 
 @interface FJPhotoEditViewController () <UIScrollViewDelegate>
 
@@ -357,12 +358,14 @@
             
             FJPhotoModel *model = [self.selectedPhotos objectAtIndex:index];
             UIImage *image = model.croppedImage;
-            BOOL cropped = NO;
             if (image == nil) {
-                image = model.originalImage;
-            }else {
-                // 裁切
-                cropped = YES;
+                if (model.needCrop) {
+                    model.croppedImage = [model.originalImage fj_imageCropBeginPointRatio:model.beginCropPoint endPointRatio:model.endCropPoint];
+                    image = model.croppedImage;
+                }
+                if (image == nil) {
+                    image = model.originalImage;
+                }
             }
             
             // 加调整和滤镜效果

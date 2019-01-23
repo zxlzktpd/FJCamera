@@ -184,12 +184,14 @@
     }
     for (FJImageScrollView *scrollView in self.scrollViews) {
         if (scrollView.photoModel == nil) {
+            // ScrollView的photoModel为空，第一次渲染照片
             scrollView.hidden = NO;
             imageScrollView = scrollView;
             self.currentScrollView = scrollView;
             self.currentScrollView.photoModel = model;
             [self _updateImageView:NO image:image];
         }else if ([scrollView.photoModel isEqual:model]) {
+            // 在scrollViews数组中寻找已经渲染过的对象
             scrollView.hidden = NO;
             imageScrollView = scrollView;
             self.currentScrollView = scrollView;
@@ -200,10 +202,12 @@
                 [self bringSubviewToFront:self.toolView];
             }
         }else {
+            // 将渲染过并未不是当前显示的对象隐藏
             scrollView.hidden = YES;
         }
     }
     if (imageScrollView == nil) {
+        // 当照片未被渲染过
         [self _buildNewImageScrollView];
         self.currentScrollView.photoModel = model;
         [self _updateImageView:NO image:image];

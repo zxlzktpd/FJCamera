@@ -56,6 +56,10 @@
 		E74A5BEA21A6A2A0009E547C /* ic_torch_off_2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E74A5BE621A6A2A0009E547C /* ic_torch_off_2@3x.png */; };
 		E74A5BEB21A6A2A0009E547C /* ic_torch_on_2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E74A5BE721A6A2A0009E547C /* ic_torch_on_2@3x.png */; };
 		E74A5BEE21A6A383009E547C /* FJCaptureConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E74A5BED21A6A383009E547C /* FJCaptureConfig.m */; };
+		E74E34F021F884AF00FB6ED7 /* ic_photolibrary_no_album@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E74E34EE21F884AE00FB6ED7 /* ic_photolibrary_no_album@2x.png */; };
+		E74E34F121F884AF00FB6ED7 /* ic_photolibrary_no_album@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E74E34EF21F884AE00FB6ED7 /* ic_photolibrary_no_album@3x.png */; };
+		E74E34F421F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.m in Sources */ = {isa = PBXBuildFile; fileRef = E74E34F321F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.m */; };
+		E74E34F621F884F000FB6ED7 /* FJPhotoLibraryNoAlbumView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E74E34F521F884F000FB6ED7 /* FJPhotoLibraryNoAlbumView.xib */; };
 		E75C060C2188305D00836ABD /* FJPhotoEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */; };
 		E75C060F2188393300836ABD /* FJPhotoEditTitleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E75C060E2188393300836ABD /* FJPhotoEditTitleScrollView.m */; };
 		E75C06112188395700836ABD /* FJPhotoEditTitleScrollView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E75C06102188395700836ABD /* FJPhotoEditTitleScrollView.xib */; };
@@ -253,6 +257,11 @@
 		E74A5BE721A6A2A0009E547C /* ic_torch_on_2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_torch_on_2@3x.png"; sourceTree = "<group>"; };
 		E74A5BEC21A6A383009E547C /* FJCaptureConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJCaptureConfig.h; sourceTree = "<group>"; };
 		E74A5BED21A6A383009E547C /* FJCaptureConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJCaptureConfig.m; sourceTree = "<group>"; };
+		E74E34EE21F884AE00FB6ED7 /* ic_photolibrary_no_album@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photolibrary_no_album@2x.png"; sourceTree = "<group>"; };
+		E74E34EF21F884AE00FB6ED7 /* ic_photolibrary_no_album@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_photolibrary_no_album@3x.png"; sourceTree = "<group>"; };
+		E74E34F221F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoLibraryNoAlbumView.h; sourceTree = "<group>"; };
+		E74E34F321F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoLibraryNoAlbumView.m; sourceTree = "<group>"; };
+		E74E34F521F884F000FB6ED7 /* FJPhotoLibraryNoAlbumView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FJPhotoLibraryNoAlbumView.xib; sourceTree = "<group>"; };
 		E75C060A2188305D00836ABD /* FJPhotoEditViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditViewController.h; sourceTree = "<group>"; };
 		E75C060B2188305D00836ABD /* FJPhotoEditViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FJPhotoEditViewController.m; sourceTree = "<group>"; };
 		E75C060D2188393300836ABD /* FJPhotoEditTitleScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJPhotoEditTitleScrollView.h; sourceTree = "<group>"; };
@@ -711,6 +720,9 @@
 				E77381CE21D0947100E7F4AF /* FJTakePhotoButton.h */,
 				E77381CF21D0947100E7F4AF /* FJTakePhotoButton.m */,
 				E77381D121D0947D00E7F4AF /* FJTakePhotoButton.xib */,
+				E74E34F221F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.h */,
+				E74E34F321F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.m */,
+				E74E34F521F884F000FB6ED7 /* FJPhotoLibraryNoAlbumView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -773,6 +785,8 @@
 		E7DFFA752182BC560059CE32 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E74E34EE21F884AE00FB6ED7 /* ic_photolibrary_no_album@2x.png */,
+				E74E34EF21F884AE00FB6ED7 /* ic_photolibrary_no_album@3x.png */,
 				E73401BB21F42BA500AFE6A4 /* ic_photo_no_found@2x.jpg */,
 				E73401BA21F42BA400AFE6A4 /* ic_photo_no_found@3x.jpg */,
 				E78D5DB521E4B1FE009CCA02 /* ic_pop_left@2x.png */,
@@ -966,6 +980,7 @@
 				E75C061721883BC900836ABD /* ic_pagecontrol_unselected@3x.png in Resources */,
 				E7DFF9FD2182B3EB0059CE32 /* LaunchScreen.storyboard in Resources */,
 				E74A5BE221A69FE2009E547C /* ic_torch_off@3x.png in Resources */,
+				E74E34F621F884F000FB6ED7 /* FJPhotoLibraryNoAlbumView.xib in Resources */,
 				E77381D221D0947D00E7F4AF /* FJTakePhotoButton.xib in Resources */,
 				E7B5D74321895D7300961662 /* ic_edit_ok@3x.png in Resources */,
 				E75C066D21887E0900836ABD /* ic_edit_contrast@3x.png in Resources */,
@@ -975,6 +990,7 @@
 				E73401BC21F42BA500AFE6A4 /* ic_photo_no_found@3x.jpg in Resources */,
 				E7DFFA8C2182DE310059CE32 /* FJPhotoCollectionViewCell.xib in Resources */,
 				E75C065D2188783200836ABD /* ic_4_5@3x.png in Resources */,
+				E74E34F021F884AF00FB6ED7 /* ic_photolibrary_no_album@2x.png in Resources */,
 				E75C06572188783200836ABD /* ic_4_3@2x.png in Resources */,
 				E7DC94F421A55827002EC6BB /* btn_camera_back@3x.png in Resources */,
 				E75C061621883BC900836ABD /* ic_pagecontrol_unselected@2x.png in Resources */,
@@ -1018,6 +1034,7 @@
 				E788747C218ACABA00F4E0C4 /* FJFilterImageView.xib in Resources */,
 				E74A5BDB21A69FE2009E547C /* ic_switch@2x.png in Resources */,
 				E748929B21CB743500B98B3C /* ic_photolibrary_up@2x.png in Resources */,
+				E74E34F121F884AF00FB6ED7 /* ic_photolibrary_no_album@3x.png in Resources */,
 				E75C067121887E0900836ABD /* ic_edit_light@2x.png in Resources */,
 				E7F6B97921D47C5800AF2662 /* ic_tag_garbage@3x.png in Resources */,
 				E7B6FFF72194362E000AC768 /* ic_edit_tuning_highlighted@3x.png in Resources */,
@@ -1151,6 +1168,7 @@
 				E7DC94FF21A5659C002EC6BB /* FJMediaObject.m in Sources */,
 				E7DFFA7C2182C3080059CE32 /* FJPhotoLibrarySelectionView.m in Sources */,
 				E7DFFA002182B3EB0059CE32 /* main.m in Sources */,
+				E74E34F421F884E500FB6ED7 /* FJPhotoLibraryNoAlbumView.m in Sources */,
 				E7B5D74E21897EAF00961662 /* FJTuningObject.m in Sources */,
 				E7B5D7462189742000961662 /* FJPhotoEditTuningValueView.m in Sources */,
 				E77381D021D0947100E7F4AF /* FJTakePhotoButton.m in Sources */,

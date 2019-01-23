@@ -14,6 +14,8 @@
 
 
 @property (nonatomic, weak) IBOutlet UIView *takePhotoView;
+@property (nonatomic, weak) IBOutlet UIView *takePhotoImageView;
+@property (nonatomic, weak) IBOutlet UIView *takePhotoTextLabel;
 @property (nonatomic, weak) IBOutlet UIView *draftView;
 @property (nonatomic, copy) void(^takePhotoBlock)(void);
 @property (nonatomic, copy) void(^draftBlock)(void);
@@ -22,9 +24,18 @@
 
 @implementation FJTakePhotoButton
 
-+ (FJTakePhotoButton *)create:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock {
++ (FJTakePhotoButton *)createOn:(UIView *)view withDraft:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock {
     
     FJTakePhotoButton *button = MF_LOAD_NIB(@"FJTakePhotoButton");
+    [view addSubview:button];
+    [button mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.equalTo(view);
+        if (MF_IF_IPX_SERIES) {
+            make.height.equalTo(@68.0);
+        }else {
+            make.height.equalTo(@48.0);
+        }
+    }];
     [button updateWithDraft:withDraft];
     button.draftBlock = draftBlock;
     button.takePhotoBlock = takePhotoBlock;
@@ -44,10 +55,30 @@
             make.right.top.bottom.equalTo(weakSelf);
             make.width.equalTo(weakSelf.takePhotoView.mas_width);
         }];
+        [self.takePhotoImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(weakSelf.takePhotoView.mas_centerX);
+            make.top.equalTo(weakSelf.takePhotoView).offset(8.0);
+            make.width.mas_equalTo(24.0);
+            make.height.mas_equalTo(24.0);
+        }];
+        [self.takePhotoTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(weakSelf.takePhotoView.mas_centerX);
+            make.top.equalTo(weakSelf.takePhotoImageView.mas_bottom).offset(3.0);
+        }];
     }else {
         self.draftView.hidden = YES;
         [self.takePhotoView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(weakSelf);
+        }];
+        [self.takePhotoImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(weakSelf.mas_centerX).offset(-20);
+            make.centerY.equalTo(weakSelf.mas_centerY);
+            make.width.mas_equalTo(24.0);
+            make.height.mas_equalTo(24.0);
+        }];
+        [self.takePhotoTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(weakSelf.mas_centerX).offset(20);
+            make.centerY.equalTo(weakSelf.mas_centerY);
         }];
     }
 }

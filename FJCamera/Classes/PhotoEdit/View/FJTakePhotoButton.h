@@ -10,7 +10,7 @@
 
 @interface FJTakePhotoButton : UIView
 
-+ (FJTakePhotoButton *)create:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock;
++ (FJTakePhotoButton *)createOn:(UIView *)view withDraft:(BOOL)withDraft draftBlock:(void(^)(void))draftBlock takePhotoBlock:(void(^)(void))takePhotoBlock;
 
 - (void)updateWithDraft:(BOOL)withDraft;
 
