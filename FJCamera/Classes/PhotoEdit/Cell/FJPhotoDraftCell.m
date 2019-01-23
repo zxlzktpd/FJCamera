@@ -54,7 +54,7 @@
     }
     if (ds.data.extra0 != nil && [ds.data.extra0 isKindOfClass:[NSString class]]) {
         NSString *txt = ds.data.extra0;
-        self.draftLabel.attributedText = txt.typeset.font([UIFont systemFontOfSize:14.0].fontName, 14.0).minimumLineHeight(22.0).color(@"#3C3C3C".fj_color).string;
+        self.draftLabel.attributedText = txt.typeset.font([UIFont systemFontOfSize:14.0].fontName, 14.0).minimumLineHeight(22.0).color(@"#3C3C3C".fj_color).lineBreakMode(NSLineBreakByTruncatingTail).string;
     }else {
         self.draftLabel.attributedText = @"暂无晒单文字".typeset.font([UIFont systemFontOfSize:14.0].fontName, 14.0).minimumLineHeight(22.0).color(@"#3C3C3C".fj_color).string;
     }
