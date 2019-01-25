@@ -267,7 +267,7 @@
     }
     
     if (_cropperView == nil) {
-        _cropperView = [FJCropperView create:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 debug:NO croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
+        _cropperView = [FJCropperView create:NO grid:YES horizontalExtemeRatio:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
             
         } updownBlock:^(BOOL up) {
             [weakSelf _move:up];
@@ -385,7 +385,7 @@
         if (type == FJClScrollBlockTypeMoveDown) {
             
             static CGFloat y = 0;
-            if (scrollView.contentOffset.y - y > 10.0) {
+            if (scrollView.contentOffset.y - y > 20.0) {
                 [weakSelf _move:YES];
             }
             y = scrollView.contentOffset.y;

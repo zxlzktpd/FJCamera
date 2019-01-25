@@ -12,7 +12,50 @@
 #import <FJKit_OC/UIImage+Utility_FJ.h>
 #import <FJKit_OC/NSString+Image_FJ.h>
 
-@interface FJImageScrollView()
+#define K_HEIGHT      100.0
+#define K_PDD_WIDTH   20.0
+
+@interface FJGridLabel : UILabel
+
+@end
+
+@implementation FJGridLabel
+
+- (void)drawRect:(CGRect)rect {
+    // NSLog(@"rect : %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+    //获得处理的上下文
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    //指定直线样式
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    //直线宽度
+    CGContextSetLineWidth(context, 0.5);
+    //设置颜色
+    CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+    //开始绘制
+    CGContextBeginPath(context);
+    // 直线
+    CGContextMoveToPoint(context, 0, rect.size.height / 3.0);
+    CGContextAddLineToPoint(context, rect.size.width, rect.size.height / 3.0);
+    
+    CGContextMoveToPoint(context, 0, rect.size.height * 2.0 / 3.0);
+    CGContextAddLineToPoint(context, rect.size.width, rect.size.height * 2.0 / 3.0);
+    
+    CGContextMoveToPoint(context, rect.size.width / 3.0, 0);
+    CGContextAddLineToPoint(context, rect.size.width / 3.0, rect.size.height);
+    
+    CGContextMoveToPoint(context, rect.size.width * 2.0 / 3.0, 0);
+    CGContextAddLineToPoint(context, rect.size.width * 2.0 / 3.0, rect.size.height);
+    
+    //绘制完成
+    CGContextStrokePath(context);
+}
+
+@end
+
+@interface FJImageScrollView : UIScrollView
+
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) FJPhotoModel *photoModel;
 
 @end
 
@@ -61,9 +104,13 @@
 @property (nonatomic, weak) IBOutlet UIImageView *updownImageView;
 @property (nonatomic, weak) IBOutlet UIButton *expandButton;
 @property (nonatomic, weak) IBOutlet UIButton *updownButton;
+@property (nonatomic, strong) FJGridLabel *gridView;
 
 @property (nonatomic, assign) CGFloat horizontalExtemeRatio;
 @property (nonatomic, assign) CGFloat verticalExtemeRatio;
+
+// 是否显示网格线
+@property (nonatomic, assign) BOOL isGrid;
 
 // 1：扁长（超比例）  2：扁长（范围内） 3：窄长（超比例） 4：窄长（范围内）
 @property (nonatomic, assign) int type;
@@ -79,6 +126,19 @@
 
 @implementation FJCropperView
 
+- (FJGridLabel *)gridView {
+    
+    if (_gridView == nil) {
+        _gridView = [[FJGridLabel alloc] init];
+        [self addSubview:_gridView];
+        if (self.isDebug) {
+            _gridView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
+        }
+    }
+    [self bringSubviewToFront:_gridView];
+    return _gridView;
+}
+
 - (NSMutableArray *)scrollViews {
     
     if (_scrollViews == nil) {
@@ -92,7 +152,7 @@
     [super awakeFromNib];
 }
 
-+ (FJCropperView *)create:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio debug:(BOOL)debug croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
++ (FJCropperView *)create:(BOOL)debug grid:(BOOL)grid horizontalExtemeRatio:(CGFloat)horizontalExtemeRatio verticalExtemeRatio:(CGFloat)verticalExtemeRatio croppedBlock:(void(^)(FJPhotoModel *photoModel, CGRect frame))croppedBlock updownBlock:(void(^)(BOOL up))updownBlock {
     
     FJCropperView *view = MF_LOAD_NIB(@"FJCropperView");
     view.clipsToBounds = YES;
@@ -103,6 +163,7 @@
     view.updownBlock = updownBlock;
     view.inCrop = NO;
     view.isFirst = YES;
+    view.isGrid = grid;
     view.isDebug = debug;
     // Setup UI
     [view _buildNewImageScrollView];
@@ -118,8 +179,8 @@
     self.currentScrollView.delegate = self;
     [self addSubview:self.currentScrollView];
     if (self.isDebug) {
-        self.backgroundColor = [UIColor redColor];
-        self.currentScrollView.backgroundColor = [UIColor grayColor];
+        self.backgroundColor = [UIColor blueColor];
+        self.currentScrollView.backgroundColor = [UIColor blackColor];
     }else {
         self.backgroundColor = @"#F5F5F5".fj_color;
         self.currentScrollView.backgroundColor = @"#F5F5F5".fj_color;
@@ -234,14 +295,6 @@
     
     return self.updownImageView.highlighted;
 }
-
-// 是否在裁切图片
-/*
-- (BOOL)inCroppingImage {
-    
-    return self.currentScrollView.photoModel.needCrop && self.inCrop;
-}
-*/
 
 // 更新留白和充满状态
 - (void)_updateImageView:(BOOL)compressChange image:(UIImage *)image {
@@ -433,7 +486,7 @@
         UIImageView *imageView = [MF_KEY_WINDOW viewWithTag:1000];
         if (imageView == nil) {
             imageView = [[UIImageView alloc] initWithFrame:CGRectMake(64.0, 0, 64.0, 64.0)];
-            imageView.backgroundColor = [UIColor redColor];
+            imageView.backgroundColor = [UIColor darkGrayColor];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             imageView.image = cropImage;
         }
@@ -463,31 +516,95 @@
     self.updownBlock == nil ? : self.updownBlock(up);
 }
 
+// 更新网格
+- (void)_updateGrid:(UIScrollView *)scrollView {
+    
+    if (self.isGrid == NO) {
+        return;
+    }
+    self.gridView.hidden = NO;
+    self.gridView.alpha = 1;
+    CGFloat x = 0;
+    CGFloat y = 0;
+    CGFloat w = 0;
+    CGFloat h = 0;
+    if (scrollView.contentOffset.x >=0) {
+        x = scrollView.frame.origin.x - scrollView.contentOffset.x;
+        if (x <= 0) {
+            x = 0;
+            w = scrollView.contentSize.width - scrollView.contentOffset.x;
+        }else {
+            w = scrollView.contentSize.width;
+        }
+        
+        if (w >= scrollView.frame.size.width) {
+            w = scrollView.frame.size.width;
+        }
+    }else {
+        x = scrollView.frame.origin.x + (- scrollView.contentOffset.x);
+        w = scrollView.contentSize.width;
+        if (w >= self.frame.size.width - x) {
+            w = self.frame.size.width - x;
+        }
+    }
+    if (scrollView.contentOffset.y >= 0) {
+        y = scrollView.frame.origin.y - scrollView.contentOffset.y;
+        if (y <= 0 ) {
+            y = 0;
+            h = scrollView.contentSize.height - scrollView.contentOffset.y;
+        }else {
+            h = scrollView.contentSize.height;
+        }
+        if (h >= self.frame.size.height) {
+            h = self.frame.size.height;
+        }
+        
+    }else {
+        y = scrollView.frame.origin.y + (- scrollView.contentOffset.y);
+        h = scrollView.contentSize.height;
+        if (h >= self.frame.size.height - y) {
+            h = self.frame.size.height - y;
+        }
+    }
+    if (self.isDebug) {
+        self.gridView.frame = CGRectMake(x + 4.0, y + 4.0, w - 8.0, h - 8.0);
+    }else {
+        self.gridView.frame = CGRectMake(x, y , w, h);
+    }
+}
+
+// 停止网格
+- (void)_removeGrid {
+    
+    if (self.isGrid == NO) {
+        return;
+    }
+    MF_WEAK_SELF
+    [UIView animateWithDuration:0.5 animations:^{
+        weakSelf.gridView.alpha = 0;
+    } completion:^(BOOL finished) {
+        weakSelf.gridView.alpha = 1;
+        weakSelf.gridView.hidden = YES;
+    }];
+}
+
 #pragma mark - UISCrollView Delegate
+// 缩放对象
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     
     return self.currentScrollView.imageView;
 }
 
-// called before the scroll view begins zooming its content缩放开始的时候调用
+// 缩放开始
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view {
     
-    // NSLog(@"%s",__func__);
+    NSLog(@"### 缩放开始");
 }
 
-// scale between minimum and maximum. called after any 'bounce' animations缩放完毕的时候调用。
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
-    
-    //把当前的缩放比例设进ZoomScale，以便下次缩放时实在现有的比例的基础上
-    // NSLog(@"scale is %f",scale);
-    [self.currentScrollView setZoomScale:scale animated:NO];
-    
-    [self _cropImage];
-    self.inCrop = NO;
-}
-
-// 缩放时调用
+// 缩放进行
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    
+    NSLog(@"### 缩放进行");
     
     self.inCrop = YES;
     // 可以实时监测缩放比例
@@ -505,37 +622,63 @@
             self.currentScrollView.frame = CGRectMake((UI_SCREEN_WIDTH - self.base * scrollView.zoomScale) / 2.0, 0, self.base * scrollView.zoomScale, UI_SCREEN_WIDTH);
         }
     }
+    
+    [self _updateGrid:scrollView];
 }
 
-// 移动图像
+// 缩放完毕
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    
+    NSLog(@"### 缩放完毕");
+    // 把当前的缩放比例设进ZoomScale，以便下次缩放时实在现有的比例的基础上
+    // NSLog(@"scale is %f",scale);
+    [self.currentScrollView setZoomScale:scale animated:NO];
+    
+    [self _cropImage];
+    self.inCrop = NO;
+    [self _removeGrid];
+}
+
+// 移动进行
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
+    NSLog(@"### 移动进行");
     if (self.isFirst) {
         self.isFirst = NO;
         return;
     }
     self.inCrop = YES;
-    // NSLog(@"--- scrollViewDidScroll YES");
+    [self _updateGrid:scrollView];
 }
 
+// 移动停止（非人为拖拽后停止）
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
+    NSLog(@"### 移动停止（非人为拖拽后停止）");
     self.inCrop = NO;
-    // NSLog(@"--- scrollViewDidEndScrollingAnimation NO");
 }
 
+// 移动停止（人为拖拽后停止）
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
+    NSLog(@"### 移动停止（人为拖拽后停止）");
     [self _cropImage];
     self.inCrop = NO;
-    // NSLog(@"--- scrollViewDidEndDecelerating NO");
+    [self _removeGrid];
 }
 
+// 拖拽停止
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
+    NSLog(@"### 拖拽停止");
     [self _cropImage];
     self.inCrop = NO;
-    // NSLog(@"--- scrollViewDidEndDragging NO");
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (weakSelf.inCrop == NO) {
+            [weakSelf _removeGrid];
+        }
+    });
 }
 
 /*
