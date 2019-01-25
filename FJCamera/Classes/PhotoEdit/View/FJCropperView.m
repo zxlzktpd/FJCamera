@@ -22,7 +22,7 @@
 @implementation FJGridLabel
 
 - (void)drawRect:(CGRect)rect {
-    // NSLog(@"rect : %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+    // MFLog(@"rect : %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     //获得处理的上下文
     CGContextRef context = UIGraphicsGetCurrentContext();
     //指定直线样式
@@ -598,17 +598,17 @@
 // 缩放开始
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view {
     
-    NSLog(@"### 缩放开始");
+    MFLog(@"### 缩放开始");
 }
 
 // 缩放进行
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     
-    NSLog(@"### 缩放进行");
+    MFLog(@"### 缩放进行");
     
     self.inCrop = YES;
     // 可以实时监测缩放比例
-    // NSLog(@"......scale is %f",scrollView.zoomScale);
+    // MFLog(@"......scale is %f",scrollView.zoomScale);
     if (self.type == 1 || self.type == 2) {
         if (self.base * scrollView.zoomScale >= UI_SCREEN_WIDTH) {
             self.currentScrollView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
@@ -629,9 +629,9 @@
 // 缩放完毕
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
     
-    NSLog(@"### 缩放完毕");
+    MFLog(@"### 缩放完毕");
     // 把当前的缩放比例设进ZoomScale，以便下次缩放时实在现有的比例的基础上
-    // NSLog(@"scale is %f",scale);
+    // MFLog(@"scale is %f",scale);
     [self.currentScrollView setZoomScale:scale animated:NO];
     
     [self _cropImage];
@@ -642,7 +642,7 @@
 // 移动进行
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    NSLog(@"### 移动进行");
+    MFLog(@"### 移动进行");
     if (self.isFirst) {
         self.isFirst = NO;
         return;
@@ -654,14 +654,14 @@
 // 移动停止（非人为拖拽后停止）
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    NSLog(@"### 移动停止（非人为拖拽后停止）");
+    MFLog(@"### 移动停止（非人为拖拽后停止）");
     self.inCrop = NO;
 }
 
 // 移动停止（人为拖拽后停止）
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     
-    NSLog(@"### 移动停止（人为拖拽后停止）");
+    MFLog(@"### 移动停止（人为拖拽后停止）");
     [self _cropImage];
     self.inCrop = NO;
     [self _removeGrid];
@@ -670,7 +670,7 @@
 // 拖拽停止
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
-    NSLog(@"### 拖拽停止");
+    MFLog(@"### 拖拽停止");
     [self _cropImage];
     self.inCrop = NO;
     __weak typeof(self) weakSelf = self;

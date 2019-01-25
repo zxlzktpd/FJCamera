@@ -27,16 +27,8 @@
 #import <FJKit_OC/UIView+Toast_FJ.h>
 #import <FJKit_OC/UIView+Utility_FJ.h>
 #import <FJKit_OC/NSObject+Notification_FJ.h>
-
 #import <FJKit_OC/FJCollectionViewHeader.h>
 #import <FJKit_OC/FJTableViewHeader.h>
-
-// 打印日志
-#ifdef DEBUG
-#define NSLog(fmt, ...) NSLog((@"function：%s [Line：%d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#define NSLog(...)
-#endif
 
 // 弱引用
 //#ifndef weakify

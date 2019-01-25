@@ -61,7 +61,7 @@
 
 -(void)dealloc {
     
-    NSLog(@"陀螺仪对象销毁了");
+    MFLog(@"陀螺仪对象销毁了");
     [_motionManager stopDeviceMotionUpdates];
 }
 

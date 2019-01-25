@@ -8,6 +8,7 @@
 
 #import "FJMovieManager.h"
 #import <FJKit_OC/FJStorage.h>
+#import <FJKit_OC/Macro.h>
 
 @implementation FJAVInputSettingConfig
 
@@ -186,7 +187,7 @@
         if ([_movieWriter startWriting]){
             [_movieWriter startSessionAtSourceTime:CMSampleBufferGetPresentationTimeStamp(sampleBuffer)];
         } else {
-            NSLog(@"%@", _movieWriter.error);
+            MFLog(@"%@", _movieWriter.error);
         }
     }
     if (_movieWriter.status == AVAssetWriterStatusWriting){
@@ -195,14 +196,14 @@
                 return;
             }
             if (![_movieVideoInput appendSampleBuffer:sampleBuffer]){
-                NSLog(@"%@", _movieWriter.error);
+                MFLog(@"%@", _movieWriter.error);
             }
         } else if (mediaType == AVMediaTypeAudio){
             if (!_movieAudioInput.readyForMoreMediaData){
                 return;
             }
             if (![_movieAudioInput appendSampleBuffer:sampleBuffer]){
-                NSLog(@"%@", _movieWriter.error);
+                MFLog(@"%@", _movieWriter.error);
             }
         }
     }
@@ -331,9 +332,9 @@
         NSError *error;
         BOOL success = [fileManager removeItemAtPath:filePath error:&error];
         if (!success){
-            NSLog(@"删除视频文件失败：%@", error);
+            MFLog(@"删除视频文件失败：%@", error);
         } else {
-            NSLog(@"删除视频文件成功");
+            MFLog(@"删除视频文件成功");
         }
     }
 }

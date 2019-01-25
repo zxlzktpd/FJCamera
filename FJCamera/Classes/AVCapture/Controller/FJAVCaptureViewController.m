@@ -129,7 +129,7 @@
 
 - (void)dealloc {
     
-    NSLog(@"相机界面销毁了");
+    MFLog(@"相机界面销毁了");
 }
 
 #pragma mark - -输入设备
@@ -249,7 +249,7 @@
 - (void)zoomAction:(FJCameraView *)cameraView factor:(CGFloat)factor {
     
     NSError *error = [_cameraManager zoom:[self activeCamera] factor:factor];
-    if (error) NSLog(@"%@", error);
+    if (error) MFLog(@"%@", error);
 }
 
 // 聚焦
@@ -257,7 +257,7 @@
     
     NSError *error = [_cameraManager focus:[self activeCamera] point:point];
     handle(error);
-    NSLog(@"%f", [self activeCamera].activeFormat.videoMaxZoomFactor);
+    MFLog(@"%f", [self activeCamera].activeFormat.videoMaxZoomFactor);
 }
 
 // 曝光

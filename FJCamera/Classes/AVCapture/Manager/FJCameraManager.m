@@ -7,6 +7,7 @@
 //
 
 #import "FJCameraManager.h"
+#import <FJKit_OC/Macro.h>
 
 @implementation FJCameraManager
 
@@ -89,7 +90,7 @@ static const NSString *CameraAdjustingExposureContext;
                     device.exposureMode = AVCaptureExposureModeLocked;
                     [device unlockForConfiguration];
                 } else {
-                    NSLog(@"%@", error);
+                    MFLog(@"%@", error);
                 }
             });
         }
