@@ -216,7 +216,7 @@
     _scrollView.contentOffset = CGPointMake(offsetX, offsetY);
 }
 
-#pragma mark -- UIScrollViewDelegate
+#pragma mark - UIScrollViewDelegate
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return _imageView;
 }
