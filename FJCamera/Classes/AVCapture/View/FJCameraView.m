@@ -619,7 +619,7 @@
 - (void)_runResetAnimation {
     
     self.focusView.center = CGPointMake(self.previewView.width / 2, self.previewView.height / 2);
-    self.exposureView.center = CGPointMake(self.previewView.width / 2, self.previewView.height / 2);;
+    self.exposureView.center = CGPointMake(self.previewView.width / 2, self.previewView.height / 2);
     self.exposureView.transform = CGAffineTransformMakeScale(1.2f, 1.2f);
     self.focusView.hidden = NO;
     self.focusView.hidden = NO;
