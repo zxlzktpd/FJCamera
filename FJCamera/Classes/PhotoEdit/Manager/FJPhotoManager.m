@@ -319,27 +319,22 @@ static bool isFirstAccess = YES;
 }
 
 // 保存（用于退出保存）
-- (void)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras {
+- (long long)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier {
     
+    long long now = (long long)[NSDate fj_dateTimeStampSince1970];
     // 判断是否是已经存在已保存的draft中
     // 如果存在，先删除老的draft，再保存新的draft
     FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
-    if (overwrite && objectListModel.drafts.count > 0) {
-        NSMutableArray *arr = [[NSMutableArray alloc] init];
+    if (objectListModel.drafts.count > 0) {
         for (int i = (int)objectListModel.drafts.count - 1; i >= 0; i--) {
             FJPhotoPostDraftSavingModel *draft = [objectListModel.drafts fj_arrayObjectAtIndex:i];
-            [arr removeAllObjects];
-            for (FJPhotoPostSavingModel *photo in draft.photos) {
-                [arr addObject:photo.assetIdentifier];
-            }
-            for (int j = 0; j < self.allPhotos.count; j++) {
-                FJPhotoModel *model = [self.allPhotos fj_arrayObjectAtIndex:j];
-                if ([arr containsObject:model.asset.localIdentifier]) {
-                    if (j == self.allPhotos.count - 1) {
-                        // 存在重复
-                        [objectListModel.drafts fj_arrayRemoveObjectAtIndex:i];
-                    }
+            if (identifier > 0 && draft.identifier == identifier) {
+                if (overwrite) {
+                    // 覆盖
+                    [objectListModel.drafts removeObjectAtIndex:i];
                 }else {
+                    // 不覆盖
+                    identifier = now;
                     break;
                 }
             }
@@ -371,9 +366,15 @@ static bool isFirstAccess = YES;
         postPhotoModel.endCropPointY = model.endCropPoint.y;
         [objectModel.photos addObject:postPhotoModel];
     }
-    objectModel.savingDate = [NSDate fj_dateTimeStampSince1970];
+    if (identifier > 0) {
+        objectModel.identifier = identifier;
+    }else {
+        objectModel.identifier = now;
+    }
+    objectModel.updatingTimestamp = now;
     [objectListModel.drafts addObject:objectModel];
     [FJStorage saveAnyObject:objectListModel];
+    return objectModel.identifier;
 }
 
 // 加载（用于退出保存）
@@ -419,10 +420,16 @@ static bool isFirstAccess = YES;
 // 删除某个Draft（用于退出保存）
 - (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft {
     
+    [self removeDraftByIdentifier:draft.identifier];
+}
+
+// 删除某个Draft（用于退出保存）
+- (void)removeDraftByIdentifier:(long long)identifier {
+    
     FJPhotoPostDraftListSavingModel *draftList = [self loadDraftCache];
     for (int i = (int)draftList.drafts.count - 1; i >= 0; i--) {
         FJPhotoPostDraftSavingModel *d = [draftList.drafts fj_arrayObjectAtIndex:i];
-        if (d.savingDate == draft.savingDate) {
+        if (d.identifier == identifier) {
             [draftList.drafts fj_arrayRemoveObjectAtIndex:i];
             break;
         }
@@ -433,7 +440,6 @@ static bool isFirstAccess = YES;
         [FJStorage saveAnyObject:draftList];
     }
 }
-
 
 // 根据Asset Identifier查找PHAsset
 - (PHAsset *)findByIdentifier:(NSString *)assetIdentifier {

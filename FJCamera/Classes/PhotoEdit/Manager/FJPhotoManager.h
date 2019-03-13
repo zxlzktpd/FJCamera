@@ -44,8 +44,10 @@
 @property (nonatomic, copy) NSString *extra7;
 @property (nonatomic, copy) NSString *extra8;
 @property (nonatomic, copy) NSString *extra9;
-// 保存时间
-@property (nonatomic, assign) long long savingDate;
+// 保存时间（唯一码）
+@property (nonatomic, assign) long long identifier;
+// 最后保存时间
+@property (nonatomic, assign) long long updatingTimestamp;
 
 @end
 
@@ -123,7 +125,7 @@
 - (BOOL)isDraftExist;
 
 // 保存（用于退出保存）
-- (void)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras;
+- (long long)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier;
 
 // 加载（用于退出保存）
 - (FJPhotoPostDraftListSavingModel *)loadDraftCache;
@@ -136,6 +138,9 @@
 
 // 删除某个Draft（用于退出保存）
 - (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft;
+
+// 删除某个Draft（用于退出保存）
+- (void)removeDraftByIdentifier:(long long)identifier;
 
 // 根据Asset Identifier查找PHAsset
 - (PHAsset *)findByIdentifier:(NSString *)assetIdentifier;
