@@ -51,7 +51,12 @@
         [self addSubview:_tableView];
         MF_WEAK_SELF
         [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(weakSelf);
+            make.left.right.top.equalTo(weakSelf);
+            if (@available(iOS 11.0, *)) {
+                make.bottom.equalTo(weakSelf.mas_safeAreaLayoutGuideBottom);
+            }else {
+                make.bottom.equalTo(weakSelf);
+            }
         }];
         _tableView.fj_actionBlock = ^(FJTableView *__weak tableView, FJActionBlockType type, NSInteger section, NSInteger row, __kindof FJCellDataSource *cellData, __kindof FJCell *cell, __kindof FJTableHeaderFooterViewDataSource *headerFooterData, __kindof FJTableHeaderFooterView *headerFooter) {
             if (type == FJActionBlockTypeTapped) {
