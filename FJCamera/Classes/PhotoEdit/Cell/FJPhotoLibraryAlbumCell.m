@@ -21,6 +21,7 @@
 @implementation FJPhotoLibraryAlbumCell
 
 - (void)awakeFromNib {
+    
     [super awakeFromNib];
 }
 

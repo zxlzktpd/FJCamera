@@ -16,6 +16,9 @@
 @property (nonatomic, weak) IBOutlet UIImageView *draftImageView;
 @property (nonatomic, weak) IBOutlet UILabel *draftLabel;
 @property (nonatomic, weak) IBOutlet UILabel *draftAssetsCntLabel;
+@property (nonatomic, weak) IBOutlet UIImageView *checkboxImageView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *checkboxImageViewConst;
+@property (nonatomic, weak) IBOutlet UIButton *button;
 
 @end
 
@@ -24,6 +27,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longPress)];
+    [self.contentView addGestureRecognizer:longPress];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -60,6 +65,39 @@
     }
     self.draftAssetsCntLabel.text = [NSString stringWithFormat:@"%d张照片", (int)ds.data.photos.count];
     
+    if (ds.editable) {
+        self.checkboxImageViewConst.constant = 60.0;
+        self.checkboxImageView.hidden = NO;
+        [self.checkboxImageView setHighlighted:ds.selected];
+        self.button.hidden = NO;
+    }else {
+        self.checkboxImageViewConst.constant = 16.0;
+        self.checkboxImageView.hidden = YES;
+        self.button.hidden = YES;
+    }
+}
+
+- (void)updateSelected:(BOOL)selected {
+    
+    FJPhotoDraftCellDataSource *ds = self.fj_data;
+    ds.selected = selected;
+    [self.checkboxImageView setHighlighted:selected];
+}
+
+- (IBAction)_tapCheckbox:(id)sender {
+    
+    BOOL checked = self.checkboxImageView.isHighlighted;
+    [self updateSelected:!checked];
+    FJPhotoDraftCellDataSource *ds = self.fj_data;
+    ds.action = 0;
+    [self fj_tapCell:ds];
+}
+
+- (void)_longPress {
+    
+    FJPhotoDraftCellDataSource *ds = self.fj_data;
+    ds.action = 1;
+    [self fj_tapCell:ds];
 }
 
 @end

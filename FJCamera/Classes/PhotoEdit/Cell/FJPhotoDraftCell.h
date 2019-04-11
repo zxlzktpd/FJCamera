@@ -13,12 +13,17 @@
 
 @interface FJPhotoDraftCell : FJCell
 
+- (void)updateSelected:(BOOL)selected;
+
 @end
 
 @interface FJPhotoDraftCellDataSource : FJCellDataSource
 
 @property (nonatomic, strong) FJPhotoPostDraftSavingModel *data;
 @property (nonatomic, assign) BOOL pictureRemoved;
+@property (nonatomic, assign) BOOL editable;
+@property (nonatomic, assign) BOOL selected;
+@property (nonatomic, assign) int action;
 
 @end
 

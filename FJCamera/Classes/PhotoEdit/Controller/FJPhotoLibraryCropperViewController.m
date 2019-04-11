@@ -135,7 +135,7 @@
     if (self) {
         self.maxSelectionCount = 9;
         self.photoListColumn = 4;
-        self.takeButtonPosition = FJTakePhotoButtonPositionBottomWithDraft;
+        self.takeButtonPosition = FJTakePhotoButtonPositionBottom;
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
         self.filterMinPhotoPixelSize = CGSizeMake(400.0, 400.0);

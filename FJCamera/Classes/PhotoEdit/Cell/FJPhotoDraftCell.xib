@@ -43,27 +43,54 @@
                             <constraint firstAttribute="height" constant="0.5" id="EFE-wX-TJZ"/>
                         </constraints>
                     </view>
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_unselected.png" highlightedImage="ic_photo_selected.png" translatesAutoresizingMaskIntoConstraints="NO" id="mUn-Va-ZcA">
+                        <rect key="frame" x="304" y="0.0" width="16" height="95.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="16" id="0Bi-Rz-YiU"/>
+                        </constraints>
+                    </imageView>
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rwM-AX-Hyf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="95.5"/>
+                        <connections>
+                            <action selector="_tapCheckbox:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="jKH-iK-u6c"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="zK9-rO-qIe" secondAttribute="trailing" constant="16" id="6Hx-1K-7B2"/>
+                    <constraint firstItem="mUn-Va-ZcA" firstAttribute="leading" secondItem="zK9-rO-qIe" secondAttribute="trailing" id="8hv-NO-tHN"/>
                     <constraint firstAttribute="bottom" secondItem="bpB-Bm-Bdc" secondAttribute="bottom" id="Ekh-oh-y0z"/>
+                    <constraint firstItem="rwM-AX-Hyf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="KvW-px-D56"/>
+                    <constraint firstAttribute="bottom" secondItem="mUn-Va-ZcA" secondAttribute="bottom" id="Q04-r0-U0O"/>
+                    <constraint firstAttribute="trailing" secondItem="mUn-Va-ZcA" secondAttribute="trailing" id="SnA-eo-gae"/>
                     <constraint firstItem="zK9-rO-qIe" firstAttribute="leading" secondItem="e9r-w7-KBJ" secondAttribute="trailing" constant="16" id="TGH-ni-kqr"/>
+                    <constraint firstAttribute="bottom" secondItem="rwM-AX-Hyf" secondAttribute="bottom" id="TO7-Xe-dGc"/>
                     <constraint firstAttribute="trailing" secondItem="bpB-Bm-Bdc" secondAttribute="trailing" constant="16" id="VUA-eR-XdX"/>
                     <constraint firstItem="zK9-rO-qIe" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="b0h-1R-Kyu"/>
                     <constraint firstItem="e9r-w7-KBJ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="bgl-kq-3rb"/>
+                    <constraint firstItem="rwM-AX-Hyf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="fqY-cL-kuw"/>
+                    <constraint firstItem="mUn-Va-ZcA" firstAttribute="leading" secondItem="mKx-je-dCr" secondAttribute="trailing" id="jDc-1o-HV9"/>
+                    <constraint firstItem="mUn-Va-ZcA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="msf-DA-Xww"/>
                     <constraint firstAttribute="bottom" secondItem="mKx-je-dCr" secondAttribute="bottom" constant="16" id="nAD-4V-JTI"/>
                     <constraint firstItem="mKx-je-dCr" firstAttribute="leading" secondItem="e9r-w7-KBJ" secondAttribute="trailing" constant="16" id="qKn-4m-SFi"/>
                     <constraint firstItem="e9r-w7-KBJ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="s5Z-2k-OhQ"/>
-                    <constraint firstAttribute="trailing" secondItem="mKx-je-dCr" secondAttribute="trailing" constant="16" id="u8v-H6-oQU"/>
+                    <constraint firstAttribute="trailing" secondItem="rwM-AX-Hyf" secondAttribute="trailing" id="tZX-nV-2kh"/>
                     <constraint firstAttribute="bottom" secondItem="e9r-w7-KBJ" secondAttribute="bottom" constant="16" id="yUf-jb-Uu1"/>
                     <constraint firstItem="bpB-Bm-Bdc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="zHt-nx-TVE"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="button" destination="rwM-AX-Hyf" id="ZF4-iV-hrb"/>
+                <outlet property="checkboxImageView" destination="mUn-Va-ZcA" id="Dhi-bQ-oBu"/>
+                <outlet property="checkboxImageViewConst" destination="0Bi-Rz-YiU" id="MXR-GZ-Lc5"/>
                 <outlet property="draftAssetsCntLabel" destination="mKx-je-dCr" id="DX8-Ne-BEW"/>
                 <outlet property="draftImageView" destination="e9r-w7-KBJ" id="3MB-og-k8F"/>
                 <outlet property="draftLabel" destination="zK9-rO-qIe" id="vxy-pj-lNP"/>
             </connections>
+            <point key="canvasLocation" x="129.59999999999999" y="153.82308845577214"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="ic_photo_selected.png" width="20" height="20"/>
+        <image name="ic_photo_unselected.png" width="20" height="20"/>
+    </resources>
 </document>
