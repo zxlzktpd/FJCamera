@@ -13,6 +13,8 @@
 #import <FJKit_OC/NSArray+JSON_FJ.h>
 #import <FJKit_OC/NSDate+Utility_FJ.h>
 #import <FJKit_OC/NSString+Image_FJ.h>
+#import <FJKit_OC/FJNavigationController.h>
+#import "FJPhotoDraftHistoryViewController.h"
 
 #pragma mark - Photo Saving Model
 @implementation FJPhotoPostSavingModel
@@ -470,5 +472,15 @@ static bool isFirstAccess = YES;
     }
     return nil;
 }
+
+// 打开草稿箱
++ (void)presentDraftController:(UIViewController *)controller userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock {
+    
+    FJPhotoDraftHistoryViewController *draftVC = [[FJPhotoDraftHistoryViewController alloc] init];
+    draftVC.userSelectDraftBlock = userSelectDraftBlock;
+    FJNavigationController *nav = [[FJNavigationController alloc] initWithRootViewController:draftVC];
+    [controller presentViewController:nav animated:YES completion:nil];
+}
+
 
 @end

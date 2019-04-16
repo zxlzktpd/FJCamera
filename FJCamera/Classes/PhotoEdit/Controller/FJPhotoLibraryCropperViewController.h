@@ -46,6 +46,15 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 // 过滤尺寸（小于尺寸的照片不在相册选择中显示）
 @property (nonatomic, assign) CGSize filterMinPhotoPixelSize;
 
+// 宽长图片的极限比例(比例极限是不小于：高度/宽度值)
+@property (nonatomic, assign) CGFloat horizontalExtemeRatio;
+
+// 窄长图片的极限比例(比例极限是不小于：宽度/高度值)
+@property (nonatomic, assign) CGFloat verticalExtemeRatio;
+
+// 是否显示裁切视图CropperView
+@property (nonatomic, assign) BOOL cropperViewVisible;
+
 // 启动时的Block
 @property (nonatomic, copy) void(^userInitBlock)(void);
 

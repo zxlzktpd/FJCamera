@@ -139,6 +139,9 @@
         self.sortType = FJPhotoSortTypeCreationDateDesc;
         self.uuid = [NSString fj_uuidRandomTimestamp];
         self.filterMinPhotoPixelSize = CGSizeMake(400.0, 400.0);
+        self.cropperViewVisible = YES;
+        self.horizontalExtemeRatio = 9.0 / 16.0;
+        self.verticalExtemeRatio = 4.0 / 5.0;
     }
     return self;
 }
@@ -266,22 +269,29 @@
         }];
     }
     
-    if (_cropperView == nil) {
-        _cropperView = [FJCropperView create:NO grid:YES horizontalExtemeRatio:9.0 / 16.0 verticalExtemeRatio:4.0 / 5.0 croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
-            
-        } updownBlock:^(BOOL up) {
-            [weakSelf _move:up];
-        }];
-        _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
-        [self.view addSubview:_cropperView];
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panAction:)];
-        [_cropperView addGestureRecognizer:panGesture];
+    if (_cropperViewVisible) {
+        if (_cropperView == nil) {
+            _cropperView = [FJCropperView create:NO grid:YES horizontalExtemeRatio:self.horizontalExtemeRatio verticalExtemeRatio:self.verticalExtemeRatio croppedBlock:^(FJPhotoModel *photoModel, CGRect frame) {
+                
+            } updownBlock:^(BOOL up) {
+                [weakSelf _move:up];
+            }];
+            _cropperView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH);
+            [self.view addSubview:_cropperView];
+            UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_panAction:)];
+            [_cropperView addGestureRecognizer:panGesture];
+        }
     }
     
     if (_collectionView == nil) {
         _collectionView = [FJCollectionView fj_createCollectionView:CGRectZero backgroundColor:[UIColor whiteColor] collectionViewBackgroundColor:[UIColor whiteColor] sectionInset:UIEdgeInsetsMake(5, 5, 5, 5) minimumLineSpace:5.0 minimumInteritemSpace:5.0 headerHeight:0 footerHeight:0 registerClasses:@[[FJPhotoCollectionViewCell class]] waterfallColumns:self.photoListColumn stickyHeader:NO];
         [self.view addSubview:_collectionView];
-        _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
+        if (_cropperViewVisible) {
+            _collectionView.frame = CGRectMake(0, UI_SCREEN_WIDTH, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_SCREEN_WIDTH - UI_TOP_HEIGHT);
+        }else {
+            _collectionView.frame = CGRectMake(0, 0, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT);
+        }
+        
         if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
             self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
             _collectionView.fj_collectionView.contentInset = UIEdgeInsetsMake(0, 0, 48.0, 0);
@@ -297,14 +307,6 @@
                 return;
             }
             
-            /*
-             if ([weakSelf.cropperView inCroppingImage]) {
-             if (ds.isSelected == YES) {
-             ds.isSelected = NO;
-             }
-             return;
-             }
-             */
             if (type == FJClActionBlockTypeCustomizedTapped) {
                 // 选择照片
                 if (ds.isSelected) {
@@ -343,12 +345,16 @@
                     [[FJPhotoManager shared] addDistinct:model];
                     [weakSelf.selectedPhotos fj_arrayAddObject:model];
                     
-                    // 更新CropperView
-                    model.needCrop = YES;
-                    BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
-                    if (updateSuccess == NO) {
-                        ds.isSelected = NO;
-                        return;
+                    if (weakSelf.cropperViewVisible) {
+                        // 更新CropperView
+                        model.needCrop = YES;
+                        BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
+                        if (updateSuccess == NO) {
+                            ds.isSelected = NO;
+                            return;
+                        }
+                    }else {
+                        
                     }
                 }
                 [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
@@ -356,12 +362,17 @@
             }else if (type == FJClActionBlockTypeTapped) {
                 
                 FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-                // 更新CropperView
-                model.needCrop = ds.isSelected;
-                BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
-                if (updateSuccess == NO) {
-                    return;
+                if (weakSelf.cropperViewVisible) {
+                    // 更新CropperView
+                    model.needCrop = ds.isSelected;
+                    BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
+                    if (updateSuccess == NO) {
+                        return;
+                    }
+                }else {
+                    
                 }
+                
             }
             for (FJPhotoCollectionViewCellDataSource *data in weakSelf.collectionView.fj_dataSource) {
                 if ([data isEqual:cellData]) {
@@ -380,43 +391,45 @@
             }
         }
     };
-    self.collectionView.fj_scrollBlock = ^(UIScrollView *scrollView, FJClScrollBlockType type, CGFloat height, BOOL willDecelerate) {
-        
-        if (type == FJClScrollBlockTypeMoveDown) {
+    if (self.cropperViewVisible) {
+        self.collectionView.fj_scrollBlock = ^(UIScrollView *scrollView, FJClScrollBlockType type, CGFloat height, BOOL willDecelerate) {
             
-            static CGFloat y = 0;
-            if (scrollView.contentOffset.y - y > 20.0) {
-                [weakSelf _move:YES];
-            }
-            y = scrollView.contentOffset.y;
-        }else {
-            static BOOL endDrag;
-            if (type == FJClScrollBlockTypeDragDidEnd) {
-                endDrag = YES;
-            }else if (type == FJClScrollBlockTypeDragWillBegin) {
-                endDrag = NO;
-            }
-            if (endDrag == NO) {
-                if (scrollView.contentOffset.y < 0) {
-                    weakSelf.cropperView.blurLabel.hidden = YES;
-                    if (weakSelf.cropperView.frame.origin.y <= 0) {
-                        weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
-                        if (weakSelf.cropperView.frame.origin.y > 0) {
-                            weakSelf.cropperView.frame = CGRectMake(0, 0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+            if (type == FJClScrollBlockTypeMoveDown) {
+                
+                static CGFloat y = 0;
+                if (scrollView.contentOffset.y - y > 20.0) {
+                    [weakSelf _move:YES];
+                }
+                y = scrollView.contentOffset.y;
+            }else {
+                static BOOL endDrag;
+                if (type == FJClScrollBlockTypeDragDidEnd) {
+                    endDrag = YES;
+                }else if (type == FJClScrollBlockTypeDragWillBegin) {
+                    endDrag = NO;
+                }
+                if (endDrag == NO) {
+                    if (scrollView.contentOffset.y < 0) {
+                        weakSelf.cropperView.blurLabel.hidden = YES;
+                        if (weakSelf.cropperView.frame.origin.y <= 0) {
+                            weakSelf.cropperView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + fabs(scrollView.contentOffset.y) / 2.0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                            if (weakSelf.cropperView.frame.origin.y > 0) {
+                                weakSelf.cropperView.frame = CGRectMake(0, 0, weakSelf.cropperView.frame.size.width, weakSelf.cropperView.frame.size.height);
+                            }
+                            weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
                         }
-                        weakSelf.collectionView.frame = CGRectMake(0, weakSelf.cropperView.frame.origin.y + weakSelf.cropperView.bounds.size.height, UI_SCREEN_WIDTH, UI_SCREEN_HEIGHT - UI_TOP_HEIGHT - UI_SCREEN_WIDTH - weakSelf.cropperView.frame.origin.y);
+                    }
+                }
+                if (type == FJClScrollBlockTypeDragDidEnd) {
+                    if (weakSelf.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
+                        [weakSelf _move:NO];
+                    }else {
+                        [weakSelf _move:YES];
                     }
                 }
             }
-            if (type == FJClScrollBlockTypeDragDidEnd) {
-                if (weakSelf.cropperView.frame.origin.y > - (UI_SCREEN_WIDTH - PREVIEW_IMAGE_LEAST_HEIGHT - UPDOWN_LEAST_HEIGHT) ) {
-                    [weakSelf _move:NO];
-                }else {
-                    [weakSelf _move:YES];
-                }
-            }
-        }
-    };
+        };
+    }
     
     // Take Photo Button
     if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
@@ -433,6 +446,7 @@
     }
 }
 
+// 拖动CropperView的手势，当cropperViewVisible == YES时有效
 - (void)_panAction:(UIPanGestureRecognizer *)panGesture {
     
     CGPoint point = [panGesture translationInView:panGesture.view];
@@ -482,6 +496,7 @@
     }
 }
 
+// 向上向下位移CropperView的方法，当cropperViewVisible == YES时有效
 - (void)_move:(BOOL)up {
     
     static BOOL inAnimation = NO;
@@ -798,13 +813,18 @@
                 [self.selectedPhotos fj_arrayAddObject:model];
             }
             
-            // 更新CropperView
-            if (ds.isSelected) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    model.needCrop = YES;
-                    [weakSelf.cropperView updateModel:model];
-                });
+            if (self.cropperViewVisible) {
+                // 更新CropperView
+                if (ds.isSelected) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        model.needCrop = YES;
+                        [weakSelf.cropperView updateModel:model];
+                    });
+                }
+            }else {
+                
             }
+            
         }
         for (; i < assets.count; i++) {
             PHAsset *asset = [assets objectAtIndex:i];

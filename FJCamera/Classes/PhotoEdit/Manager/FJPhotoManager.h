@@ -145,4 +145,7 @@
 // 根据Asset Identifier查找PHAsset
 - (PHAsset *)findByIdentifier:(NSString *)assetIdentifier;
 
+// 打开草稿箱
++ (void)presentDraftController:(UIViewController *)controller userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock;
+
 @end
