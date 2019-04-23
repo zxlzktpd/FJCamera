@@ -18,6 +18,8 @@
 @property (nonatomic, copy) NSString *tagId;
 // Tag的名称
 @property (nonatomic, copy) NSString *name;
+// Tag的类型(0：话题 1：商家 20：人民币，21：美元，22：欧元)
+@property (nonatomic, assign) int type;
 // 图片上的x偏移比例
 @property (nonatomic, assign) float xPercent;
 // 图片上的y偏移比例

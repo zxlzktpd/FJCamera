@@ -16,6 +16,7 @@
 @interface FJPhotoImageTagView ()
 
 @property (nonatomic, weak) IBOutlet UIView *tagBackgroundView;
+@property (nonatomic, weak) IBOutlet UIImageView *tagImageView;
 @property (nonatomic, weak) IBOutlet UILabel *textLabel;
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointUpView;
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointDownView;
@@ -48,8 +49,42 @@
     } else {
         w = [model.name fj_width:[UIFont systemFontOfSize:12.0] enableCeil:YES] + 0.2 * model.name.length;
     }
-    view.frame = CGRectMake(point.x, point.y, w + 12.0 + 12.0, FJPhotoImageTagViewHeight);
+    view.frame = CGRectMake(point.x, point.y, w + 24.0 + 8.0 + 6.0 + 6.0, FJPhotoImageTagViewHeight);
     [view.tagBackgroundView fj_cornerRadius:2.0];
+    switch (model.type) {
+        case 0:
+        {
+            // 话题
+            view.tagImageView.image = @"ic_logo_tag_topic".fj_image;
+            break;
+        }
+        case 1:
+        {
+            // 品牌
+            view.tagImageView.image = @"ic_logo_tag_brand".fj_image;
+            break;
+        }
+        case 20:
+        {
+            // 人民币
+            view.tagImageView.image = @"ic_logo_tag_rmb".fj_image;
+            break;
+        }
+        case 21:
+        {
+            // 美元
+            view.tagImageView.image = @"ic_logo_tag_dollar".fj_image;
+            break;
+        }
+        case 22:
+        {
+            // 欧元
+            view.tagImageView.image = @"ic_logo_tag_euro".fj_image;
+            break;
+        }
+        default:
+            break;
+    }
     if (canmove) {
         [view addGestureRecognizer:view.panGesture];
         [view addGestureRecognizer:view.tapGesture];
