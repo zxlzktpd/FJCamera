@@ -7,6 +7,7 @@ targetsArray.each do |t|
         pod 'Masonry'
         pod 'BlocksKit'
         pod 'SMPageControl'
+        pod 'SDWebImage'
         pod 'FJKit-OC',            :path => '../../FJKit-OC'
     end 
 end

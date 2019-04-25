@@ -55,7 +55,7 @@
 // temporary photo model array
 @property (nonatomic, strong) NSMutableArray<FJPhotoModel *> *temporaryPhotoModels;
 
-// UUID
+// 打开相册时间戳，相同的assetIdentifier在不同时间戳打开属于不同的照片
 @property (nonatomic, copy) NSString *uuid;
 
 @end

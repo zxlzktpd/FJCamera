@@ -7,17 +7,28 @@
 //
 
 #import "FJPhotoManager.h"
-#import "PHAsset+QuickEdit.h"
-#import "FJFilterManager.h"
+#import <SDWebImage/SDWebImageDownloader.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 #import <FJKit_OC/UIImage+Utility_FJ.h>
 #import <FJKit_OC/NSArray+JSON_FJ.h>
 #import <FJKit_OC/NSDate+Utility_FJ.h>
 #import <FJKit_OC/NSString+Image_FJ.h>
 #import <FJKit_OC/FJNavigationController.h>
 #import "FJPhotoDraftHistoryViewController.h"
+#import "PHAsset+QuickEdit.h"
+#import "FJFilterManager.h"
 
 #pragma mark - Photo Saving Model
 @implementation FJPhotoPostSavingModel
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.imageTags = (NSMutableArray<FJImageTagModel *> *)[[NSMutableArray alloc] init];
+    }
+    return self;
+}
 
 + (NSDictionary *)modelContainerPropertyGenericClass {
     
@@ -359,6 +370,7 @@ static bool isFirstAccess = YES;
         FJPhotoPostSavingModel *postPhotoModel = [[FJPhotoPostSavingModel alloc] init];
         postPhotoModel.uuid = model.uuid;
         postPhotoModel.assetIdentifier = [model.asset localIdentifier];
+        postPhotoModel.photoUrl = model.photoUrl;
         postPhotoModel.tuningObject = model.tuningObject;
         postPhotoModel.imageTags = model.imageTags;
         postPhotoModel.compressed = model.compressed;
@@ -387,10 +399,13 @@ static bool isFirstAccess = YES;
 }
 
 // 加载到allPhoto（用于退出保存）
-- (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft {
+- (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft completion:(void(^)(void))completion {
     
     [self clean];
-    for (FJPhotoPostSavingModel *savingPhotoModel in draft.photos) {
+    __block int loadedPhotosCnt = 0;
+    for (int i = 0; i < draft.photos.count; i++) {
+        
+        FJPhotoPostSavingModel *savingPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
         
         FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
         // 赋值照片属性
@@ -401,15 +416,60 @@ static bool isFirstAccess = YES;
         photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
         photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
         // 查找相册并赋值PHAsset
-        PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
-        if (findedAsset == nil) {
-            photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+        if (savingPhotoModel.assetIdentifier.length > 0) {
+            PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
+            if (findedAsset) {
+                photoModel.asset = findedAsset;
+                UIImage *originalImage = [findedAsset getGeneralTargetImage];
+                photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
+                [self.allPhotos addObject:photoModel];
+                loadedPhotosCnt++;
+                if (loadedPhotosCnt == draft.photos.count) {
+                    // 照片全部加载完成
+                    completion == nil ? : completion();
+                }
+            }else {
+                // 加载照片失败
+                photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+                [self.allPhotos addObject:photoModel];
+                loadedPhotosCnt++;
+                if (loadedPhotosCnt == draft.photos.count) {
+                    // 照片全部加载完成
+                    completion == nil ? : completion();
+                }
+            }
+        }else if (savingPhotoModel.photoUrl.length > 0) {
+            
+            [self findByPhotoUrl:savingPhotoModel.photoUrl completion:^(NSData *imageData, UIImage *image) {
+                if (image != nil) {
+                    photoModel.croppedImage = image;
+                    [self.allPhotos addObject:photoModel];
+                    loadedPhotosCnt++;
+                    if (loadedPhotosCnt == draft.photos.count) {
+                        // 照片全部加载完成
+                        completion == nil ? : completion();
+                    }
+                }else {
+                    // 加载照片失败
+                    photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+                    [self.allPhotos addObject:photoModel];
+                    loadedPhotosCnt++;
+                    if (loadedPhotosCnt == draft.photos.count) {
+                        // 照片全部加载完成
+                        completion == nil ? : completion();
+                    }
+                }
+            }];
         }else {
-            photoModel.asset = findedAsset;
-            UIImage *originalImage = [findedAsset getGeneralTargetImage];
-            photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
+            // 加载照片失败
+            photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+            [self.allPhotos addObject:photoModel];
+            loadedPhotosCnt++;
+            if (loadedPhotosCnt == draft.photos.count) {
+                // 照片全部加载完成
+                completion == nil ? : completion();
+            }
         }
-        [self.allPhotos addObject:photoModel];
     }
 }
 
@@ -471,6 +531,14 @@ static bool isFirstAccess = YES;
         }
     }
     return nil;
+}
+
+// 根据PhotoUrl查找NSData、UIImage
+- (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image))completion {
+    
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[photoUrl fjNSURL] options:SDWebImageDownloaderHighPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+        completion == nil ? : completion(data, image);
+    }];
 }
 
 // 打开草稿箱
