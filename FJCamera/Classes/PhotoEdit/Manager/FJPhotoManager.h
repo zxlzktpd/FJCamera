@@ -149,7 +149,7 @@
 - (PHAsset *)findByIdentifier:(NSString *)assetIdentifier;
 
 // 根据PhotoUrl查找NSData、UIImage
-- (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image))completion;
+- (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image, NSString *url))completion;
 
 // 打开草稿箱
 + (void)presentDraftController:(UIViewController *)controller userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock;

@@ -41,22 +41,30 @@
     [super fj_setData:data];
     FJPhotoDraftCellDataSource *ds = data;
     
+    MF_WEAK_SELF
     FJPhotoPostSavingModel *pModel = [ds.data.photos fj_arrayObjectAtIndex:0];
-    PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
-    if (asset == nil) {
-        self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
-        if (ds.data.photos.count == 1) {
-            ds.pictureRemoved = YES;
+    if (pModel.assetIdentifier.length > 0) {
+        PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
+        if (asset == nil) {
+            [self _renderDefaultImage];
         }else {
             ds.pictureRemoved = NO;
+            UIImage *image = [asset getSmallTargetImage];
+            [self _renderImage:image photoModel:pModel];
         }
+    }else if (pModel.photoUrl.length > 0) {
+        self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
+        [[FJPhotoManager shared] findByPhotoUrl:pModel.photoUrl completion:^(NSData *imageData, UIImage *image, NSString *url) {
+            if (image == nil) {
+                [weakSelf _renderDefaultImage];
+            }else {
+                [weakSelf _renderImage:image photoModel:pModel];
+            }
+        }];
     }else {
-        ds.pictureRemoved = NO;
-        UIImage *image = [asset getSmallTargetImage];
-        image = [image fj_imageCropBeginPointRatio:CGPointMake(pModel.beginCropPointX, pModel.beginCropPointY) endPointRatio:CGPointMake(pModel.endCropPointX, pModel.endCropPointY)];
-        image = [[FJFilterManager shared] getImage:image tuningObject:pModel.tuningObject appendFilterType:pModel.tuningObject.filterType];
-        self.draftImageView.image = image;
+        [weakSelf _renderDefaultImage];
     }
+    
     if (ds.data.extra0 != nil && [ds.data.extra0 isKindOfClass:[NSString class]]) {
         NSString *txt = ds.data.extra0;
         self.draftLabel.attributedText = txt.typeset.font([UIFont systemFontOfSize:14.0].fontName, 14.0).minimumLineHeight(22.0).color(@"#3C3C3C".fj_color).lineBreakMode(NSLineBreakByTruncatingTail).string;
@@ -74,6 +82,24 @@
         self.checkboxImageViewConst.constant = 16.0;
         self.checkboxImageView.hidden = YES;
         self.button.hidden = YES;
+    }
+}
+
+- (void)_renderImage:(UIImage *)image photoModel:(FJPhotoPostSavingModel *)photoModel {
+    
+    image = [image fj_imageCropBeginPointRatio:CGPointMake(photoModel.beginCropPointX, photoModel.beginCropPointY) endPointRatio:CGPointMake(photoModel.endCropPointX, photoModel.endCropPointY)];
+    image = [[FJFilterManager shared] getImage:image tuningObject:photoModel.tuningObject appendFilterType:photoModel.tuningObject.filterType];
+    self.draftImageView.image = image;
+}
+
+- (void)_renderDefaultImage {
+    
+    FJPhotoDraftCellDataSource *ds = self.fj_data;
+    self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
+    if (ds.data.photos.count == 1) {
+        ds.pictureRemoved = YES;
+    }else {
+        ds.pictureRemoved = NO;
     }
 }
 

@@ -196,8 +196,9 @@
             
             FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
             currentPhoto.tuningObject.filterType = filterType;
-            [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
-            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf _refreshCurrentImageViewToScrollView:nil];
+            });
         } cropBlock:^(NSString *ratio, BOOL confirm) {
             
             // 暂时删除当前ImageView视图的所有TagView
@@ -217,7 +218,9 @@
                 UIImage *croppedImage = [weakSelf.cropperView croppedImage];
                 FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
                 [FJPhotoManager shared].currentEditPhoto.croppedImage = croppedImage;
-                [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf _refreshCurrentImageViewToScrollView:nil];
+                });
                 // 裁剪完成后恢复TagView
                 for (FJImageTagModel *tagModel in currentPhoto.imageTags) {
                     CGPoint p = CGPointMake(weakSelf.currentImageView.bounds.size.width * tagModel.xPercent, weakSelf.currentImageView.bounds.size.height * tagModel.yPercent);
@@ -248,7 +251,9 @@
             FJPhotoModel *currentPhoto = [FJPhotoManager shared].currentEditPhoto;
             if (confirm) {
                 [currentPhoto.tuningObject setType:type value:value];
-                [weakSelf _refreshCurrentImageViewToScrollView:YES result:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf _refreshCurrentImageViewToScrollView:nil];
+                });
             }else {
                 [weakSelf.view bringSubviewToFront:weakSelf.filterView];
                 weakSelf.filterView.hidden = NO;
@@ -382,7 +387,11 @@
                 imageView.frame = CGRectMake(_scrollView.bounds.size.width * index + x, 0, w, _scrollView.bounds.size.height);
             }
             [_scrollView addSubview:imageView];
-            imageView.tag = [model.asset hash];
+            if (model.asset != nil) {
+                imageView.tag = [model.asset hash];
+            }else if(model.photoUrl != nil) {
+                imageView.tag = [model.photoUrl hash];
+            }
             
             // 添加TagView
             if (model.imageTags.count == 0) {
@@ -416,18 +425,25 @@
     [self.customTitleView updateIndex:self.index];
 }
 
+// 当前操作的Image视图
 - (UIImageView *)currentImageView {
     
     FJPhotoModel *currentModel = [FJPhotoManager shared].currentEditPhoto;
     for (UIImageView *imageView in self.scrollView.subviews) {
-        if (imageView.tag == [currentModel.asset hash]) {
-            return imageView;
+        if (currentModel.asset != nil) {
+            if (imageView.tag == [currentModel.asset hash]) {
+                return imageView;
+            }
+        }else if (currentModel.photoUrl != nil) {
+            if (imageView.tag == [currentModel.photoUrl hash]) {
+                return imageView;
+            }
         }
     }
     return nil;
 }
 
-- (void)_refreshCurrentImageViewToScrollView:(BOOL)refresh result:(void(^)(UIImage *image))result {
+- (void)_refreshCurrentImageViewToScrollView:(void(^)(UIImage *image))result {
     
     // 裁切
     MF_WEAK_SELF
@@ -442,20 +458,26 @@
         cropped = YES;
     }
     // 加调整和滤镜效果
+    // TODO TEST
+    // UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    // imageView.frame = CGRectMake(100, 50, 50, 50);
+    // [MF_KEY_WINDOW addSubview:imageView];
     image = [[FJFilterManager shared] getImage:image tuningObject:currentModel.tuningObject appendFilterType:currentModel.tuningObject.filterType];
-    if (refresh) {
-        self.currentImageView.image = image;
-        if (cropped) {
-            if (image.size.width /
-                image.size.height >= weakSelf.scrollView.bounds.size.width / weakSelf.scrollView.bounds.size.height) {
-                CGFloat h = image.size.height / image.size.width * weakSelf.scrollView.bounds.size.width;
-                CGFloat y = (weakSelf.scrollView.bounds.size.height - h) / 2.0;
-                self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * weakSelf.index, y, weakSelf.scrollView.bounds.size.width, h);
-            }else {
-                CGFloat w = image.size.width / image.size.height * weakSelf.scrollView.bounds.size.height;
-                CGFloat x = (weakSelf.scrollView.bounds.size.width - w) / 2.0;
-                self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * weakSelf.index + x, 0, w, weakSelf.scrollView.bounds.size.height);
-            }
+    // imageView = [[UIImageView alloc] initWithImage:image];
+    // imageView.frame = CGRectMake(180, 50, 50, 50);
+    // [MF_KEY_WINDOW addSubview:imageView];
+    
+    self.currentImageView.image = image;
+    if (cropped) {
+        if (image.size.width /
+            image.size.height >= weakSelf.scrollView.bounds.size.width / weakSelf.scrollView.bounds.size.height) {
+            CGFloat h = image.size.height / image.size.width * weakSelf.scrollView.bounds.size.width;
+            CGFloat y = (weakSelf.scrollView.bounds.size.height - h) / 2.0;
+            self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * weakSelf.index, y, weakSelf.scrollView.bounds.size.width, h);
+        }else {
+            CGFloat w = image.size.width / image.size.height * weakSelf.scrollView.bounds.size.height;
+            CGFloat x = (weakSelf.scrollView.bounds.size.width - w) / 2.0;
+            self.currentImageView.frame = CGRectMake(weakSelf.scrollView.bounds.size.width * weakSelf.index + x, 0, w, weakSelf.scrollView.bounds.size.height);
         }
     }
     result == nil ? : result(image);

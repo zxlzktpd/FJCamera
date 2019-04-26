@@ -402,74 +402,92 @@ static bool isFirstAccess = YES;
 - (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft completion:(void(^)(void))completion {
     
     [self clean];
-    __block int loadedPhotosCnt = 0;
     for (int i = 0; i < draft.photos.count; i++) {
-        
         FJPhotoPostSavingModel *savingPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
-        
-        FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
-        // 赋值照片属性
-        photoModel.uuid = savingPhotoModel.uuid;
-        photoModel.tuningObject = savingPhotoModel.tuningObject;
-        photoModel.imageTags = savingPhotoModel.imageTags;
-        photoModel.compressed = savingPhotoModel.compressed;
-        photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
-        photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
-        // 查找相册并赋值PHAsset
+        // 查找相册并赋值PHAsset（本地）
         if (savingPhotoModel.assetIdentifier.length > 0) {
             PHAsset *findedAsset = [self findByIdentifier:savingPhotoModel.assetIdentifier];
-            if (findedAsset) {
-                photoModel.asset = findedAsset;
-                UIImage *originalImage = [findedAsset getGeneralTargetImage];
-                photoModel.croppedImage = [originalImage fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:photoModel.endCropPoint];
-                [self.allPhotos addObject:photoModel];
-                loadedPhotosCnt++;
-                if (loadedPhotosCnt == draft.photos.count) {
-                    // 照片全部加载完成
-                    completion == nil ? : completion();
-                }
-            }else {
-                // 加载照片失败
-                photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
-                [self.allPhotos addObject:photoModel];
-                loadedPhotosCnt++;
-                if (loadedPhotosCnt == draft.photos.count) {
-                    // 照片全部加载完成
-                    completion == nil ? : completion();
-                }
-            }
-        }else if (savingPhotoModel.photoUrl.length > 0) {
-            
-            [self findByPhotoUrl:savingPhotoModel.photoUrl completion:^(NSData *imageData, UIImage *image) {
-                if (image != nil) {
-                    photoModel.croppedImage = image;
-                    [self.allPhotos addObject:photoModel];
-                    loadedPhotosCnt++;
-                    if (loadedPhotosCnt == draft.photos.count) {
-                        // 照片全部加载完成
-                        completion == nil ? : completion();
-                    }
-                }else {
-                    // 加载照片失败
-                    photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
-                    [self.allPhotos addObject:photoModel];
-                    loadedPhotosCnt++;
-                    if (loadedPhotosCnt == draft.photos.count) {
-                        // 照片全部加载完成
-                        completion == nil ? : completion();
-                    }
-                }
+            UIImage *originalImage = [findedAsset getGeneralTargetImage];
+            [self _addToAllPhotos:draft assetIdentifier:savingPhotoModel.assetIdentifier photoUrl:savingPhotoModel.photoUrl image:originalImage asset:findedAsset completion:completion];
+        }
+        // 查找SD库(网络图片,异步加载)
+        else if (savingPhotoModel.photoUrl.length > 0) {
+            MF_WEAK_SELF
+            [self findByPhotoUrl:savingPhotoModel.photoUrl completion:^(NSData *imageData, UIImage *image, NSString *url) {
+                [weakSelf _addToAllPhotos:draft assetIdentifier:nil photoUrl:url image:image asset:nil completion:completion];
             }];
-        }else {
-            // 加载照片失败
-            photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
-            [self.allPhotos addObject:photoModel];
-            loadedPhotosCnt++;
-            if (loadedPhotosCnt == draft.photos.count) {
-                // 照片全部加载完成
-                completion == nil ? : completion();
+        }
+        // 失败
+        else {
+            [self _addToAllPhotos:draft assetIdentifier:nil photoUrl:nil image:nil asset:nil completion:completion];
+        }
+    }
+}
+
+- (void)_addToAllPhotos:(FJPhotoPostDraftSavingModel *)draft assetIdentifier:(NSString *)assetIdentifier photoUrl:(NSString *)photoUrl image:(UIImage *)image asset:(PHAsset *)asset completion:(void(^)(void))completion {
+    
+    FJPhotoPostSavingModel *savingPhotoModel = nil;
+    for (int i = 0; i < draft.photos.count; i++) {
+        savingPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
+        if (assetIdentifier.length > 0) {
+            if ([savingPhotoModel.assetIdentifier isEqualToString:assetIdentifier]) {
+                break;
+            }
+        }else if (photoUrl.length > 0) {
+            if ([savingPhotoModel.photoUrl isEqualToString:photoUrl]) {
+                break;
             }
         }
+    }
+    
+    FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
+    if (assetIdentifier == nil && photoUrl == nil && savingPhotoModel == nil) {
+        // 加载照片失败
+        photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+    }
+    // 赋值照片属性
+    photoModel.uuid = savingPhotoModel.uuid;
+    photoModel.asset = asset;
+    photoModel.croppedImage = image;
+    photoModel.photoUrl = savingPhotoModel.photoUrl;
+    photoModel.tuningObject = savingPhotoModel.tuningObject;
+    photoModel.imageTags = savingPhotoModel.imageTags;
+    photoModel.compressed = savingPhotoModel.compressed;
+    photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
+    photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
+    UIImage *croppedImage = [image fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY)];
+    photoModel.croppedImage = croppedImage;
+    [self.allPhotos addObject:photoModel];
+    
+    if (self.allPhotos.count == draft.photos.count) {
+        // 调整顺序
+        for (int i = 0; i < draft.photos.count; i++) {
+            savingPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
+            FJPhotoModel *photoModel = [self.allPhotos fj_arrayObjectAtIndex:i];
+            if (savingPhotoModel.assetIdentifier.length > 0) {
+                if (![savingPhotoModel.assetIdentifier isEqualToString:[photoModel.asset localIdentifier]]) {
+                    for (int j = i + 1; j < self.allPhotos.count; j++) {
+                        FJPhotoModel *pModel = [self.allPhotos fj_arrayObjectAtIndex:j];
+                        if ([savingPhotoModel.assetIdentifier isEqualToString:[pModel.asset localIdentifier]]) {
+                            [self.allPhotos exchangeObjectAtIndex:j withObjectAtIndex:i];
+                            break;
+                        }
+                    }
+                }
+            }else if (savingPhotoModel.photoUrl.length > 0) {
+                if (![savingPhotoModel.photoUrl isEqualToString:photoModel.photoUrl]) {
+                    for (int j = i + 1; j < self.allPhotos.count; j++) {
+                        FJPhotoModel *pModel = [self.allPhotos fj_arrayObjectAtIndex:j];
+                        if ([savingPhotoModel.photoUrl isEqualToString:pModel.photoUrl]) {
+                            [self.allPhotos exchangeObjectAtIndex:j withObjectAtIndex:i];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // 完成回调
+        completion == nil ? : completion();
     }
 }
 
@@ -534,10 +552,10 @@ static bool isFirstAccess = YES;
 }
 
 // 根据PhotoUrl查找NSData、UIImage
-- (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image))completion {
+- (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image, NSString *url))completion {
     
     [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[photoUrl fjNSURL] options:SDWebImageDownloaderHighPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-        completion == nil ? : completion(data, image);
+        completion == nil ? : completion(data, image, photoUrl);
     }];
 }
 
