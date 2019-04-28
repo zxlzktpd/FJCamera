@@ -32,6 +32,9 @@
 #pragma mark - Post Object Saving Model 包含草稿保存对象列表的对象
 @interface FJPhotoPostDraftSavingModel : NSObject
 
+// 晒单ID
+@property (nonatomic, copy) NSString *topicId;
+
 // Photo 列表
 @property (nonatomic, strong) NSMutableArray<FJPhotoPostSavingModel *> *photos;
 // Extra 信息
@@ -128,7 +131,7 @@
 - (BOOL)isDraftExist;
 
 // 保存（用于退出保存）
-- (long long)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier;
+- (long long)saveDraftCache:(NSString *)topicId overwrite:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier;
 
 // 加载（用于退出保存）
 - (FJPhotoPostDraftListSavingModel *)loadDraftCache;

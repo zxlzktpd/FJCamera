@@ -332,7 +332,7 @@ static bool isFirstAccess = YES;
 }
 
 // 保存（用于退出保存）
-- (long long)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier {
+- (long long)saveDraftCache:(NSString *)topicId overwrite:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier {
     
     long long now = (long long)[NSDate fj_dateTimeStampSince1970];
     // 判断是否是已经存在已保存的draft中
@@ -386,6 +386,7 @@ static bool isFirstAccess = YES;
         objectModel.identifier = now;
     }
     objectModel.updatingTimestamp = now;
+    objectModel.topicId = topicId;
     [objectListModel.drafts addObject:objectModel];
     [FJStorage saveAnyObject:objectListModel];
     return objectModel.identifier;
