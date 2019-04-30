@@ -32,6 +32,7 @@
         self.label = [[UILabel alloc] initWithFrame:self.bounds];
         [self addSubview:self.label];
         self.label.text = @"取消";
+        self.label.font = [UIFont systemFontOfSize:14.0];
         self.label.textColor = @"#FF7A00".fj_color;
         self.label.textAlignment = NSTextAlignmentCenter;
         self.label.hidden = YES;
@@ -89,7 +90,7 @@
         self.label.hidden = YES;
         self.label.text = @"全选";
         self.label.textColor = @"#979797".fj_color;
-        // self.label.textColor = @"#FF7A00".fj_color;
+        self.label.font = [UIFont systemFontOfSize:14.0];
         self.label.textAlignment = NSTextAlignmentCenter;
         self.button = [[UIButton alloc] initWithFrame:self.bounds];
         [self addSubview:self.button];

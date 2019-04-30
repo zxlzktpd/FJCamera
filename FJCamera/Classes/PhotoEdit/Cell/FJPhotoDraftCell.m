@@ -29,6 +29,7 @@
     // Initialization code
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(_longPress)];
     [self.contentView addGestureRecognizer:longPress];
+    [self.draftImageView fj_cornerRadius:2.0];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -43,7 +43,7 @@
                             <constraint firstAttribute="height" constant="0.5" id="EFE-wX-TJZ"/>
                         </constraints>
                     </view>
-                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_unselected.png" highlightedImage="ic_photo_selected.png" translatesAutoresizingMaskIntoConstraints="NO" id="mUn-Va-ZcA">
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_photo_draft_unselected.png" highlightedImage="ic_photo_selected.png" translatesAutoresizingMaskIntoConstraints="NO" id="mUn-Va-ZcA">
                         <rect key="frame" x="304" y="0.0" width="16" height="95.5"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="16" id="0Bi-Rz-YiU"/>
@@ -90,7 +90,7 @@
         </tableViewCell>
     </objects>
     <resources>
+        <image name="ic_photo_draft_unselected.png" width="18" height="18"/>
         <image name="ic_photo_selected.png" width="20" height="20"/>
-        <image name="ic_photo_unselected.png" width="20" height="20"/>
     </resources>
 </document>

@@ -9,13 +9,14 @@
 #import "FJTakePhotoButton.h"
 #import <FJKit_OC/Macro.h>
 #import <Masonry/Masonry.h>
+#import <FJKit_OC/NSString+Color_FJ.h>
 
 @interface FJTakePhotoButton ()
 
 
 @property (nonatomic, weak) IBOutlet UIView *takePhotoView;
-@property (nonatomic, weak) IBOutlet UIView *takePhotoImageView;
-@property (nonatomic, weak) IBOutlet UIView *takePhotoTextLabel;
+@property (nonatomic, weak) IBOutlet UIImageView *takePhotoImageView;
+@property (nonatomic, weak) IBOutlet UILabel *takePhotoTextLabel;
 @property (nonatomic, weak) IBOutlet UIView *draftView;
 @property (nonatomic, copy) void(^takePhotoBlock)(void);
 @property (nonatomic, copy) void(^draftBlock)(void);
@@ -71,13 +72,16 @@
             make.edges.equalTo(weakSelf);
         }];
         [self.takePhotoImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(weakSelf.mas_centerX).offset(-20);
+            make.centerX.equalTo(weakSelf.mas_centerX).offset(-24);
             make.centerY.equalTo(weakSelf.mas_centerY);
             make.width.mas_equalTo(24.0);
             make.height.mas_equalTo(24.0);
         }];
+        self.takePhotoTextLabel.font = [UIFont systemFontOfSize:14.0];
+        self.takePhotoTextLabel.textColor = @"#FF7A00".fj_color;
+        [self.takePhotoImageView setHighlighted:YES];
         [self.takePhotoTextLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(weakSelf.mas_centerX).offset(20);
+            make.centerX.equalTo(weakSelf.mas_centerX).offset(24);
             make.centerY.equalTo(weakSelf.mas_centerY);
         }];
     }
