@@ -36,7 +36,14 @@
     
 }
 
+// 创建FJPhotoImageTagView
 + (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
+    
+    return [self create:point containerSize:containerSize model:model canmove:canmove scale:1.0 tapBlock:tapBlock movingBlock:movingBlock];
+}
+
+// 创建FJPhotoImageTagView（Scale）
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove scale:(CGFloat)scale tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
     
     FJPhotoImageTagView *view = MF_LOAD_NIB(@"FJPhotoImageTagView");
     view.model = model;
@@ -132,6 +139,107 @@
     }
     return view;
 }
+
+/*
+ {
+ 
+ FJPhotoImageTagView *view = MF_LOAD_NIB(@"FJPhotoImageTagView");
+ view.model = model;
+ view.textLabel.text = model.name;
+ view.tapBlock = tapBlock;
+ view.movingBlock = movingBlock;
+ CGFloat w;
+ if (@available(iOS 8.2, *)) {
+ w = [model.name fj_width:[UIFont systemFontOfSize:12.0 weight:UIFontWeightMedium] enableCeil:YES];
+ } else {
+ w = [model.name fj_width:[UIFont systemFontOfSize:12.0] enableCeil:YES] + 0.2 * model.name.length;
+ }
+ view.frame = CGRectMake(point.x, point.y, w + 24.0 + 8.0 + 6.0 + 6.0, FJPhotoImageTagViewHeight);
+ [view.tagBackgroundView fj_cornerRadius:2.0];
+ switch (model.type) {
+ case 0:
+ {
+ // 话题
+ view.tagImageView.image = @"ic_logo_tag_topic".fj_image;
+ break;
+ }
+ case 1:
+ {
+ // 品牌
+ view.tagImageView.image = @"ic_logo_tag_brand".fj_image;
+ break;
+ }
+ case 20:
+ {
+ // 人民币
+ view.tagImageView.image = @"ic_logo_tag_rmb".fj_image;
+ break;
+ }
+ case 21:
+ {
+ // 美元
+ view.tagImageView.image = @"ic_logo_tag_dollar".fj_image;
+ break;
+ }
+ case 22:
+ {
+ // 欧元
+ view.tagImageView.image = @"ic_logo_tag_euro".fj_image;
+ break;
+ }
+ default:
+ break;
+ }
+ if (canmove) {
+ [view addGestureRecognizer:view.panGesture];
+ [view addGestureRecognizer:view.tapGesture];
+ }
+ 
+ if (model.direction == 0) {
+ [view.tagPointDownView stopAnimation];
+ view.tagPointDownView.hidden = YES;
+ view.tagLineDownView.hidden = YES;
+ view.tagPointUpView.hidden = NO;
+ view.tagLineUpView.hidden = NO;
+ [view.tagPointUpView startAnimation];
+ }else {
+ [view.tagPointUpView stopAnimation];
+ view.tagPointUpView.hidden = YES;
+ view.tagLineUpView.hidden = YES;
+ view.tagPointDownView.hidden = NO;
+ view.tagLineDownView.hidden = NO;
+ [view.tagPointDownView startAnimation];
+ }
+ // 修正view使得view在ContainerSize内
+ if (view.frame.origin.x + view.bounds.size.width > containerSize.width && view.frame.origin.y + view.bounds.size.height > containerSize.height) {
+ view.frame = CGRectMake(containerSize.width - view.bounds.size.width, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
+ model.xPercent = view.frame.origin.x / containerSize.width;
+ model.yPercent = view.frame.origin.y / containerSize.height;
+ }else if (view.frame.origin.x + view.bounds.size.width > containerSize.width) {
+ view.frame = CGRectMake(containerSize.width - view.bounds.size.width, view.frame.origin.y, view.bounds.size.width, view.bounds.size.height);
+ model.xPercent = view.frame.origin.x / containerSize.width;
+ }else if (view.frame.origin.y + view.bounds.size.height > containerSize.height) {
+ view.frame = CGRectMake(view.frame.origin.x, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
+ model.yPercent = view.frame.origin.y / containerSize.height;
+ }
+ 
+ // 调整后的frame
+ model.adjustedFrame = view.frame;
+ 
+ // 圆角修饰
+ [view.tagBackgroundView fj_cornerRadius:12.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
+ 
+ // 是否是Hint
+ if (model.isHint) {
+ [view setUserInteractionEnabled:NO];
+ }else {
+ [view setUserInteractionEnabled:YES];
+ }
+ return view;
+ }
+ 
+ */
+
 
 - (UIPanGestureRecognizer *)panGesture {
     
