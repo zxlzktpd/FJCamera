@@ -165,7 +165,8 @@
         _bottomView = MF_LOAD_NIB(@"FJPhotoDraftBottomView");
         [self.view addSubview:_bottomView];
         MF_WEAK_SELF
-        _bottomView.frame = CGRectMake(0, self.view.frame.size.height - 48.0, self.view.frame.size.width, 48.0);
+        CGFloat h = 48.0 + (MF_IF_IPX_SERIES ? 20.0 : 0);
+        _bottomView.frame = CGRectMake(0, self.view.frame.size.height - h, self.view.frame.size.width, h);
         _bottomView.deleteBlock = ^{
             for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
                 if (ds.selected == YES) {
@@ -176,6 +177,10 @@
             weakSelf.rightButton.tag = 0;
             weakSelf.leftButton.tag = 0;
             weakSelf.bottomView.hidden = YES;
+            if (weakSelf.tableView.fj_dataSource.count == 0) {
+                [weakSelf.view fj_toast:FJToastImageTypeNone message:@"草稿箱已经全部清空了"];
+                [weakSelf fj_dismiss];
+            }
         };
     }
     return _bottomView;
@@ -223,6 +228,10 @@
         }else if (type == FJActionBlockTypeDeleted) {
             if ([cellData isKindOfClass:[FJPhotoDraftCellDataSource class]]) {
                 [[FJPhotoManager shared] removeDraft:ds.data];
+                if (weakSelf.tableView.fj_dataSource.count == 0) {
+                    [weakSelf.view fj_toast:FJToastImageTypeNone message:@"草稿箱已经全部清空了"];
+                    [weakSelf fj_dismiss];
+                }
             }
         }else if (type == FJActionBlockTypeCustomizedTapped) {
             if (ds.action == 0) {
@@ -239,6 +248,7 @@
                 weakSelf.leftButton.tag = 1;
                 weakSelf.rightButton.tag = 1;
                 weakSelf.bottomView.hidden = NO;
+                weakSelf.tableView.fj_tableView.contentInset = UIEdgeInsetsMake(0, 0, 24.0, 0);
                 for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
                     ds.editable = YES;
                     if ([ds isEqual:cellData]) {
@@ -267,6 +277,7 @@
         self.leftButton.tag = 0;
         self.rightButton.tag = 0;
         self.bottomView.hidden = YES;
+        self.tableView.fj_tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     }
 }
 
@@ -283,8 +294,8 @@
                 ds.selected = NO;
             }
             [weakSelf.tableView fj_refresh];
-            
             weakSelf.bottomView.hidden = NO;
+            weakSelf.tableView.fj_tableView.contentInset = UIEdgeInsetsMake(0, 0, 24.0, 0);
         }];
     }else if (self.rightButton.tag == 1) {
         // 点击全选（灰 未选）

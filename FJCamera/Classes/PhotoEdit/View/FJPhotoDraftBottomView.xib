@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -46,7 +46,6 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="Per-5b-uyU" secondAttribute="trailing" id="0dq-GM-7Al"/>
                 <constraint firstAttribute="trailing" secondItem="cD7-dr-eZx" secondAttribute="trailing" id="6s9-uS-UYk"/>
-                <constraint firstAttribute="bottom" secondItem="Igc-Jw-qWf" secondAttribute="bottom" constant="4" id="7Og-V2-MWX"/>
                 <constraint firstItem="Per-5b-uyU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="9ag-2m-23O"/>
                 <constraint firstItem="cD7-dr-eZx" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="M4L-gL-h1H"/>
                 <constraint firstItem="cD7-dr-eZx" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Mqp-PD-Iab"/>
@@ -55,6 +54,7 @@
                 <constraint firstAttribute="bottom" secondItem="Per-5b-uyU" secondAttribute="bottom" id="iK3-DW-4Rl"/>
                 <constraint firstItem="GEy-0u-jRp" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="jLr-Cb-oaM"/>
                 <constraint firstItem="GEy-0u-jRp" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="7" id="jUk-OE-AeC"/>
+                <constraint firstItem="Igc-Jw-qWf" firstAttribute="top" secondItem="GEy-0u-jRp" secondAttribute="bottom" constant="1" id="kHp-Lf-eyz"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="130.40000000000001" y="153.82308845577214"/>
