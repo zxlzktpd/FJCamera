@@ -517,7 +517,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@"shownImageTagHint"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point containerSize:imageView.bounds.size model:tag canmove:YES tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
+    FJPhotoImageTagView *tagView = [FJPhotoImageTagView create:point containerSize:imageView.bounds.size model:tag tapBlock:^(__weak FJPhotoImageTagView * photoImageTagView) {
         
         if (shownImageTagHint == nil && tag.isHint == NO) {
             for (UILabel *hintLabel in imageView.subviews) {

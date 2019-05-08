@@ -22,6 +22,8 @@
 @property (nonatomic, weak) IBOutlet FJPhotoImageTagPointView *tagPointDownView;
 @property (nonatomic, weak) IBOutlet UIView *tagLineUpView;
 @property (nonatomic, weak) IBOutlet UIView *tagLineDownView;
+@property (nonatomic, weak) IBOutlet UIButton *reverseUpButton;
+@property (nonatomic, weak) IBOutlet UIButton *reverseDownButton;
 @property (nonatomic, strong) FJImageTagModel *model;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
@@ -37,13 +39,13 @@
 }
 
 // 创建FJPhotoImageTagView
-+ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
     
-    return [self create:point containerSize:containerSize model:model canmove:canmove scale:1.0 tapBlock:tapBlock movingBlock:movingBlock];
+    return [self create:point containerSize:containerSize model:model scale:1.0 tapBlock:tapBlock movingBlock:movingBlock];
 }
 
 // 创建FJPhotoImageTagView（Scale）
-+ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model canmove:(BOOL)canmove scale:(CGFloat)scale tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
++ (FJPhotoImageTagView *)create:(CGPoint)point containerSize:(CGSize)containerSize model:(FJImageTagModel *)model scale:(CGFloat)scale tapBlock:(void(^)(__weak FJPhotoImageTagView *photoImageTagView))tapBlock movingBlock:(void(^)(UIGestureRecognizerState state, CGPoint point, FJPhotoImageTagView *imageTagView))movingBlock {
     
     FJPhotoImageTagView *view = MF_LOAD_NIB(@"FJPhotoImageTagView");
     view.model = model;
@@ -92,10 +94,6 @@
         default:
             break;
     }
-    if (canmove) {
-        [view addGestureRecognizer:view.panGesture];
-        [view addGestureRecognizer:view.tapGesture];
-    }
     
     if (model.direction == 0) {
         [view.tagPointDownView stopAnimation];
@@ -131,11 +129,25 @@
     // 圆角修饰
     [view.tagBackgroundView fj_cornerRadius:12.0 borderWidth:1.0 boderColor:[UIColor whiteColor]];
     
-    // 是否是Hint
-    if (model.isHint) {
+    if (model.isHint == YES) {
+        
         [view setUserInteractionEnabled:NO];
+        [view.reverseUpButton setHidden:YES];
+        [view.reverseDownButton setHidden:YES];
     }else {
-        [view setUserInteractionEnabled:YES];
+        
+        if (movingBlock != nil) {
+            [view addGestureRecognizer:view.panGesture];
+            [view.reverseUpButton setHidden:NO];
+            [view.reverseDownButton setHidden:NO];
+        }else {
+            [view.reverseUpButton setHidden:YES];
+            [view.reverseDownButton setHidden:YES];
+        }
+        
+        if (tapBlock != nil) {
+            [view addGestureRecognizer:view.tapGesture];
+        }
     }
     return view;
 }

@@ -117,6 +117,8 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="reverseDownButton" destination="eb6-37-MDI" id="RK5-iJ-dBF"/>
+                <outlet property="reverseUpButton" destination="g5t-dj-Iqa" id="FRJ-2s-3yo"/>
                 <outlet property="tagBackgroundView" destination="fq9-mb-R5G" id="TmW-ut-vor"/>
                 <outlet property="tagImageView" destination="FUW-9D-Xn5" id="h0v-eq-FDh"/>
                 <outlet property="tagLineDownView" destination="KKT-Qq-IBa" id="iYR-f4-Zqs"/>
