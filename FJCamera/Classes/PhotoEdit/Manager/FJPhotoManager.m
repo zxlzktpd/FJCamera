@@ -332,7 +332,7 @@ static bool isFirstAccess = YES;
 }
 
 // 保存（用于退出保存）
-- (long long)saveDraftCache:(NSString *)topicId overwrite:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier {
+- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier {
     
     long long now = (long long)[NSDate fj_dateTimeStampSince1970];
     // 判断是否是已经存在已保存的draft中
@@ -341,13 +341,13 @@ static bool isFirstAccess = YES;
     if (objectListModel.drafts.count > 0) {
         for (int i = (int)objectListModel.drafts.count - 1; i >= 0; i--) {
             FJPhotoPostDraftSavingModel *draft = [objectListModel.drafts fj_arrayObjectAtIndex:i];
-            if (identifier > 0 && draft.identifier == identifier) {
+            if (identifier.length > 0 && [draft.identifier isEqualToString:identifier]) {
                 if (overwrite) {
                     // 覆盖
                     [objectListModel.drafts removeObjectAtIndex:i];
                 }else {
                     // 不覆盖
-                    identifier = now;
+                    // identifier = [NSString stringWithFormat:@"%lld", now];
                     break;
                 }
             }
@@ -380,13 +380,12 @@ static bool isFirstAccess = YES;
         postPhotoModel.endCropPointY = model.endCropPoint.y;
         [objectModel.photos addObject:postPhotoModel];
     }
-    if (identifier > 0) {
+    if (identifier.length > 0) {
         objectModel.identifier = identifier;
     }else {
-        objectModel.identifier = now;
+        objectModel.identifier = [NSString stringWithFormat:@"%@%lld", KeyFJCameraLocalTag, now];
     }
     objectModel.updatingTimestamp = now;
-    objectModel.topicId = topicId;
     [objectListModel.drafts addObject:objectModel];
     [FJStorage saveAnyObject:objectListModel];
     return objectModel.identifier;
@@ -415,7 +414,13 @@ static bool isFirstAccess = YES;
         else if (savingPhotoModel.photoUrl.length > 0) {
             MF_WEAK_SELF
             [self findByPhotoUrl:savingPhotoModel.photoUrl completion:^(NSData *imageData, UIImage *image, NSString *url) {
-                [weakSelf _addToAllPhotos:draft assetIdentifier:nil photoUrl:url image:image asset:nil completion:completion];
+                if (image != nil) {
+                    // 成功
+                    [weakSelf _addToAllPhotos:draft assetIdentifier:nil photoUrl:url image:image asset:nil completion:completion];
+                }else {
+                    // 失败
+                    [self _addToAllPhotos:draft assetIdentifier:nil photoUrl:url image:nil asset:nil completion:completion];
+                }
             }];
         }
         // 失败
@@ -429,35 +434,54 @@ static bool isFirstAccess = YES;
     
     FJPhotoPostSavingModel *savingPhotoModel = nil;
     for (int i = 0; i < draft.photos.count; i++) {
-        savingPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
+        FJPhotoPostSavingModel *findPhotoModel = [draft.photos fj_arrayObjectAtIndex:i];
         if (assetIdentifier.length > 0) {
-            if ([savingPhotoModel.assetIdentifier isEqualToString:assetIdentifier]) {
+            if ([findPhotoModel.assetIdentifier isEqualToString:assetIdentifier]) {
+                savingPhotoModel = findPhotoModel;
                 break;
             }
         }else if (photoUrl.length > 0) {
-            if ([savingPhotoModel.photoUrl isEqualToString:photoUrl]) {
+            if ([findPhotoModel.photoUrl isEqualToString:photoUrl]) {
+                savingPhotoModel = findPhotoModel;
                 break;
             }
         }
     }
     
     FJPhotoModel *photoModel = [[FJPhotoModel alloc] init];
-    if (assetIdentifier == nil && photoUrl == nil && savingPhotoModel == nil) {
+    BOOL loadImageFailed = NO;
+    if (savingPhotoModel && assetIdentifier) {
+        if (asset == nil && image == nil) {
+            // 加载照片失败
+            loadImageFailed = YES;
+        }else if (image == nil) {
+            // 加载asset（不需要加载，外部传入l）
+        }
+    }else if (savingPhotoModel && photoUrl) {
+        if (image == nil) {
+            // 加载照片失败
+            loadImageFailed = YES;
+        }
+    }else {
         // 加载照片失败
-        photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+        loadImageFailed = YES;
     }
+    
     // 赋值照片属性
     photoModel.uuid = savingPhotoModel.uuid;
     photoModel.asset = asset;
-    photoModel.croppedImage = image;
     photoModel.photoUrl = savingPhotoModel.photoUrl;
     photoModel.tuningObject = savingPhotoModel.tuningObject;
     photoModel.imageTags = savingPhotoModel.imageTags;
     photoModel.compressed = savingPhotoModel.compressed;
     photoModel.beginCropPoint = CGPointMake(savingPhotoModel.beginCropPointX, savingPhotoModel.beginCropPointY);
     photoModel.endCropPoint = CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY);
-    UIImage *croppedImage = [image fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY)];
-    photoModel.croppedImage = croppedImage;
+    if (loadImageFailed) {
+        photoModel.croppedImage = @"FJPhotoManager.ic_photo_no_found".fj_image;
+    }else {
+        UIImage *croppedImage = [image fj_imageCropBeginPointRatio:photoModel.beginCropPoint endPointRatio:CGPointMake(savingPhotoModel.endCropPointX, savingPhotoModel.endCropPointY)];
+        photoModel.croppedImage = croppedImage;
+    }
     [self.allPhotos addObject:photoModel];
     
     if (self.allPhotos.count == draft.photos.count) {
@@ -505,12 +529,12 @@ static bool isFirstAccess = YES;
 }
 
 // 删除某个Draft（用于退出保存）
-- (void)removeDraftByIdentifier:(long long)identifier {
+- (void)removeDraftByIdentifier:(NSString *)identifier {
     
     FJPhotoPostDraftListSavingModel *draftList = [self loadDraftCache];
     for (int i = (int)draftList.drafts.count - 1; i >= 0; i--) {
         FJPhotoPostDraftSavingModel *d = [draftList.drafts fj_arrayObjectAtIndex:i];
-        if (d.identifier == identifier) {
+        if ([d.identifier isEqualToString:identifier]) {
             [draftList.drafts fj_arrayRemoveObjectAtIndex:i];
             break;
         }

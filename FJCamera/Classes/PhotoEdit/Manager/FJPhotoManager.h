@@ -11,6 +11,8 @@
 #import "FJTuningObject.h"
 #import "FJImageTagModel.h"
 
+#define KeyFJCameraLocalTag @"LOCAL#"
+
 #pragma mark - Photo Saving Model 草稿保存对象
 @interface FJPhotoPostSavingModel : NSObject
 
@@ -32,9 +34,6 @@
 #pragma mark - Post Object Saving Model 包含草稿保存对象列表的对象
 @interface FJPhotoPostDraftSavingModel : NSObject
 
-// 晒单ID
-@property (nonatomic, copy) NSString *topicId;
-
 // Photo 列表
 @property (nonatomic, strong) NSMutableArray<FJPhotoPostSavingModel *> *photos;
 // Extra 信息
@@ -46,8 +45,8 @@
 @property (nonatomic, copy) NSString *extra3;
 @property (nonatomic, copy) NSString *extra4;
 @property (nonatomic, copy) NSString *extra5;
-// 保存时间（唯一码）
-@property (nonatomic, assign) long long identifier;
+// 唯一码(可以去晒单ID，可以取创建时间)
+@property (nonatomic, copy) NSString *identifier;
 // 最后保存时间
 @property (nonatomic, assign) long long updatingTimestamp;
 
@@ -131,7 +130,7 @@
 - (BOOL)isDraftExist;
 
 // 保存（用于退出保存）
-- (long long)saveDraftCache:(NSString *)topicId overwrite:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(long long)identifier;
+- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier;
 
 // 加载（用于退出保存）
 - (FJPhotoPostDraftListSavingModel *)loadDraftCache;
@@ -146,7 +145,7 @@
 - (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft;
 
 // 删除某个Draft（用于退出保存）
-- (void)removeDraftByIdentifier:(long long)identifier;
+- (void)removeDraftByIdentifier:(NSString *)identifier;
 
 // 根据Asset Identifier查找PHAsset
 - (PHAsset *)findByIdentifier:(NSString *)assetIdentifier;
