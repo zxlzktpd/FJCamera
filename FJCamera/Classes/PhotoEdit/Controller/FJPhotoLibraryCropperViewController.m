@@ -17,6 +17,7 @@
 #import "PHAsset+QuickEdit.h"
 #import "FJPhotoDraftHistoryViewController.h"
 #import "FJPhotoLibraryNoAlbumView.h"
+#import <FJKit_OC/UIImage+Utility_FJ.h>
 
 #define PREVIEW_IMAGE_LEAST_HEIGHT (48.0)
 #define UPDOWN_LEAST_HEIGHT (48.0)
@@ -236,9 +237,12 @@
                 }
                 if (ds != nil) {
                     ds.isHighlighted = YES;
-                    FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-                    // 更新CropperView
-                    [weakSelf.cropperView updateModel:model];
+                    
+                    if (weakSelf.cropperViewVisible == YES) {
+                        FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
+                        // 更新CropperView
+                        [weakSelf.cropperView updateModel:model];
+                    }
                 }
             }
         });
@@ -361,16 +365,14 @@
                 [weakSelf _checkNextState];
             }else if (type == FJClActionBlockTypeTapped) {
                 
-                FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                 if (weakSelf.cropperViewVisible) {
+                    FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                     // 更新CropperView
                     model.needCrop = ds.isSelected;
                     BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
                     if (updateSuccess == NO) {
                         return;
                     }
-                }else {
-                    
                 }
                 
             }
@@ -855,15 +857,42 @@
     [self _checkNextState];
 }
 
+// 选择或者选择预览图片
 - (FJPhotoModel *)_addTemporary:(PHAsset *)asset {
     
     for (FJPhotoModel *model in self.temporaryPhotoModels) {
         if ([model.asset isEqual:asset]) {
+            // 已经生产过预览图
             return model;
         }
     }
+    // 该照片未添加过
     FJPhotoModel *model = [[FJPhotoModel alloc] initWithAsset:asset];
     model.uuid = self.uuid;
+    if (self.cropperViewVisible == NO) {
+        model.originalImage = [asset getGeneralTargetImage];
+        CGFloat imageW = model.originalImage.size.width;
+        CGFloat imageH = model.originalImage.size.height;
+        if (imageW > imageH ) {
+            // 扁图
+            if (imageH / imageW < self.horizontalExtemeRatio) {
+                // 超出极限
+                CGFloat w = imageH / self.horizontalExtemeRatio;
+                model.beginCropPoint = CGPointMake((imageW - w) / (2.0 * imageW), 0);
+                model.endCropPoint = CGPointMake((imageW - (imageW - w) / 2.0) / imageW , 1.0);
+                model.croppedImage = [model.originalImage fj_imageCropBeginPointRatio:model.beginCropPoint endPointRatio:model.endCropPoint];
+            }
+        }else {
+            // 长图
+            if (imageW / imageH < self.verticalExtemeRatio) {
+                // 超出极限
+                CGFloat h = imageW / self.verticalExtemeRatio;
+                model.beginCropPoint = CGPointMake(0, (imageH - h) / (2.0 * imageH));
+                model.endCropPoint = CGPointMake(1.0, (imageH - (imageH - h) / 2.0) / imageH);
+                model.croppedImage = [model.originalImage fj_imageCropBeginPointRatio:model.beginCropPoint endPointRatio:model.endCropPoint];
+            }
+        }
+    }
     [self.temporaryPhotoModels fj_arrayAddObject:model];
     return model;
 }

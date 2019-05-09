@@ -164,6 +164,8 @@
     
     if (_tapGesture == nil) {
         _tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAction:)];
+        _tapGesture.numberOfTapsRequired = 1;
+        _tapGesture.numberOfTouchesRequired = 1;
     }
     return _tapGesture;
 }
