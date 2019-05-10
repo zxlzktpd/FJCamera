@@ -11,6 +11,8 @@
 
 @interface FJPhotoCollectionViewCell : FJClCell
 
+- (void)updateHighlighted:(BOOL)isHighlighted;
+
 @end
 
 @interface FJPhotoCollectionViewCellDataSource : FJClCellDataSource

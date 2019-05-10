@@ -236,9 +236,8 @@
                     ds = [weakSelf.collectionView.fj_dataSource fj_arrayObjectAtIndex:0];
                 }
                 if (ds != nil) {
-                    ds.isHighlighted = YES;
-                    
-                    if (weakSelf.cropperViewVisible == YES) {
+                    if (weakSelf.cropperViewVisible) {
+                        ds.isHighlighted = YES;
                         FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
                         // 更新CropperView
                         [weakSelf.cropperView updateModel:model];
@@ -312,57 +311,10 @@
             }
             
             if (type == FJClActionBlockTypeCustomizedTapped) {
-                // 选择照片
-                if (ds.isSelected) {
-                    // 移除
-                    ds.isSelected = NO;
-                    [[FJPhotoManager shared] remove:ds.photoAsset];
-                    for (int i = (int)weakSelf.selectedPhotos.count - 1; i >= 0; i--) {
-                        FJPhotoModel *photoModel = [weakSelf.selectedPhotos objectAtIndex:i];
-                        if ([photoModel.asset isEqual:ds.photoAsset]) {
-                            [weakSelf.selectedPhotos removeObjectAtIndex:i];
-                            break;
-                        }
-                    }
-                }else {
-                    // 判断是否是iCloud照片
-                    UIImage *image = [ds.photoAsset getGeneralTargetImage];
-                    if (image == nil) {
-                        if ([weakSelf.view fj_inToasting]) {
-                            return;
-                        }
-                        [weakSelf.view fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
-                        return;
-                    }
-                    // 判断是否超出最大选择数量
-                    if (weakSelf.selectedPhotos.count == weakSelf.maxSelectionCount) {
-                        if (weakSelf.userOverLimitationBlock != nil) {
-                            weakSelf.userOverLimitationBlock();
-                        }else {
-                            [weakSelf.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)weakSelf.maxSelectionCount]];
-                        }
-                        return;
-                    }
-                    // 选择
-                    ds.isSelected = YES;
-                    FJPhotoModel *model = [weakSelf _addTemporary:ds.photoAsset];
-                    [[FJPhotoManager shared] addDistinct:model];
-                    [weakSelf.selectedPhotos fj_arrayAddObject:model];
-                    
-                    if (weakSelf.cropperViewVisible) {
-                        // 更新CropperView
-                        model.needCrop = YES;
-                        BOOL updateSuccess = [weakSelf.cropperView updateModel:model];
-                        if (updateSuccess == NO) {
-                            ds.isSelected = NO;
-                            return;
-                        }
-                    }else {
-                        
-                    }
+                
+                if ([weakSelf _selectPicture:&ds section:section item:item]) {
+                    return;
                 }
-                [weakSelf.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
-                [weakSelf _checkNextState];
             }else if (type == FJClActionBlockTypeTapped) {
                 
                 if (weakSelf.cropperViewVisible) {
@@ -373,22 +325,28 @@
                     if (updateSuccess == NO) {
                         return;
                     }
-                }
-                
-            }
-            for (FJPhotoCollectionViewCellDataSource *data in weakSelf.collectionView.fj_dataSource) {
-                if ([data isEqual:cellData]) {
-                    data.isHighlighted = YES;
                 }else {
-                    data.isHighlighted = NO;
+                    if ([weakSelf _selectPicture:&ds section:section item:item] == NO) {
+                        return;
+                    }
                 }
             }
-            FJPhotoCollectionViewCell *cl = (FJPhotoCollectionViewCell *)[weakSelf.collectionView.fj_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section]];
-            for (FJPhotoCollectionViewCell *c in [weakSelf.collectionView.fj_collectionView visibleCells]) {
-                if ([c isEqual:cl]) {
-                    [c fj_cornerRadius:2.0 borderWidth:2.0 boderColor:@"#FF7725".fj_color];
-                }else {
-                    [c fj_cornerRadius:0 borderWidth:0 boderColor:[UIColor clearColor]];
+            if (weakSelf.cropperViewVisible) {
+                // 将选中的图片边框设置成高亮，其余不高亮
+                for (FJPhotoCollectionViewCellDataSource *data in weakSelf.collectionView.fj_dataSource) {
+                    if ([data isEqual:cellData]) {
+                        data.isHighlighted = YES;
+                    }else {
+                        data.isHighlighted = NO;
+                    }
+                }
+                FJPhotoCollectionViewCell *cl = (FJPhotoCollectionViewCell *)[weakSelf.collectionView.fj_collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:item inSection:section]];
+                for (FJPhotoCollectionViewCell *c in [weakSelf.collectionView.fj_collectionView visibleCells]) {
+                    if ([c isEqual:cl]) {
+                        [c updateHighlighted:YES];
+                    }else {
+                        [c updateHighlighted:NO];
+                    }
                 }
             }
         }
@@ -446,6 +404,67 @@
             }];
         }
     }
+}
+
+- (BOOL)_selectPicture:(FJPhotoCollectionViewCellDataSource **)cellData section:(NSInteger)section item:(NSInteger)item {
+    
+    FJPhotoCollectionViewCellDataSource *ds = *cellData;
+    
+    // 选择照片
+    if (ds.isSelected) {
+        // 移除
+        ds.isSelected = NO;
+        [[FJPhotoManager shared] remove:ds.photoAsset];
+        for (int i = (int)self.selectedPhotos.count - 1; i >= 0; i--) {
+            FJPhotoModel *photoModel = [self.selectedPhotos objectAtIndex:i];
+            if ([photoModel.asset isEqual:ds.photoAsset]) {
+                [self.selectedPhotos removeObjectAtIndex:i];
+                break;
+            }
+        }
+        if (!self.cropperViewVisible) {
+            ds.isHighlighted = ds.isSelected;
+        }
+    }else {
+        // 判断是否是iCloud照片
+        UIImage *image = [ds.photoAsset getGeneralTargetImage];
+        if (image == nil) {
+            if ([self.view fj_inToasting]) {
+                return NO;
+            }
+            [self.view fj_toast:FJToastImageTypeNone message:@"iCloud照片正在下载中"];
+            return NO;
+        }
+        // 判断是否超出最大选择数量
+        if (self.selectedPhotos.count == self.maxSelectionCount) {
+            if (self.userOverLimitationBlock != nil) {
+                self.userOverLimitationBlock();
+            }else {
+                [self.view fj_toast:FJToastImageTypeWarning message:[NSString stringWithFormat:@"最多可以选择 %lu 张图片", (unsigned long)self.maxSelectionCount]];
+            }
+            return NO;
+        }
+        // 选择
+        ds.isSelected = YES;
+        FJPhotoModel *model = [self _addTemporary:ds.photoAsset];
+        [[FJPhotoManager shared] addDistinct:model];
+        [self.selectedPhotos fj_arrayAddObject:model];
+        
+        if (self.cropperViewVisible) {
+            // 更新CropperView
+            model.needCrop = YES;
+            BOOL updateSuccess = [self.cropperView updateModel:model];
+            if (updateSuccess == NO) {
+                ds.isSelected = NO;
+                return NO;
+            }
+        }else {
+            ds.isHighlighted = ds.isSelected;
+        }
+    }
+    [self.collectionView.fj_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:item inSection:section]]];
+    [self _checkNextState];
+    return YES;
 }
 
 // 拖动CropperView的手势，当cropperViewVisible == YES时有效
