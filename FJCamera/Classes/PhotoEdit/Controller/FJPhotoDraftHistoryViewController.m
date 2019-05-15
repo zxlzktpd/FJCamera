@@ -234,30 +234,32 @@
                 }
             }
         }else if (type == FJActionBlockTypeCustomizedTapped) {
-            if (ds.action == 0) {
-                // Check
-                for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
-                    if (ds.selected == NO) {
-                        weakSelf.rightButton.tag = 1;
-                        return;
+            if ([cellData isKindOfClass:[FJPhotoDraftCellDataSource class]]) {
+                if (ds.action == 0) {
+                    // Check
+                    for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
+                        if (ds.selected == NO) {
+                            weakSelf.rightButton.tag = 1;
+                            return;
+                        }
                     }
-                }
-                weakSelf.rightButton.tag = 2;
-            }else if (ds.action == 1) {
-                // 长按
-                weakSelf.leftButton.tag = 1;
-                weakSelf.rightButton.tag = 1;
-                weakSelf.bottomView.hidden = NO;
-                weakSelf.tableView.fj_tableView.contentInset = UIEdgeInsetsMake(0, 0, 24.0, 0);
-                for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
-                    ds.editable = YES;
-                    if ([ds isEqual:cellData]) {
-                        ds.selected = YES;
-                    }else {
-                        ds.selected = NO;
+                    weakSelf.rightButton.tag = 2;
+                }else if (ds.action == 1) {
+                    // 长按
+                    weakSelf.leftButton.tag = 1;
+                    weakSelf.rightButton.tag = 1;
+                    weakSelf.bottomView.hidden = NO;
+                    weakSelf.tableView.fj_tableView.contentInset = UIEdgeInsetsMake(0, 0, 24.0, 0);
+                    for (FJPhotoDraftCellDataSource *ds in weakSelf.tableView.fj_dataSource) {
+                        ds.editable = YES;
+                        if ([ds isEqual:cellData]) {
+                            ds.selected = YES;
+                        }else {
+                            ds.selected = NO;
+                        }
                     }
+                    [weakSelf.tableView fj_refresh];
                 }
-                [weakSelf.tableView fj_refresh];
             }
         }
     };

@@ -43,27 +43,31 @@
     FJPhotoDraftCellDataSource *ds = data;
     
     MF_WEAK_SELF
-    FJPhotoPostSavingModel *pModel = [ds.data.photos fj_arrayObjectAtIndex:0];
-    if (pModel.assetIdentifier.length > 0) {
-        PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
-        if (asset == nil) {
-            [self _renderDefaultImage];
-        }else {
-            ds.pictureRemoved = NO;
-            UIImage *image = [asset getSmallTargetImage];
-            [self _renderImage:image photoModel:pModel];
-        }
-    }else if (pModel.photoUrl.length > 0) {
-        self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
-        [[FJPhotoManager shared] findByPhotoUrl:pModel.photoUrl completion:^(NSData *imageData, UIImage *image, NSString *url) {
-            if (image == nil) {
-                [weakSelf _renderDefaultImage];
-            }else {
-                [weakSelf _renderImage:image photoModel:pModel];
-            }
-        }];
+    if (ds.cacheImage != nil) {
+        self.draftImageView.image = ds.cacheImage;
     }else {
-        [weakSelf _renderDefaultImage];
+        FJPhotoPostSavingModel *pModel = [ds.data.photos fj_arrayObjectAtIndex:0];
+        if (pModel.assetIdentifier.length > 0) {
+            PHAsset *asset = [[FJPhotoManager shared] findByIdentifier:pModel.assetIdentifier];
+            if (asset == nil) {
+                [self _renderDefaultImage];
+            }else {
+                ds.pictureRemoved = NO;
+                UIImage *image = [asset getSmallTargetImage];
+                [self _renderImage:image photoModel:pModel];
+            }
+        }else if (pModel.photoUrl.length > 0) {
+            self.draftImageView.image = @"FJPhotoDraftCell.ic_photo_no_found".fj_image;
+            [[FJPhotoManager shared] findByPhotoUrl:pModel.photoUrl completion:^(NSData *imageData, UIImage *image, NSString *url) {
+                if (image == nil) {
+                    [weakSelf _renderDefaultImage];
+                }else {
+                    [weakSelf _renderImage:image photoModel:pModel];
+                }
+            }];
+        }else {
+            [weakSelf _renderDefaultImage];
+        }
     }
     
     if (ds.data.extra0 != nil && [ds.data.extra0 isKindOfClass:[NSString class]]) {
@@ -90,7 +94,14 @@
     
     image = [image fj_imageCropBeginPointRatio:CGPointMake(photoModel.beginCropPointX, photoModel.beginCropPointY) endPointRatio:CGPointMake(photoModel.endCropPointX, photoModel.endCropPointY)];
     image = [[FJFilterManager shared] getImage:image tuningObject:photoModel.tuningObject appendFilterType:photoModel.tuningObject.filterType];
-    self.draftImageView.image = image;
+    if (image == nil) {
+        [self _renderDefaultImage];
+    }else {
+        self.draftImageView.image = image;
+    }
+    
+    FJPhotoDraftCellDataSource *ds = self.fj_data;
+    ds.cacheImage = self.draftImageView.image;
 }
 
 - (void)_renderDefaultImage {
@@ -102,6 +113,8 @@
     }else {
         ds.pictureRemoved = NO;
     }
+    
+    ds.cacheImage = self.draftImageView.image;
 }
 
 - (void)updateSelected:(BOOL)selected {

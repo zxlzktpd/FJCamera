@@ -84,7 +84,7 @@
         self.tuningObject = [[FJTuningObject alloc] init];
         self.imageTags = (NSMutableArray<FJImageTagModel *> *)[[NSMutableArray alloc] init];
         self.beginCropPoint = CGPointZero;
-        self.endCropPoint = CGPointZero;
+        self.endCropPoint = CGPointMake(1.0, 1.0);
     }
     return self;
 }

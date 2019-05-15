@@ -23,7 +23,11 @@
 @property (nonatomic, assign) BOOL pictureRemoved;
 @property (nonatomic, assign) BOOL editable;
 @property (nonatomic, assign) BOOL selected;
+// 0 是选择 1 长按
 @property (nonatomic, assign) int action;
+
+// 缓存Image
+@property (nonatomic, strong) UIImage *cacheImage;
 
 @end
 
