@@ -49,6 +49,8 @@
 @property (nonatomic, copy) NSString *identifier;
 // 最后保存时间
 @property (nonatomic, assign) long long updatingTimestamp;
+// 用户ID
+@property (nonatomic, copy) NSString *uid;
 
 @end
 
@@ -127,19 +129,19 @@
 #pragma mark - Draft
 
 // 判断存在（用于退出保存）
-- (BOOL)isDraftExist;
+- (BOOL)isDraftExist:(nonnull NSString *)uid;
 
 // 保存（用于退出保存）
-- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier;
+- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier uid:(nonnull NSString *)uid;
 
 // 加载（用于退出保存）
-- (FJPhotoPostDraftListSavingModel *)loadDraftCache;
+- (FJPhotoPostDraftListSavingModel *)loadDraftCache:(nullable NSString *)uid;
 
 // 加载到allPhoto（用于退出保存）
 - (void)loadDraftPhotosToAllPhotos:(FJPhotoPostDraftSavingModel *)draft completion:(void(^)(void))completion;
 
 // 删除（用于退出保存）
-- (void)cleanDraftCache;
+- (void)cleanDraftCache:(nullable NSString *)uid;
 
 // 删除某个Draft（用于退出保存）
 - (void)removeDraft:(FJPhotoPostDraftSavingModel *)draft;
@@ -153,7 +155,10 @@
 // 根据PhotoUrl查找NSData、UIImage
 - (void)findByPhotoUrl:(NSString *)photoUrl completion:(void(^)(NSData *imageData, UIImage *image, NSString *url))completion;
 
+// 更新UID信息
+- (void)update:(NSString *)identifier uid:(NSString *)uid;
+
 // 打开草稿箱
-+ (void)presentDraftController:(UIViewController *)controller userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock;
++ (void)presentDraftController:(UIViewController *)controller uid:(nonnull NSString *)uid userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock;
 
 @end

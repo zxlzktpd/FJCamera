@@ -399,9 +399,10 @@
                 FJImageTagModel *hintTagModel = [[FJImageTagModel alloc] init];
                 hintTagModel.isHint = YES;
                 hintTagModel.name = @"添加说明标签可以被更多人看见";
-                hintTagModel.xPercent = (UI_SCREEN_WIDTH - 196.0) / 2.0 / UI_SCREEN_WIDTH;
-                hintTagModel.yPercent = (imageView.bounds.size.height - 60.0) / imageView.bounds.size.height;
+                hintTagModel.xPercent = (UI_SCREEN_WIDTH) / 2.0 / UI_SCREEN_WIDTH;
+                hintTagModel.yPercent = (imageView.bounds.size.height - 50.0) / imageView.bounds.size.height;
                 hintTagModel.direction = 0;
+                hintTagModel.v = @"1";
                 CGPoint p = CGPointMake(imageView.bounds.size.width * hintTagModel.xPercent, imageView.bounds.size.height * hintTagModel.yPercent);
                 [weakSelf _addImageTagOnImageView:imageView tag:hintTagModel point:p];
             }else {
@@ -410,7 +411,6 @@
                     [weakSelf _addImageTagOnImageView:imageView tag:tagModel point:p];
                 }
             }
-            
             // 打Tag手势
             [imageView setUserInteractionEnabled:YES];
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_tapAddTag:)];

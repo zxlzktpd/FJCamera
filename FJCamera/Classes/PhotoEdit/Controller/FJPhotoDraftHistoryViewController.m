@@ -321,7 +321,7 @@
 - (void)_loadAndRender {
     
     [self.tableView.fj_dataSource removeAllObjects];
-    FJPhotoPostDraftListSavingModel *listModel = [[FJPhotoManager shared] loadDraftCache];
+    FJPhotoPostDraftListSavingModel *listModel = [[FJPhotoManager shared] loadDraftCache:self.uid];
     MF_WEAK_SELF
     [listModel.drafts enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(FJPhotoPostDraftSavingModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         FJPhotoDraftCellDataSource *ds = [[FJPhotoDraftCellDataSource alloc] init];

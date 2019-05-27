@@ -161,7 +161,7 @@
     
     [super viewWillAppear:animated];
     if (self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
-        if (![[FJPhotoManager shared] isDraftExist]) {
+        if (![[FJPhotoManager shared] isDraftExist:self.uid]) {
             [self.takePhotoButton updateWithDraft:NO];
         }
     }
@@ -395,7 +395,7 @@
     if (self.takeButtonPosition == FJTakePhotoButtonPositionBottom ||
         self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft) {
         if (_takePhotoButton == nil) {
-            BOOL enableDraft =  [[FJPhotoManager shared] isDraftExist] && self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft;
+            BOOL enableDraft =  [[FJPhotoManager shared] isDraftExist:self.uid] && self.takeButtonPosition == FJTakePhotoButtonPositionBottomWithDraft;
             _takePhotoButton = [FJTakePhotoButton createOn:self.view withDraft:enableDraft draftBlock:^{
                 [weakSelf _openDraft];
             } takePhotoBlock:^{
@@ -693,6 +693,7 @@
 - (void)_openDraft {
     
     FJPhotoDraftHistoryViewController *draftVC = [[FJPhotoDraftHistoryViewController alloc] init];
+    draftVC.uid = self.uid;
     draftVC.userSelectDraftBlock = self.userSelectDraftBlock;
     [self.navigationController pushViewController:draftVC animated:YES];
 }

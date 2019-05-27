@@ -10,6 +10,7 @@
 #import "FJImageTagModel.h"
 
 #define FJPhotoImageTagViewHeight (60.0)
+#define FJPhotoImageTagViewWidthExceptText (24.0 + 8.0 + 6.0 + 6.0)
 
 @interface FJPhotoImageTagView : UIView
 
@@ -22,5 +23,8 @@
 - (void)reverseDirection;
 
 - (FJImageTagModel *)getTagModel;
+
+// 根据文件计算ImageTagView的宽度
++ (CGFloat)getPhotoImageTagViewWidth:(NSString *)text;
 
 @end

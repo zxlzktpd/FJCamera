@@ -52,13 +52,19 @@
     view.textLabel.text = model.name;
     view.tapBlock = tapBlock;
     view.movingBlock = movingBlock;
-    CGFloat w;
-    if (@available(iOS 8.2, *)) {
-        w = [model.name fj_width:[UIFont systemFontOfSize:12.0 weight:UIFontWeightMedium] enableCeil:YES];
-    } else {
-        w = [model.name fj_width:[UIFont systemFontOfSize:12.0] enableCeil:YES] + 0.2 * model.name.length;
+    CGFloat w = [FJPhotoImageTagView getPhotoImageTagViewWidth:model.name];
+    if (model.v.intValue == 0) {
     }
-    view.frame = CGRectMake(point.x, point.y, w + 24.0 + 8.0 + 6.0 + 6.0, FJPhotoImageTagViewHeight);
+    else if (model.v.intValue == 1) {
+        // 以Ripple圆点为中心点
+        point.x = point.x - (w + FJPhotoImageTagViewWidthExceptText) / 2.0;
+        if (model.direction == 0) {
+            point.y -= 6.0;
+        }else {
+            point.y -= 54.0;
+        }
+    }
+    view.frame = CGRectMake(point.x, point.y, w + FJPhotoImageTagViewWidthExceptText, FJPhotoImageTagViewHeight);
     [view.tagBackgroundView fj_cornerRadius:2.0];
     switch (model.type) {
         case 0:
@@ -113,14 +119,35 @@
     // 修正view使得view在ContainerSize内
     if (view.frame.origin.x + view.bounds.size.width > containerSize.width && view.frame.origin.y + view.bounds.size.height > containerSize.height) {
         view.frame = CGRectMake(containerSize.width - view.bounds.size.width, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
-        model.xPercent = view.frame.origin.x / containerSize.width;
-        model.yPercent = view.frame.origin.y / containerSize.height;
+        if ([model.v intValue] == 0 ) {
+            model.xPercent = view.frame.origin.x / containerSize.width;
+            model.yPercent = view.frame.origin.y / containerSize.height;
+        }else if ([model.v intValue] == 1) {
+            model.xPercent = (view.frame.origin.x + view.frame.size.width / 2.0) / containerSize.width;
+            if (model.direction == 0) {
+                model.yPercent = (view.frame.origin.y + 6.0) / containerSize.height;
+            }else {
+                model.yPercent = (view.frame.origin.y + 54.0) / containerSize.height;
+            }
+        }
     }else if (view.frame.origin.x + view.bounds.size.width > containerSize.width) {
         view.frame = CGRectMake(containerSize.width - view.bounds.size.width, view.frame.origin.y, view.bounds.size.width, view.bounds.size.height);
-        model.xPercent = view.frame.origin.x / containerSize.width;
+        if ([model.v intValue] == 0 ) {
+            model.xPercent = view.frame.origin.x / containerSize.width;
+        }else if ([model.v intValue] == 1 ) {
+            model.xPercent = (view.frame.origin.x + view.frame.size.width / 2.0) / containerSize.width;
+        }
     }else if (view.frame.origin.y + view.bounds.size.height > containerSize.height) {
         view.frame = CGRectMake(view.frame.origin.x, containerSize.height - view.bounds.size.height, view.bounds.size.width, view.bounds.size.height);
-        model.yPercent = view.frame.origin.y / containerSize.height;
+        if ([model.v intValue] == 0 ) {
+            model.yPercent = view.frame.origin.y / containerSize.height;
+        }else if ([model.v intValue] == 1 ) {
+            if (model.direction == 0) {
+                model.yPercent = (view.frame.origin.y + 6.0) / containerSize.height;
+            }else {
+                model.yPercent = (view.frame.origin.y + 54.0) / containerSize.height;
+            }
+        }
     }
     
     // 调整后的frame
@@ -196,8 +223,17 @@
         }
     }
     [panGesture setTranslation:CGPointZero inView:panGesture.view];
-    self.model.xPercent = self.frame.origin.x / self.superview.bounds.size.width;
-    self.model.yPercent = self.frame.origin.y / self.superview.bounds.size.height;
+    if (self.model.v.intValue == 0) {
+        self.model.xPercent = self.frame.origin.x / self.superview.bounds.size.width;
+        self.model.yPercent = self.frame.origin.y / self.superview.bounds.size.height;
+    }else if (self.model.v.intValue == 1) {
+        self.model.xPercent = (self.frame.origin.x + self.frame.size.width / 2.0) / self.superview.bounds.size.width;
+        if (self.model.direction == 0) {
+            self.model.yPercent = (self.frame.origin.y + 6.0) / self.superview.bounds.size.height;
+        }else {
+            self.model.yPercent = (self.frame.origin.y + 54.0) / self.superview.bounds.size.height;
+        }
+    }
     self.movingBlock == nil ? : self.movingBlock(state, locationPoint, self);
 }
 
@@ -236,6 +272,18 @@
 - (FJImageTagModel *)getTagModel {
     
     return self.model;
+}
+
+// 根据文件计算ImageTagView的宽度
++ (CGFloat)getPhotoImageTagViewWidth:(NSString *)text {
+    
+    CGFloat w = 0;
+    if (@available(iOS 8.2, *)) {
+        w = [text fj_width:[UIFont systemFontOfSize:12.0 weight:UIFontWeightMedium] enableCeil:YES];
+    } else {
+        w = [text fj_width:[UIFont systemFontOfSize:12.0] enableCeil:YES] + 0.2 * text.length;
+    }
+    return w;
 }
 
 /*

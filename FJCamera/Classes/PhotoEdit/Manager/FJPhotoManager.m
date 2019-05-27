@@ -325,14 +325,21 @@ static bool isFirstAccess = YES;
 #pragma mark - Draft
 
 // 判断存在（用于退出保存）
-- (BOOL)isDraftExist {
+- (BOOL)isDraftExist:(nonnull NSString *)uid {
     
     FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
-    return objectListModel != nil && objectListModel.drafts != nil && objectListModel.drafts.count > 0;
+    if (objectListModel != nil && objectListModel.drafts != nil && objectListModel.drafts.count > 0 && uid.length > 0) {
+        for (FJPhotoPostDraftSavingModel *model in objectListModel.drafts) {
+            if ([model.uid isEqualToString:uid]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 // 保存（用于退出保存）
-- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier {
+- (NSString *)saveDraftCache:(BOOL)overwrite extraType:(int)extraType extras:(NSDictionary *)extras identifier:(NSString *)identifier uid:(nonnull NSString *)uid {
     
     long long now = (long long)[NSDate fj_dateTimeStampSince1970];
     // 判断是否是已经存在已保存的draft中
@@ -385,6 +392,7 @@ static bool isFirstAccess = YES;
     }else {
         objectModel.identifier = [NSString stringWithFormat:@"%@%lld", KeyFJCameraLocalTag, now];
     }
+    objectModel.uid = uid;
     objectModel.updatingTimestamp = now;
     [objectListModel.drafts addObject:objectModel];
     [FJStorage saveAnyObject:objectListModel];
@@ -392,9 +400,17 @@ static bool isFirstAccess = YES;
 }
 
 // 加载（用于退出保存）
-- (FJPhotoPostDraftListSavingModel *)loadDraftCache {
+- (FJPhotoPostDraftListSavingModel *)loadDraftCache:(nullable NSString *)uid {
     
     FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+    if (uid != nil) {
+        for (int i = (int)objectListModel.drafts.count - 1; i >= 0; i--) {
+            FJPhotoPostDraftSavingModel *draft = [objectListModel.drafts fj_arrayObjectAtIndex:i];
+            if (![draft.uid isEqualToString:uid]) {
+                [objectListModel.drafts fj_arrayRemoveObjectAtIndex:i];
+            }
+        }
+    }
     return objectListModel;
 }
 
@@ -517,9 +533,24 @@ static bool isFirstAccess = YES;
 }
 
 // 删除（用于退出保存）
-- (void)cleanDraftCache {
+- (void)cleanDraftCache:(nullable NSString *)uid {
     
-    [FJStorage clearObject:@"FJPhotoPostDraftListSavingModel"];
+    if (uid == nil) {
+        [FJStorage clearObject:@"FJPhotoPostDraftListSavingModel"];
+    }else {
+        FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+        for (int i = (int)objectListModel.drafts.count - 1; i >= 0; i--) {
+            FJPhotoPostDraftSavingModel *draft = [objectListModel.drafts fj_arrayObjectAtIndex:i];
+            if ([draft.uid isEqualToString:uid]) {
+                [objectListModel.drafts fj_arrayRemoveObjectAtIndex:i];
+            }
+        }
+        if (objectListModel.drafts.count == 0) {
+            [FJStorage clearObject:@"FJPhotoPostDraftListSavingModel"];
+        }else {
+            [FJStorage saveAnyObject:objectListModel];
+        }
+    }
 }
 
 // 删除某个Draft（用于退出保存）
@@ -531,7 +562,7 @@ static bool isFirstAccess = YES;
 // 删除某个Draft（用于退出保存）
 - (void)removeDraftByIdentifier:(NSString *)identifier {
     
-    FJPhotoPostDraftListSavingModel *draftList = [self loadDraftCache];
+    FJPhotoPostDraftListSavingModel *draftList = [self loadDraftCache:nil];
     for (int i = (int)draftList.drafts.count - 1; i >= 0; i--) {
         FJPhotoPostDraftSavingModel *d = [draftList.drafts fj_arrayObjectAtIndex:i];
         if ([d.identifier isEqualToString:identifier]) {
@@ -540,7 +571,7 @@ static bool isFirstAccess = YES;
         }
     }
     if (draftList.drafts.count == 0) {
-        [self cleanDraftCache];
+        [self cleanDraftCache:nil];
     }else {
         [FJStorage saveAnyObject:draftList];
     }
@@ -584,10 +615,26 @@ static bool isFirstAccess = YES;
     }];
 }
 
+// 更新UID信息
+- (void)update:(NSString *)identifier uid:(NSString *)uid {
+    
+    FJPhotoPostDraftListSavingModel *objectListModel = [FJStorage valueAnyObject:[FJPhotoPostDraftListSavingModel class]];
+    if (objectListModel != nil && objectListModel.drafts != nil && objectListModel.drafts.count > 0 && uid.length > 0) {
+        for (FJPhotoPostDraftSavingModel *model in objectListModel.drafts) {
+            if ([model.identifier isEqualToString:identifier]) {
+                model.uid = uid;
+                [FJStorage saveAnyObject:objectListModel];
+                break;
+            }
+        }
+    }
+}
+
 // 打开草稿箱
-+ (void)presentDraftController:(UIViewController *)controller userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock {
++ (void)presentDraftController:(UIViewController *)controller uid:(nonnull NSString *)uid userSelectDraftBlock:(void(^)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved))userSelectDraftBlock {
     
     FJPhotoDraftHistoryViewController *draftVC = [[FJPhotoDraftHistoryViewController alloc] init];
+    draftVC.uid = uid;
     draftVC.userSelectDraftBlock = userSelectDraftBlock;
     FJNavigationController *nav = [[FJNavigationController alloc] initWithRootViewController:draftVC];
     [controller presentViewController:nav animated:YES completion:nil];

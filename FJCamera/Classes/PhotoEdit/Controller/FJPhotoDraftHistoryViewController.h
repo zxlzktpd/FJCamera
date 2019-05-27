@@ -12,6 +12,9 @@
 
 @interface FJPhotoDraftHistoryViewController : UIViewController
 
+// User ID
+@property (nonatomic, copy) NSString *uid;
+
 @property (nonatomic, copy) void(^userSelectDraftBlock)(FJPhotoPostDraftSavingModel *draft, BOOL pictureRemoved);
 
 @end

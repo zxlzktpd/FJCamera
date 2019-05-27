@@ -79,6 +79,9 @@ typedef NS_ENUM(NSInteger, FJPhotoSortType) {
 // 编辑 Next Block (Edit Controller)
 @property (nonatomic, copy) void(^userEditNextBlock)(void);
 
+// User ID
+@property (nonatomic, copy) NSString *uid;
+
 // 初始化
 - (instancetype)initWithMode:(FJPhotoEditMode)mode editController:(__kindof FJPhotoUserTagBaseViewController * (^)(FJPhotoEditViewController *controller))editController;
 
